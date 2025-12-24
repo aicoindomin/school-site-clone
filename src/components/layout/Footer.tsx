@@ -1,53 +1,57 @@
 import { Link } from "react-router-dom";
-import { Phone, Mail, MapPin, GraduationCap, Facebook, Twitter, Instagram, Youtube } from "lucide-react";
+import { Phone, Mail, MapPin, Facebook, Youtube } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 const quickLinks = [
   { title: "About Us", href: "/about" },
-  { title: "Academics", href: "/academics" },
-  { title: "Gallery", href: "/gallery" },
   { title: "Admission", href: "/admission" },
-  { title: "Careers", href: "/careers" },
+  { title: "Gallery", href: "/gallery" },
   { title: "Contact", href: "/contact" },
+  { title: "Careers", href: "/careers" },
 ];
 
-const resourceLinks = [
-  { title: "School Calendar", href: "/academics/calendar" },
-  { title: "Rules & Regulations", href: "/academics/rules" },
-  { title: "Fee Payment", href: "/admission#fee-payment" },
-  { title: "Results", href: "/#results" },
+const academicLinks = [
+  { title: "Class Routine", href: "/routine" },
+  { title: "Exam Results", href: "/results" },
+  { title: "Holidays", href: "/holidays" },
+  { title: "Faculty", href: "/faculty" },
+  { title: "Students", href: "/students" },
 ];
 
 export function Footer() {
   return (
-    <footer className="bg-primary text-primary-foreground">
-      <div className="container py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+    <footer className="bg-foreground text-background">
+      {/* Main Footer */}
+      <div className="container py-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* School Info */}
           <div>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
-                <GraduationCap className="w-7 h-7 text-secondary-foreground" />
-              </div>
+            <Link to="/" className="flex items-center gap-3 mb-4">
+              <img src={logo} alt="Balisai Public School" className="w-14 h-14 rounded-full bg-white p-1" />
               <div>
-                <h3 className="font-display text-lg font-bold">Calcutta Public School</h3>
-                <p className="text-sm text-primary-foreground/70">Shaping Bright Futures</p>
+                <h3 className="font-display text-lg font-bold">Balisai Public School</h3>
+                <p className="text-xs text-muted-foreground">Estd. 2009</p>
               </div>
-            </div>
-            <p className="text-primary-foreground/80 text-sm leading-relaxed">
-              A premier educational institution committed to excellence in academics, 
-              sports, and character building since 1985.
+            </Link>
+            <p className="text-sm text-muted-foreground mb-4">
+              Nurturing young minds and building a foundation for a brighter future 
+              through quality education and holistic development.
             </p>
-            <div className="flex gap-4 mt-6">
-              <a href="#" className="p-2 rounded-full bg-primary-foreground/10 hover:bg-secondary hover:text-secondary-foreground transition-colors">
+            <div className="flex gap-3">
+              <a
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition-colors"
+              >
                 <Facebook className="w-5 h-5" />
               </a>
-              <a href="#" className="p-2 rounded-full bg-primary-foreground/10 hover:bg-secondary hover:text-secondary-foreground transition-colors">
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a href="#" className="p-2 rounded-full bg-primary-foreground/10 hover:bg-secondary hover:text-secondary-foreground transition-colors">
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a href="#" className="p-2 rounded-full bg-primary-foreground/10 hover:bg-secondary hover:text-secondary-foreground transition-colors">
+              <a
+                href="https://youtube.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition-colors"
+              >
                 <Youtube className="w-5 h-5" />
               </a>
             </div>
@@ -55,13 +59,13 @@ export function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-display text-lg font-semibold mb-6">Quick Links</h4>
-            <ul className="space-y-3">
+            <h4 className="font-display text-lg font-semibold mb-4">Quick Links</h4>
+            <ul className="space-y-2">
               {quickLinks.map((link) => (
                 <li key={link.title}>
                   <Link
                     to={link.href}
-                    className="text-primary-foreground/80 hover:text-secondary transition-colors text-sm"
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
                   >
                     {link.title}
                   </Link>
@@ -70,15 +74,15 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Resources */}
+          {/* Academic Links */}
           <div>
-            <h4 className="font-display text-lg font-semibold mb-6">Resources</h4>
-            <ul className="space-y-3">
-              {resourceLinks.map((link) => (
+            <h4 className="font-display text-lg font-semibold mb-4">Academics</h4>
+            <ul className="space-y-2">
+              {academicLinks.map((link) => (
                 <li key={link.title}>
                   <Link
                     to={link.href}
-                    className="text-primary-foreground/80 hover:text-secondary transition-colors text-sm"
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
                   >
                     {link.title}
                   </Link>
@@ -89,25 +93,30 @@ export function Footer() {
 
           {/* Contact Info */}
           <div>
-            <h4 className="font-display text-lg font-semibold mb-6">Contact Us</h4>
+            <h4 className="font-display text-lg font-semibold mb-4">Contact Us</h4>
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 mt-0.5 text-secondary" />
-                <span className="text-sm text-primary-foreground/80">
-                  123 Education Lane,<br />
-                  Kolkata, West Bengal 700001
+                <MapPin className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                <span className="text-sm text-muted-foreground">
+                  Patnahat, Balisai, Ramnagar,<br />
+                  Purba Medinipur, West Bengal
                 </span>
               </li>
-              <li>
-                <a href="tel:+913323456789" className="flex items-center gap-3 text-sm text-primary-foreground/80 hover:text-secondary transition-colors">
-                  <Phone className="w-5 h-5 text-secondary" />
-                  +91 33 2345 6789
-                </a>
+              <li className="flex items-center gap-3">
+                <Phone className="w-5 h-5 text-primary flex-shrink-0" />
+                <div className="text-sm text-muted-foreground">
+                  <a href="tel:9732743315" className="hover:text-primary transition-colors">9732743315</a>
+                  <br />
+                  <a href="tel:9083317144" className="hover:text-primary transition-colors">9083317144</a>
+                </div>
               </li>
-              <li>
-                <a href="mailto:info@cps.edu.in" className="flex items-center gap-3 text-sm text-primary-foreground/80 hover:text-secondary transition-colors">
-                  <Mail className="w-5 h-5 text-secondary" />
-                  info@cps.edu.in
+              <li className="flex items-center gap-3">
+                <Mail className="w-5 h-5 text-primary flex-shrink-0" />
+                <a
+                  href="mailto:info@balisaipublicschool.in"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
+                  info@balisaipublicschool.in
                 </a>
               </li>
             </ul>
@@ -116,14 +125,13 @@ export function Footer() {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-primary-foreground/10">
-        <div className="container py-6 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-primary-foreground/70">
-            © {new Date().getFullYear()} Calcutta Public School. All rights reserved.
-          </p>
-          <div className="flex gap-6 text-sm text-primary-foreground/70">
-            <Link to="/privacy" className="hover:text-secondary transition-colors">Privacy Policy</Link>
-            <Link to="/terms" className="hover:text-secondary transition-colors">Terms of Use</Link>
+      <div className="border-t border-white/10">
+        <div className="container py-4">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
+            <p>
+              © {new Date().getFullYear()} Balisai Public School. All rights reserved.
+            </p>
+            <p>Reg No: S/1L/69181</p>
           </div>
         </div>
       </div>

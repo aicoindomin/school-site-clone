@@ -1,79 +1,77 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle } from "lucide-react";
+import { ArrowRight, BookOpen, Users, Trophy, Heart } from "lucide-react";
 
 const features = [
-  "ICSE & ISC Board Affiliation",
-  "Experienced & Caring Faculty",
-  "Modern Smart Classrooms",
-  "State-of-the-art Sports Facilities",
-  "Rich Co-curricular Programs",
-  "Character Building Focus",
+  {
+    icon: BookOpen,
+    title: "Quality Education",
+    description: "Comprehensive curriculum with modern teaching methods",
+  },
+  {
+    icon: Users,
+    title: "Experienced Faculty",
+    description: "Dedicated teachers committed to student success",
+  },
+  {
+    icon: Trophy,
+    title: "Co-curricular Activities",
+    description: "Sports, arts, and cultural programs for holistic development",
+  },
+  {
+    icon: Heart,
+    title: "Value-Based Learning",
+    description: "Instilling moral values and ethics in young minds",
+  },
 ];
 
 export function AboutSection() {
   return (
-    <section className="py-20 bg-background">
+    <section className="py-16 bg-muted/50">
       <div className="container">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Image */}
-          <div className="relative">
-            <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-elegant">
-              <img
-                src="/placeholder.svg"
-                alt="School campus"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            {/* Stats Card */}
-            <div className="absolute -bottom-6 -right-6 bg-card rounded-2xl shadow-elegant p-6 hidden sm:block">
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center">
-                  <span className="font-display text-2xl font-bold text-primary-foreground">40+</span>
-                </div>
-                <div>
-                  <p className="font-display text-lg font-semibold text-foreground">Years</p>
-                  <p className="text-muted-foreground text-sm">of Excellence</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
           {/* Content */}
           <div>
-            <span className="inline-block text-primary font-medium text-sm uppercase tracking-wider mb-4">
-              About Our School
-            </span>
+            <p className="text-primary font-medium mb-2">Welcome to</p>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-6">
-              Building Tomorrow's Leaders Today
+              Balisai Public School
             </h2>
-            <p className="text-muted-foreground mb-8 leading-relaxed">
-              Calcutta Public School is a premier educational institution dedicated to 
-              nurturing young minds and shaping future leaders. Established with a vision 
-              to provide holistic education, we combine academic excellence with character 
-              building, sports, and extracurricular activities.
+            <p className="text-muted-foreground mb-6 leading-relaxed">
+              Established in 2009, Balisai Public School has been a beacon of quality education in 
+              Purba Medinipur district. We are committed to nurturing young minds and preparing 
+              students for the challenges of tomorrow.
             </p>
+            <p className="text-muted-foreground mb-8 leading-relaxed">
+              Our school provides a balanced education that emphasizes academic excellence alongside 
+              co-curricular activities. We believe in developing well-rounded individuals who 
+              can contribute positively to society.
+            </p>
+            <Button asChild>
+              <Link to="/about">
+                Learn More About Us
+                <ArrowRight className="ml-2 w-4 h-4" />
+              </Link>
+            </Button>
+          </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-              {features.map((feature) => (
-                <div key={feature} className="flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5 text-accent flex-shrink-0" />
-                  <span className="text-foreground text-sm">{feature}</span>
+          {/* Features Grid */}
+          <div className="grid sm:grid-cols-2 gap-6">
+            {features.map((feature, index) => (
+              <div
+                key={index}
+                className="bg-card p-6 rounded-xl shadow-sm hover-lift"
+              >
+                <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                  <feature.icon className="w-6 h-6 text-primary" />
                 </div>
-              ))}
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button asChild size="lg">
-                <Link to="/about">
-                  Learn More About Us
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Link>
-              </Button>
-              <Button asChild variant="outline" size="lg">
-                <Link to="/contact">Contact Us</Link>
-              </Button>
-            </div>
+                <h3 className="font-display text-lg font-semibold text-foreground mb-2">
+                  {feature.title}
+                </h3>
+                <p className="text-muted-foreground text-sm">
+                  {feature.description}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </div>

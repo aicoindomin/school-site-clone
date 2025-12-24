@@ -1,27 +1,21 @@
-import { MainLayout } from "@/components/layout";
+import { MainLayout } from "@/components/layout/MainLayout";
 import {
-  HeroSection,
-  CategoriesSection,
-  FunctionariesSection,
-  ResultsSection,
-  GallerySection,
-  VirtualTourSection,
+  HeroSlider,
+  NoticesSection,
   AboutSection,
-  FeePaymentSection,
+  GallerySection,
+  StatsSection,
   CTASection,
 } from "@/components/home";
 
 const Index = () => {
   return (
     <MainLayout>
-      <HeroSection />
-      <CategoriesSection />
+      <HeroSlider />
+      <NoticesSection />
       <AboutSection />
-      <FunctionariesSection />
-      <VirtualTourSection />
+      <StatsSection />
       <GallerySection />
-      <ResultsSection />
-      <FeePaymentSection />
       <CTASection />
     </MainLayout>
   );

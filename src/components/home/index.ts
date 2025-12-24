@@ -1,9 +1,6 @@
-export { HeroSection } from "./HeroSection";
-export { CategoriesSection } from "./CategoriesSection";
-export { FunctionariesSection } from "./FunctionariesSection";
-export { ResultsSection } from "./ResultsSection";
-export { GallerySection } from "./GallerySection";
-export { VirtualTourSection } from "./VirtualTourSection";
+export { HeroSlider } from "./HeroSlider";
+export { NoticesSection } from "./NoticesSection";
 export { AboutSection } from "./AboutSection";
-export { FeePaymentSection } from "./FeePaymentSection";
+export { GallerySection } from "./GallerySection";
+export { StatsSection } from "./StatsSection";
 export { CTASection } from "./CTASection";
