@@ -6,6 +6,7 @@ import {
   GallerySection,
   StatsSection,
   CTASection,
+  TopAchieversSection,
 } from "@/components/home";
 
 const Index = () => {
@@ -15,6 +16,7 @@ const Index = () => {
       <NoticesSection />
       <AboutSection />
       <StatsSection />
+      <TopAchieversSection />
       <GallerySection />
       <CTASection />
     </MainLayout>
