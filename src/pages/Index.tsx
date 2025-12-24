@@ -1,6 +1,6 @@
 import { MainLayout } from "@/components/layout/MainLayout";
 import {
-  HeroSlider,
+  HeroSlider3D,
   NoticesSection,
   AboutSection,
   GallerySection,
@@ -11,7 +11,7 @@ import {
 const Index = () => {
   return (
     <MainLayout>
-      <HeroSlider />
+      <HeroSlider3D />
       <NoticesSection />
       <AboutSection />
       <StatsSection />
