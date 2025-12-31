@@ -6,3 +6,4 @@ export { GallerySection } from "./GallerySection";
 export { StatsSection } from "./StatsSection";
 export { CTASection } from "./CTASection";
 export { TopAchieversSection } from "./TopAchieversSection";
+export { LeadershipSection } from "./LeadershipSection";

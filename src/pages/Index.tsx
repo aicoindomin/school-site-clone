@@ -7,6 +7,7 @@ import {
   StatsSection,
   CTASection,
   TopAchieversSection,
+  LeadershipSection,
 } from "@/components/home";
 
 const Index = () => {
@@ -14,6 +15,7 @@ const Index = () => {
     <MainLayout>
       <HeroSlider3D />
       <NoticesSection />
+      <LeadershipSection />
       <AboutSection />
       <StatsSection />
       <TopAchieversSection />
