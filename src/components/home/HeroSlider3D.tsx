@@ -96,8 +96,8 @@ function Cube3D({ index, row, col, currentImage, nextImage, isTransitioning, tra
     <div
       className="absolute transition-all ease-out"
       style={{
-        width: `${cubeWidth}%`,
-        height: `${cubeHeight}%`,
+        width: `calc(${cubeWidth}% + 1px)`,
+        height: `calc(${cubeHeight}% + 1px)`,
         left: `${col * cubeWidth}%`,
         top: `${row * cubeHeight}%`,
         transform: getTransform(),
@@ -110,8 +110,9 @@ function Cube3D({ index, row, col, currentImage, nextImage, isTransitioning, tra
     >
       {/* Cube Face */}
       <div
-        className="absolute inset-0 overflow-hidden rounded-sm"
+        className="absolute inset-0 overflow-hidden"
         style={{
+          borderRadius: transitionPhase === 'idle' ? '0' : '2px',
           boxShadow: transitionPhase === 'idle' 
             ? 'none' 
             : '0 0 20px rgba(0, 255, 255, 0.5), 0 0 40px rgba(255, 0, 255, 0.3)',
@@ -131,8 +132,8 @@ function Cube3D({ index, row, col, currentImage, nextImage, isTransitioning, tra
         />
       </div>
       
-      {/* Neon Edge Glow */}
-      {isTransitioning && (
+      {/* Neon Edge Glow - Only during transition */}
+      {isTransitioning && transitionPhase !== 'idle' && (
         <div 
           className="absolute inset-0 pointer-events-none rounded-sm"
           style={{
