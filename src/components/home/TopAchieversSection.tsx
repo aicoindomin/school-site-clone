@@ -77,22 +77,17 @@ export const TopAchieversSection = () => {
         
         .achievers-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-          gap: 30px;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 20px;
           max-width: 1200px;
           margin: 0 auto;
           justify-items: center;
         }
         
-        @media (min-width: 768px) {
-          .achievers-grid {
-            grid-template-columns: repeat(3, 1fr);
-          }
-        }
-        
         @media (min-width: 1024px) {
           .achievers-grid {
-            grid-template-columns: repeat(6, 1fr);
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
           }
         }
         
