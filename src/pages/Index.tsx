@@ -8,11 +8,13 @@ import {
   CTASection,
   TopAchieversSection,
   LeadershipSection,
+  AdmissionPopup,
 } from "@/components/home";
 
 const Index = () => {
   return (
     <MainLayout>
+      <AdmissionPopup />
       <HeroSlider3D />
       <NoticesSection />
       <LeadershipSection />

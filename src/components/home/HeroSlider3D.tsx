@@ -8,6 +8,8 @@ import heroImg1 from "@/assets/slider/hero-bg.jpg";
 import heroImg2 from "@/assets/slider/event.jpg";
 import heroImg3 from "@/assets/slider/independence-day.jpg";
 import heroImg4 from "@/assets/slider/parade.jpg";
+import chairmanImg from "@/assets/leadership/chairman.png";
+import principalImg from "@/assets/leadership/principal.png";
 
 const slides = [
   {
@@ -35,15 +37,15 @@ const slides = [
 const functionaries = [
   {
     title: "Chairman",
-    name: "To be updated",
-    image: "/placeholder.svg",
-    link: "/about/chairman-message",
+    name: "Puspendu Sekhar Dey",
+    image: chairmanImg,
+    link: "#leadership-section",
   },
   {
     title: "Principal",
-    name: "To be updated",
-    image: "/placeholder.svg",
-    link: "/about/principal-message",
+    name: "Puspendu Pradhan",
+    image: principalImg,
+    link: "#leadership-section",
   },
 ];
 
@@ -362,12 +364,12 @@ export function HeroSlider3D() {
                       {person.title}
                     </h3>
                     <p className="text-foreground font-medium">{person.name}</p>
-                    <Link
-                      to={person.link}
+                    <a
+                      href={person.link}
                       className="text-primary hover:text-primary/80 text-sm inline-flex items-center gap-1 mt-1 transition-all hover:gap-2"
                     >
-                      Read profile...
-                    </Link>
+                      Read message
+                    </a>
                   </div>
                 </CardContent>
               </Card>

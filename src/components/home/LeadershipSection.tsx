@@ -19,7 +19,7 @@ const leaders = [
 
 export function LeadershipSection() {
   return (
-    <section className="py-16 bg-gradient-to-b from-muted to-background">
+    <section id="leadership-section" className="py-16 bg-gradient-to-b from-muted to-background">
       <div className="container">
         <div className="text-center mb-12">
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
