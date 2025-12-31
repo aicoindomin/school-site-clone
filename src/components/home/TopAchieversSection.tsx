@@ -14,6 +14,8 @@ interface Achiever {
 
 const achievers: Achiever[] = [
   { name: "Ahadullah", classLabel: "PREP 1", position: "1ST POSITION", image: prep1Img },
+  { name: "Student Name", classLabel: "KG 1", position: "1ST POSITION", image: class1Img },
+  { name: "Student Name", classLabel: "KG 2", position: "1ST POSITION", image: class2Img },
   { name: "Fatima Khan", classLabel: "CLASS 1", position: "1ST POSITION", image: class1Img },
   { name: "Priya Sharma", classLabel: "CLASS 2", position: "1ST POSITION", image: class2Img },
   { name: "Aryan Das", classLabel: "CLASS 3", position: "1ST POSITION", image: class3Img },
