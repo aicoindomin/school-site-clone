@@ -1,24 +1,63 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 import yogaImg from "@/assets/gallery/yoga.jpg";
-import artImg from "@/assets/gallery/art_display.jpg";
-import craft1Img from "@/assets/gallery/craft1.jpg";
-import craft2Img from "@/assets/gallery/craft2.jpg";
-import heroImg from "@/assets/slider/hero-bg.jpg";
-import paradeImg from "@/assets/slider/parade.jpg";
 
-const galleryImages = [
-  { src: yogaImg, title: "Yoga Day Celebration", category: "Events" },
-  { src: artImg, title: "Student Artwork", category: "Art" },
-  { src: craft1Img, title: "Creative Crafts", category: "Art" },
-  { src: craft2Img, title: "Recycled Art", category: "Art" },
-  { src: heroImg, title: "Annual Function", category: "Events" },
-  { src: paradeImg, title: "Independence Day", category: "Events" },
-];
+interface GalleryItem {
+  id: string;
+  title: string;
+  image_url: string;
+  category: string;
+}
 
 export function GallerySection() {
+  const [galleryImages, setGalleryImages] = useState<GalleryItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchGallery = async () => {
+      const { data, error } = await supabase
+        .from("gallery")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(6);
+
+      if (!error && data) {
+        setGalleryImages(data);
+      }
+      setLoading(false);
+    };
+
+    fetchGallery();
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="py-16 bg-background">
+        <div className="container">
+          <div className="text-center mb-12">
+            <p className="text-primary font-medium mb-2">Memories & Moments</p>
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
+              Photo Gallery
+            </h2>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="aspect-square bg-muted animate-pulse rounded-lg" />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (galleryImages.length === 0) {
+    return null;
+  }
+
   return (
     <section className="py-16 bg-background">
       <div className="container">
@@ -30,13 +69,13 @@ export function GallerySection() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-          {galleryImages.map((image, index) => (
+          {galleryImages.map((image) => (
             <div
-              key={index}
+              key={image.id}
               className="relative group overflow-hidden rounded-lg aspect-square"
             >
               <img
-                src={image.src}
+                src={image.image_url || yogaImg}
                 alt={image.title}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
