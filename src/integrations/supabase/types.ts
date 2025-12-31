@@ -86,6 +86,48 @@ export type Database = {
         }
         Relationships: []
       }
+      class_routine: {
+        Row: {
+          class_name: string
+          created_at: string
+          day_of_week: string
+          end_time: string
+          id: string
+          is_active: boolean | null
+          period_number: number
+          start_time: string
+          subject: string
+          teacher_name: string | null
+          updated_at: string
+        }
+        Insert: {
+          class_name: string
+          created_at?: string
+          day_of_week: string
+          end_time: string
+          id?: string
+          is_active?: boolean | null
+          period_number: number
+          start_time: string
+          subject: string
+          teacher_name?: string | null
+          updated_at?: string
+        }
+        Update: {
+          class_name?: string
+          created_at?: string
+          day_of_week?: string
+          end_time?: string
+          id?: string
+          is_active?: boolean | null
+          period_number?: number
+          start_time?: string
+          subject?: string
+          teacher_name?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       contact_messages: {
         Row: {
           created_at: string
@@ -119,6 +161,54 @@ export type Database = {
         }
         Relationships: []
       }
+      faculty: {
+        Row: {
+          bio: string | null
+          created_at: string
+          department: string | null
+          designation: string
+          email: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          name: string
+          order_index: number | null
+          phone: string | null
+          qualification: string | null
+          updated_at: string
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          department?: string | null
+          designation: string
+          email?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          name: string
+          order_index?: number | null
+          phone?: string | null
+          qualification?: string | null
+          updated_at?: string
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          department?: string | null
+          designation?: string
+          email?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          name?: string
+          order_index?: number | null
+          phone?: string | null
+          qualification?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       gallery: {
         Row: {
           category: string
@@ -149,6 +239,39 @@ export type Database = {
           image_url?: string
           is_featured?: boolean | null
           title?: string
+        }
+        Relationships: []
+      }
+      holidays: {
+        Row: {
+          created_at: string
+          description: string | null
+          holiday_date: string
+          holiday_type: string | null
+          id: string
+          is_active: boolean | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          holiday_date: string
+          holiday_type?: string | null
+          id?: string
+          is_active?: boolean | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          holiday_date?: string
+          holiday_type?: string | null
+          id?: string
+          is_active?: boolean | null
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -334,6 +457,36 @@ export type Database = {
         }
         Relationships: []
       }
+      quick_links: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean | null
+          order_index: number | null
+          title: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          order_index?: number | null
+          title: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          order_index?: number | null
+          title?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
       results: {
         Row: {
           created_at: string
@@ -394,6 +547,117 @@ export type Database = {
         }
         Relationships: []
       }
+      students: {
+        Row: {
+          admission_year: number | null
+          class: string
+          created_at: string
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          name: string
+          parent_name: string | null
+          roll_number: string | null
+          section: string | null
+          updated_at: string
+        }
+        Insert: {
+          admission_year?: number | null
+          class: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          name: string
+          parent_name?: string | null
+          roll_number?: string | null
+          section?: string | null
+          updated_at?: string
+        }
+        Update: {
+          admission_year?: number | null
+          class?: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          name?: string
+          parent_name?: string | null
+          roll_number?: string | null
+          section?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      top_achievers: {
+        Row: {
+          class_label: string
+          created_at: string
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          order_index: number | null
+          position: string
+          student_name: string
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          class_label: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          order_index?: number | null
+          position?: string
+          student_name: string
+          updated_at?: string
+          year?: number
+        }
+        Update: {
+          class_label?: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          order_index?: number | null
+          position?: string
+          student_name?: string
+          updated_at?: string
+          year?: number
+        }
+        Relationships: []
+      }
+      useful_links: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean | null
+          order_index: number | null
+          title: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          order_index?: number | null
+          title: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          order_index?: number | null
+          title?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -412,6 +676,39 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      website_content: {
+        Row: {
+          content: string | null
+          created_at: string
+          id: string
+          is_published: boolean | null
+          meta_description: string | null
+          section_key: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          id?: string
+          is_published?: boolean | null
+          meta_description?: string | null
+          section_key: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          id?: string
+          is_published?: boolean | null
+          meta_description?: string | null
+          section_key?: string
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
