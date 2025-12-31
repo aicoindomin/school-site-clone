@@ -16,22 +16,14 @@ export function AdmissionPopup() {
     const hasSeenPopup = sessionStorage.getItem("admissionPopupSeen");
     if (hasSeenPopup) return;
 
-    let closeTimer: NodeJS.Timeout;
-
-    // Show popup after 7 seconds
+    // Show popup after 5 seconds (no auto-close - user must click X)
     const showTimer = setTimeout(() => {
       setIsOpen(true);
       sessionStorage.setItem("admissionPopupSeen", "true");
-      
-      // Auto-close after 5 seconds
-      closeTimer = setTimeout(() => {
-        setIsOpen(false);
-      }, 5000);
-    }, 7000);
+    }, 5000);
 
     return () => {
       clearTimeout(showTimer);
-      if (closeTimer) clearTimeout(closeTimer);
     };
   }, []);
 
