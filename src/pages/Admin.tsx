@@ -8,15 +8,14 @@ import { useToast } from "@/hooks/use-toast";
 import { 
   LogOut, 
   Bell, 
-  Calendar, 
   Trophy, 
   Image, 
   Users, 
   FileText,
-  Home,
-  Settings
+  Home
 } from "lucide-react";
 import { User, Session } from "@supabase/supabase-js";
+import { NoticesManager, GalleryManager, ResultsManager, StaffManager } from "@/components/admin";
 
 export default function Admin() {
   const [user, setUser] = useState<User | null>(null);
@@ -144,13 +143,11 @@ export default function Admin() {
                   Notices & Announcements
                 </CardTitle>
                 <CardDescription>
-                  Manage school notices, announcements, and class routines
+                  Manage school notices, announcements, and updates
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground text-center py-8">
-                  Notice management coming soon. You'll be able to add, edit, and delete notices here.
-                </p>
+                <NoticesManager />
               </CardContent>
             </Card>
           </TabsContent>
@@ -167,9 +164,7 @@ export default function Admin() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground text-center py-8">
-                  Results management coming soon. You'll be able to upload and manage student results here.
-                </p>
+                <ResultsManager />
               </CardContent>
             </Card>
           </TabsContent>
@@ -186,9 +181,7 @@ export default function Admin() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground text-center py-8">
-                  Gallery management coming soon. You'll be able to upload and organize photos here.
-                </p>
+                <GalleryManager />
               </CardContent>
             </Card>
           </TabsContent>
@@ -205,9 +198,7 @@ export default function Admin() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground text-center py-8">
-                  Staff management coming soon. You'll be able to add and edit staff profiles here.
-                </p>
+                <StaffManager />
               </CardContent>
             </Card>
           </TabsContent>
@@ -231,62 +222,6 @@ export default function Admin() {
             </Card>
           </TabsContent>
         </Tabs>
-
-        {/* Quick Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-primary/10 rounded-lg">
-                  <Bell className="w-6 h-6 text-primary" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">0</p>
-                  <p className="text-sm text-muted-foreground">Active Notices</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-secondary/10 rounded-lg">
-                  <Trophy className="w-6 h-6 text-secondary" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">8</p>
-                  <p className="text-sm text-muted-foreground">Top Achievers</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-green-500/10 rounded-lg">
-                  <Image className="w-6 h-6 text-green-500" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">4</p>
-                  <p className="text-sm text-muted-foreground">Gallery Images</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-blue-500/10 rounded-lg">
-                  <Users className="w-6 h-6 text-blue-500" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">2</p>
-                  <p className="text-sm text-muted-foreground">Staff Members</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
       </main>
     </div>
   );
