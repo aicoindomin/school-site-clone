@@ -41,7 +41,7 @@ export function AdmissionPopup() {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent className="max-w-2xl w-[90vw] p-0 border-0 bg-transparent overflow-hidden">
+      <DialogContent className="max-w-2xl w-[90vw] p-0 border-0 bg-transparent overflow-hidden [&>button]:hidden">
         <VisuallyHidden>
           <DialogTitle>Admission Open 2026</DialogTitle>
         </VisuallyHidden>
@@ -49,7 +49,7 @@ export function AdmissionPopup() {
         {/* Close button */}
         <button
           onClick={handleClose}
-          className="absolute right-2 top-2 z-50 rounded-full bg-white/90 hover:bg-white p-2 shadow-lg transition-all hover:scale-110"
+          className="absolute right-4 top-4 z-50 rounded-full bg-white/90 hover:bg-white p-2 shadow-lg transition-all hover:scale-110"
           aria-label="Close popup"
         >
           <X className="w-6 h-6 text-gray-800" />
@@ -60,7 +60,7 @@ export function AdmissionPopup() {
           <img
             src={admissionImg}
             alt="Admission Open - Balisai Public School 2026"
-            className="w-full h-auto rounded-lg"
+            className="w-full h-auto rounded-lg shadow-2xl"
           />
         </div>
       </DialogContent>
