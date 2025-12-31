@@ -235,12 +235,12 @@ export function ClassRoutineManager() {
           </DialogContent>
         </Dialog>
 
-        <Select value={filterClass} onValueChange={setFilterClass}>
+        <Select value={filterClass || "all"} onValueChange={(val) => setFilterClass(val === "all" ? "" : val)}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Filter by class" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Classes</SelectItem>
+            <SelectItem value="all">All Classes</SelectItem>
             {uniqueClasses.map((cls) => (
               <SelectItem key={cls} value={cls}>{cls}</SelectItem>
             ))}

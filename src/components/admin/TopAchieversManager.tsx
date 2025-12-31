@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Trophy, User } from "lucide-react";
+import { ImageUpload } from "@/components/ui/image-upload";
 
 interface TopAchiever {
   id: string;
@@ -185,10 +186,7 @@ export function TopAchieversManager() {
                 <Input value={position} onChange={(e) => setPosition(e.target.value)} placeholder="e.g., 1st" />
               </div>
             </div>
-            <div>
-              <Label>Image URL</Label>
-              <Input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="https://..." />
-            </div>
+            <ImageUpload value={imageUrl} onChange={setImageUrl} folder="achievers" />
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label>Year</Label>

@@ -1,56 +1,73 @@
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import prep1Img from "@/assets/toppers/prep1.png";
-import class1Img from "@/assets/toppers/class1.png";
-import class2Img from "@/assets/toppers/class2.png";
-import class3Img from "@/assets/toppers/class3.png";
-import class4Img from "@/assets/toppers/class4.png";
-import class5Img from "@/assets/toppers/class5.png";
 
 interface Achiever {
-  name: string;
-  classLabel: string;
+  id: string;
+  student_name: string;
+  class_label: string;
   position: string;
-  image: string;
+  image_url: string | null;
 }
-
-const achievers: Achiever[] = [
-  { name: "Ahadullah", classLabel: "PREP 1", position: "1ST POSITION", image: prep1Img },
-  { name: "Student Name", classLabel: "KG 1", position: "1ST POSITION", image: class1Img },
-  { name: "Student Name", classLabel: "KG 2", position: "1ST POSITION", image: class2Img },
-  { name: "Fatima Khan", classLabel: "CLASS 1", position: "1ST POSITION", image: class1Img },
-  { name: "Priya Sharma", classLabel: "CLASS 2", position: "1ST POSITION", image: class2Img },
-  { name: "Aryan Das", classLabel: "CLASS 3", position: "1ST POSITION", image: class3Img },
-  { name: "Rahul Ahmed", classLabel: "CLASS 4", position: "1ST POSITION", image: class4Img },
-  { name: "Sneha Roy", classLabel: "CLASS 5", position: "1ST POSITION", image: class5Img },
-];
 
 const AchieverCard = ({ achiever }: { achiever: Achiever }) => {
   return (
     <div className="achiever-card group">
-      {/* Student Image */}
       <img 
-        src={achiever.image} 
-        alt={achiever.name}
+        src={achiever.image_url || prep1Img} 
+        alt={achiever.student_name}
         className="student-img"
       />
       
-      {/* Glassmorphism Info Layer */}
       <div className="info-layer">
-        <div className="name">{achiever.name}</div>
-        <div className="class-label">{achiever.classLabel}</div>
+        <div className="name">{achiever.student_name}</div>
+        <div className="class-label">{achiever.class_label}</div>
         <div className="badge">{achiever.position}</div>
       </div>
       
-      {/* Neon border glow effect */}
       <div className="neon-border" />
     </div>
   );
 };
 
 export const TopAchieversSection = () => {
+  const [achievers, setAchievers] = useState<Achiever[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAchievers = async () => {
+      const { data, error } = await supabase
+        .from("top_achievers")
+        .select("*")
+        .eq("is_active", true)
+        .order("order_index");
+
+      if (!error && data) {
+        setAchievers(data);
+      }
+      setLoading(false);
+    };
+
+    fetchAchievers();
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="top-achievers-section">
+        <div className="container mx-auto px-4 py-20 text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto"></div>
+        </div>
+      </section>
+    );
+  }
+
+  if (achievers.length === 0) {
+    return null;
+  }
+
   return (
     <section className="top-achievers-section">
       <div className="container mx-auto px-4">
-        {/* Section Header */}
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             🏆 Our Top Achievers
@@ -60,10 +77,9 @@ export const TopAchieversSection = () => {
           </p>
         </div>
         
-        {/* Achievers Grid */}
         <div className="achievers-grid">
-          {achievers.map((achiever, index) => (
-            <AchieverCard key={index} achiever={achiever} />
+          {achievers.map((achiever) => (
+            <AchieverCard key={achiever.id} achiever={achiever} />
           ))}
         </div>
       </div>
@@ -126,79 +142,7 @@ export const TopAchieversSection = () => {
         
         .achiever-card:hover .student-img {
           transform: scale(1.15) translateY(-10px);
-          filter: grayscale(0%) brightness(1) blur(2px);
-          clip-path: polygon(
-            0% 0%, 
-            30% 0%, 
-            30% 30%, 
-            0% 30%,
-            0% 40%,
-            30% 40%,
-            30% 70%,
-            0% 70%,
-            0% 100%,
-            30% 100%,
-            30% 70%,
-            60% 70%,
-            60% 100%,
-            100% 100%,
-            100% 70%,
-            60% 70%,
-            60% 40%,
-            100% 40%,
-            100% 30%,
-            60% 30%,
-            60% 0%,
-            100% 0%,
-            100% 30%,
-            60% 30%,
-            60% 40%,
-            30% 40%,
-            30% 30%,
-            60% 30%,
-            60% 0%,
-            30% 0%
-          );
-          animation: shatterEffect 0.6s ease-out forwards;
-        }
-        
-        @keyframes shatterEffect {
-          0% {
-            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
-          }
-          50% {
-            clip-path: polygon(
-              5% 5%, 
-              45% 0%, 
-              50% 45%, 
-              95% 5%,
-              100% 50%,
-              55% 55%,
-              95% 95%,
-              50% 100%,
-              45% 55%,
-              5% 95%,
-              0% 50%,
-              45% 45%
-            );
-          }
-          100% {
-            clip-path: polygon(
-              10% 0%, 
-              35% 5%, 
-              40% 35%, 
-              5% 40%,
-              0% 60%,
-              35% 65%,
-              30% 95%,
-              60% 100%,
-              65% 65%,
-              95% 70%,
-              100% 35%,
-              65% 30%
-            );
-            opacity: 0.3;
-          }
+          filter: grayscale(0%) brightness(1);
         }
         
         .info-layer {
