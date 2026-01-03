@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "lucide-react";
 
@@ -14,9 +15,12 @@ interface Student {
   image_url: string | null;
 }
 
+const classOptions = ["Prep-1", "Kg-1", "Std-1", "Std-2", "Std-3", "Std-4", "Std-5"];
+
 const Students = () => {
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedClass, setSelectedClass] = useState<string>("Prep-1");
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -35,6 +39,14 @@ const Students = () => {
 
     fetchStudents();
   }, []);
+
+  const getStudentsByClass = (className: string) => {
+    return students.filter(s => s.class === className);
+  };
+
+  const availableClasses = classOptions.filter(cls => 
+    students.some(s => s.class === cls)
+  );
 
   return (
     <MainLayout>
@@ -66,30 +78,49 @@ const Students = () => {
               No students available
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {students.map((student) => (
-                <Card key={student.id} className="hover:shadow-lg transition-shadow">
-                  <CardContent className="p-4 text-center">
-                    {student.image_url ? (
-                      <img
-                        src={student.image_url}
-                        alt={student.name}
-                        className="w-20 h-20 rounded-full object-cover mx-auto mb-3 border-2 border-primary/20"
-                      />
-                    ) : (
-                      <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mx-auto mb-3">
-                        <User className="w-10 h-10 text-muted-foreground" />
+            <Tabs value={selectedClass} onValueChange={setSelectedClass}>
+              <TabsList className="mb-6 flex-wrap h-auto gap-2">
+                {(availableClasses.length > 0 ? availableClasses : classOptions).map((cls) => (
+                  <TabsTrigger key={cls} value={cls} className="px-4 py-2">
+                    {cls}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+
+              {classOptions.map((cls) => (
+                <TabsContent key={cls} value={cls}>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                    {getStudentsByClass(cls).map((student) => (
+                      <Card key={student.id} className="hover:shadow-lg transition-shadow">
+                        <CardContent className="p-4 text-center">
+                          {student.image_url ? (
+                            <img
+                              src={student.image_url}
+                              alt={student.name}
+                              className="w-20 h-20 rounded-full object-cover mx-auto mb-3 border-2 border-primary/20"
+                            />
+                          ) : (
+                            <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mx-auto mb-3">
+                              <User className="w-10 h-10 text-muted-foreground" />
+                            </div>
+                          )}
+                          <h3 className="font-semibold text-sm">{student.name}</h3>
+                          <p className="text-primary text-xs">{student.class}</p>
+                          {student.section && (
+                            <p className="text-muted-foreground text-xs">Section: {student.section}</p>
+                          )}
+                        </CardContent>
+                      </Card>
+                    ))}
+                    {getStudentsByClass(cls).length === 0 && (
+                      <div className="col-span-full text-center py-8 text-muted-foreground">
+                        No students in this class
                       </div>
                     )}
-                    <h3 className="font-semibold text-sm">{student.name}</h3>
-                    <p className="text-primary text-xs">Class {student.class}</p>
-                    {student.section && (
-                      <p className="text-muted-foreground text-xs">Section: {student.section}</p>
-                    )}
-                  </CardContent>
-                </Card>
+                  </div>
+                </TabsContent>
               ))}
-            </div>
+            </Tabs>
           )}
         </div>
       </section>

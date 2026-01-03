@@ -148,7 +148,7 @@ export function Navbar() {
                           >
                             {item.title}
                           </NavigationMenuTrigger>
-                          <NavigationMenuContent className={item.title === "Others" ? "right-0 left-auto" : ""}>
+                          <NavigationMenuContent className={item.title === "Others" ? "absolute right-0 left-auto top-full" : ""}>
                             <ul className="grid w-[200px] gap-1 p-2 bg-white shadow-lg rounded-md">
                               {item.submenu.map((subItem) => (
                                 <li key={subItem.title}>
