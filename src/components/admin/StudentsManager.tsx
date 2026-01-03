@@ -237,9 +237,13 @@ export function StudentsManager() {
                   <Input value={parentName} onChange={(e) => setParentName(e.target.value)} />
                 </div>
                 <div>
-                  <Label>Admission Year</Label>
+                  <Label>Academic Year</Label>
                   <Input type="number" value={admissionYear} onChange={(e) => setAdmissionYear(Number(e.target.value))} />
                 </div>
+              </div>
+              <div>
+                <Label>Parent's Contact Number</Label>
+                <Input placeholder="e.g., +91 9876543210" />
               </div>
               <div className="flex items-center gap-2">
                 <Switch checked={isActive} onCheckedChange={setIsActive} />

@@ -54,7 +54,9 @@ export function LeadershipSection() {
                     <img
                       src={leader.image}
                       alt={leader.name}
-                      className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                      className={`w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 ${
+                        leader.title.includes("Secretary") ? "object-[center_15%]" : "object-[center_60%]"
+                      }`}
                     />
                     {/* Gradient overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-transparent lg:to-card" />

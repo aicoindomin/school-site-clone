@@ -87,7 +87,9 @@ export function FunctionariesSection() {
                         <img
                           src={imageUrl}
                           alt={person.name}
-                          className="w-full h-full rounded-full object-cover border-4 border-primary/20 group-hover:border-secondary transition-colors"
+                          className={`w-full h-full rounded-full object-cover border-4 border-primary/20 group-hover:border-secondary transition-colors ${
+                            person.designation === "Secretary" ? "object-[center_15%]" : person.designation === "Headmaster" ? "object-[center_60%]" : "object-center"
+                          }`}
                         />
                       ) : (
                         <div className="w-full h-full rounded-full bg-gradient-primary flex items-center justify-center border-4 border-primary/20 group-hover:border-secondary transition-colors">

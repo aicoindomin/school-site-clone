@@ -89,28 +89,26 @@ const Students = () => {
 
               {classOptions.map((cls) => (
                 <TabsContent key={cls} value={cls}>
-                  <div className="grid md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3">
                     {getStudentsByClass(cls).map((student) => (
-                      <Card key={student.id} className="hover:shadow-lg transition-shadow">
-                        <CardContent className="p-4 text-center">
-                          {student.image_url ? (
-                            <img
-                              src={student.image_url}
-                              alt={student.name}
-                              className="w-20 h-20 rounded-full object-cover mx-auto mb-3 border-2 border-primary/20"
-                            />
-                          ) : (
-                            <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mx-auto mb-3">
-                              <User className="w-10 h-10 text-muted-foreground" />
-                            </div>
-                          )}
-                          <h3 className="font-semibold text-sm">{student.name}</h3>
-                          <p className="text-primary text-xs">{student.class}</p>
-                          {student.section && (
-                            <p className="text-muted-foreground text-xs">Section: {student.section}</p>
-                          )}
-                        </CardContent>
-                      </Card>
+                      <div key={student.id} className="flex flex-col items-center p-2 rounded-2xl bg-card hover:shadow-md transition-shadow">
+                        {student.image_url ? (
+                          <img
+                            src={student.image_url}
+                            alt={student.name}
+                            className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-primary/20"
+                          />
+                        ) : (
+                          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-muted flex items-center justify-center">
+                            <User className="w-8 h-8 sm:w-10 sm:h-10 text-muted-foreground" />
+                          </div>
+                        )}
+                        <h3 className="font-medium text-xs mt-2 text-center leading-tight">{student.name}</h3>
+                        <p className="text-primary text-[10px]">{student.class}</p>
+                        {student.section && (
+                          <p className="text-muted-foreground text-[10px]">Sec: {student.section}</p>
+                        )}
+                      </div>
                     ))}
                     {getStudentsByClass(cls).length === 0 && (
                       <div className="col-span-full text-center py-8 text-muted-foreground">
