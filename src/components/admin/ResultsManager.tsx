@@ -49,7 +49,7 @@ const examTypes = [
 ];
 
 const classOptions = [
-  "Prep-1", "Kg-1", "Std-1", "Std-2", "Std-3", "Std-4", "Std-5"
+  "Prep-I", "Kg-I", "Kg-II", "Std-I", "Std-II", "Std-III", "Std-IV", "Std-V"
 ];
 
 export function ResultsManager() {
