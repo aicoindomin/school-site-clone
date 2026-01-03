@@ -8,8 +8,8 @@ import heroImg1 from "@/assets/slider/hero-bg.jpg";
 import heroImg2 from "@/assets/slider/event.jpg";
 import heroImg3 from "@/assets/slider/independence-day.jpg";
 import heroImg4 from "@/assets/slider/parade.jpg";
-import chairmanImg from "@/assets/leadership/chairman.png";
-import principalImg from "@/assets/leadership/principal.png";
+import secretaryImg from "@/assets/leadership/secretary.png";
+import headmasterImg from "@/assets/leadership/headmaster.png";
 
 const slides = [
   {
@@ -36,15 +36,15 @@ const slides = [
 
 const functionaries = [
   {
-    title: "Chairman",
+    title: "Secretary",
     name: "Puspendu Sekhar Dey",
-    image: chairmanImg,
+    image: secretaryImg,
     link: "#leadership-section",
   },
   {
-    title: "Principal",
+    title: "Headmaster",
     name: "Puspendu Pradhan",
-    image: principalImg,
+    image: headmasterImg,
     link: "#leadership-section",
   },
 ];

@@ -16,13 +16,13 @@ interface RoutineEntry {
   end_time: string;
 }
 
+const classOptions = ["Prep-1", "Kg-1", "Std-1", "Std-2", "Std-3", "Std-4", "Std-5"];
 const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 const ClassRoutine = () => {
   const [routine, setRoutine] = useState<RoutineEntry[]>([]);
   const [loading, setLoading] = useState(true);
-  const [classes, setClasses] = useState<string[]>([]);
-  const [selectedClass, setSelectedClass] = useState<string>("");
+  const [selectedClass, setSelectedClass] = useState<string>("Prep-1");
 
   useEffect(() => {
     const fetchRoutine = async () => {
@@ -34,11 +34,6 @@ const ClassRoutine = () => {
 
       if (!error && data) {
         setRoutine(data);
-        const uniqueClasses = [...new Set(data.map(r => r.class_name))];
-        setClasses(uniqueClasses);
-        if (uniqueClasses.length > 0) {
-          setSelectedClass(uniqueClasses[0]);
-        }
       }
       setLoading(false);
     };
@@ -51,6 +46,14 @@ const ClassRoutine = () => {
       .filter(r => r.class_name === className && r.day_of_week === day)
       .sort((a, b) => a.period_number - b.period_number);
   };
+
+  const getRoutineByClass = (className: string) => {
+    return routine.filter(r => r.class_name === className);
+  };
+
+  const availableClasses = classOptions.filter(cls => 
+    routine.some(r => r.class_name === cls)
+  );
 
   return (
     <MainLayout>
@@ -79,56 +82,62 @@ const ClassRoutine = () => {
             <div>
               <Tabs value={selectedClass} onValueChange={setSelectedClass}>
                 <TabsList className="mb-6 flex-wrap h-auto gap-2">
-                  {classes.map((cls) => (
+                  {(availableClasses.length > 0 ? availableClasses : classOptions).map((cls) => (
                     <TabsTrigger key={cls} value={cls} className="px-4 py-2">
                       {cls}
                     </TabsTrigger>
                   ))}
                 </TabsList>
 
-                {classes.map((cls) => (
+                {classOptions.map((cls) => (
                   <TabsContent key={cls} value={cls}>
                     <div className="grid gap-4">
-                      {daysOfWeek.map((day) => {
-                        const dayRoutine = getRoutineForClassAndDay(cls, day);
-                        if (dayRoutine.length === 0) return null;
-                        
-                        return (
-                          <Card key={day}>
-                            <CardHeader className="py-3 bg-primary text-primary-foreground">
-                              <CardTitle className="text-lg">{day}</CardTitle>
-                            </CardHeader>
-                            <CardContent className="p-0">
-                              <div className="overflow-x-auto">
-                                <table className="w-full">
-                                  <thead>
-                                    <tr className="bg-muted">
-                                      <th className="px-4 py-2 text-left text-sm font-medium">Period</th>
-                                      <th className="px-4 py-2 text-left text-sm font-medium">Time</th>
-                                      <th className="px-4 py-2 text-left text-sm font-medium">Subject</th>
-                                      <th className="px-4 py-2 text-left text-sm font-medium">Teacher</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {dayRoutine.map((entry) => (
-                                      <tr key={entry.id} className="border-b last:border-0">
-                                        <td className="px-4 py-3 text-sm">{entry.period_number}</td>
-                                        <td className="px-4 py-3 text-sm">
-                                          {entry.start_time} - {entry.end_time}
-                                        </td>
-                                        <td className="px-4 py-3 text-sm font-medium">{entry.subject}</td>
-                                        <td className="px-4 py-3 text-sm text-muted-foreground">
-                                          {entry.teacher_name || "-"}
-                                        </td>
+                      {getRoutineByClass(cls).length === 0 ? (
+                        <div className="text-center py-8 text-muted-foreground">
+                          No routine for this class
+                        </div>
+                      ) : (
+                        daysOfWeek.map((day) => {
+                          const dayRoutine = getRoutineForClassAndDay(cls, day);
+                          if (dayRoutine.length === 0) return null;
+                          
+                          return (
+                            <Card key={day}>
+                              <CardHeader className="py-3 bg-primary text-primary-foreground">
+                                <CardTitle className="text-lg">{day}</CardTitle>
+                              </CardHeader>
+                              <CardContent className="p-0">
+                                <div className="overflow-x-auto">
+                                  <table className="w-full">
+                                    <thead>
+                                      <tr className="bg-muted">
+                                        <th className="px-4 py-2 text-left text-sm font-medium">Period</th>
+                                        <th className="px-4 py-2 text-left text-sm font-medium">Time</th>
+                                        <th className="px-4 py-2 text-left text-sm font-medium">Subject</th>
+                                        <th className="px-4 py-2 text-left text-sm font-medium">Teacher</th>
                                       </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        );
-                      })}
+                                    </thead>
+                                    <tbody>
+                                      {dayRoutine.map((entry) => (
+                                        <tr key={entry.id} className="border-b last:border-0">
+                                          <td className="px-4 py-3 text-sm">{entry.period_number}</td>
+                                          <td className="px-4 py-3 text-sm">
+                                            {entry.start_time} - {entry.end_time}
+                                          </td>
+                                          <td className="px-4 py-3 text-sm font-medium">{entry.subject}</td>
+                                          <td className="px-4 py-3 text-sm text-muted-foreground">
+                                            {entry.teacher_name || "-"}
+                                          </td>
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          );
+                        })
+                      )}
                     </div>
                   </TabsContent>
                 ))}

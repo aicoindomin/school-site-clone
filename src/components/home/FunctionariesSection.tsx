@@ -3,6 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { User } from "lucide-react";
+import secretaryImg from "@/assets/leadership/secretary.png";
+import headmasterImg from "@/assets/leadership/headmaster.png";
 
 interface Functionary {
   id: string;
@@ -10,6 +12,12 @@ interface Functionary {
   designation: string;
   image_url: string | null;
 }
+
+// Map designations to local images
+const leadershipImages: Record<string, string> = {
+  "Secretary": secretaryImg,
+  "Headmaster": headmasterImg,
+};
 
 export function FunctionariesSection() {
   const [functionaries, setFunctionaries] = useState<Functionary[]>([]);
@@ -32,6 +40,14 @@ export function FunctionariesSection() {
 
     fetchFunctionaries();
   }, []);
+
+  const getImageUrl = (functionary: Functionary) => {
+    // Use local image if designation matches, otherwise use image_url from DB
+    if (leadershipImages[functionary.designation]) {
+      return leadershipImages[functionary.designation];
+    }
+    return functionary.image_url;
+  };
 
   return (
     <section className="py-20 bg-muted/50">
@@ -57,36 +73,39 @@ export function FunctionariesSection() {
               </Card>
             ))
           ) : (
-            functionaries.map((person, index) => (
-              <Card 
-                key={person.id} 
-                className="border-0 shadow-elegant hover-lift group animate-fade-in"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <CardContent className="p-6 text-center">
-                  <div className="relative w-32 h-32 mx-auto mb-5">
-                    {person.image_url ? (
-                      <img
-                        src={person.image_url}
-                        alt={person.name}
-                        className="w-full h-full rounded-full object-cover border-4 border-primary/20 group-hover:border-secondary transition-colors"
-                      />
-                    ) : (
-                      <div className="w-full h-full rounded-full bg-gradient-primary flex items-center justify-center border-4 border-primary/20 group-hover:border-secondary transition-colors">
-                        <User className="w-16 h-16 text-primary-foreground" />
-                      </div>
-                    )}
-                    <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-12 h-1 bg-secondary rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                  <h3 className="font-display text-lg font-semibold text-foreground mb-1">
-                    {person.name}
-                  </h3>
-                  <p className="text-muted-foreground text-sm">
-                    {person.designation}
-                  </p>
-                </CardContent>
-              </Card>
-            ))
+            functionaries.map((person, index) => {
+              const imageUrl = getImageUrl(person);
+              return (
+                <Card 
+                  key={person.id} 
+                  className="border-0 shadow-elegant hover-lift group animate-fade-in"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <CardContent className="p-6 text-center">
+                    <div className="relative w-32 h-32 mx-auto mb-5">
+                      {imageUrl ? (
+                        <img
+                          src={imageUrl}
+                          alt={person.name}
+                          className="w-full h-full rounded-full object-cover border-4 border-primary/20 group-hover:border-secondary transition-colors"
+                        />
+                      ) : (
+                        <div className="w-full h-full rounded-full bg-gradient-primary flex items-center justify-center border-4 border-primary/20 group-hover:border-secondary transition-colors">
+                          <User className="w-16 h-16 text-primary-foreground" />
+                        </div>
+                      )}
+                      <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-12 h-1 bg-secondary rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                    <h3 className="font-display text-lg font-semibold text-foreground mb-1">
+                      {person.name}
+                    </h3>
+                    <p className="text-muted-foreground text-sm">
+                      {person.designation}
+                    </p>
+                  </CardContent>
+                </Card>
+              );
+            })
           )}
         </div>
       </div>
