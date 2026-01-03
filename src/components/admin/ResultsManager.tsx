@@ -36,6 +36,7 @@ interface Result {
   year: number;
   image_url: string | null;
   is_featured: boolean | null;
+  class_name: string | null;
   created_at: string;
 }
 
@@ -47,12 +48,19 @@ const examTypes = [
   { value: "board", label: "Board Exam" },
 ];
 
+const classOptions = [
+  "Prep 1", "Prep 2", "KG 1", "KG 2",
+  "Class 1", "Class 2", "Class 3", "Class 4", "Class 5",
+  "Class 6", "Class 7", "Class 8", "Class 9", "Class 10"
+];
+
 export function ResultsManager() {
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingResult, setEditingResult] = useState<Result | null>(null);
+  const [filterClass, setFilterClass] = useState<string>("");
   const { toast } = useToast();
 
   // Form state
@@ -63,6 +71,7 @@ export function ResultsManager() {
   const [year, setYear] = useState(new Date().getFullYear().toString());
   const [imageUrl, setImageUrl] = useState("");
   const [isFeatured, setIsFeatured] = useState(false);
+  const [className, setClassName] = useState("");
 
   const fetchResults = async () => {
     setLoading(true);
@@ -96,6 +105,7 @@ export function ResultsManager() {
     setYear(new Date().getFullYear().toString());
     setImageUrl("");
     setIsFeatured(false);
+    setClassName("");
     setEditingResult(null);
   };
 
@@ -108,6 +118,7 @@ export function ResultsManager() {
     setYear(result.year.toString());
     setImageUrl(result.image_url || "");
     setIsFeatured(result.is_featured || false);
+    setClassName(result.class_name || "");
     setDialogOpen(true);
   };
 
@@ -123,6 +134,7 @@ export function ResultsManager() {
       year: parseInt(year),
       image_url: imageUrl.trim() || null,
       is_featured: isFeatured,
+      class_name: className || null,
     };
 
     let error;
@@ -194,6 +206,11 @@ export function ResultsManager() {
     }
   };
 
+  const uniqueClasses = [...new Set(results.map((r) => r.class_name).filter(Boolean))];
+  const filteredResults = filterClass
+    ? results.filter((r) => r.class_name === filterClass)
+    : results;
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-8">
@@ -204,10 +221,23 @@ export function ResultsManager() {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <p className="text-muted-foreground">
-          {results.length} result{results.length !== 1 ? "s" : ""} total
-        </p>
+      <div className="flex flex-wrap justify-between items-center gap-4">
+        <div className="flex items-center gap-4">
+          <Select value={filterClass || "all"} onValueChange={(val) => setFilterClass(val === "all" ? "" : val)}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Filter by class" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Classes</SelectItem>
+              {uniqueClasses.map((cls) => (
+                <SelectItem key={cls} value={cls!}>{cls}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <p className="text-muted-foreground">
+            {filteredResults.length} result{filteredResults.length !== 1 ? "s" : ""}
+          </p>
+        </div>
         <Dialog open={dialogOpen} onOpenChange={(open) => {
           setDialogOpen(open);
           if (!open) resetForm();
@@ -236,6 +266,22 @@ export function ResultsManager() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
+                  <Label htmlFor="class_name">Class</Label>
+                  <Select value={className} onValueChange={setClassName}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select class" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {classOptions.map((cls) => (
+                        <SelectItem key={cls} value={cls}>
+                          {cls}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
                   <Label htmlFor="exam_type">Exam Type</Label>
                   <Select value={examType} onValueChange={setExamType}>
                     <SelectTrigger>
@@ -250,7 +296,9 @@ export function ResultsManager() {
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
 
+              <div className="grid grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="year">Year</Label>
                   <Input
@@ -263,9 +311,7 @@ export function ResultsManager() {
                     required
                   />
                 </div>
-              </div>
 
-              <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="percentage">Percentage</Label>
                   <Input
@@ -282,7 +328,7 @@ export function ResultsManager() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="rank">Rank (Optional)</Label>
+                  <Label htmlFor="rank">Rank</Label>
                   <Input
                     id="rank"
                     type="number"
@@ -327,7 +373,7 @@ export function ResultsManager() {
         </Dialog>
       </div>
 
-      {results.length === 0 ? (
+      {filteredResults.length === 0 ? (
         <Card>
           <CardContent className="py-8 text-center text-muted-foreground">
             No results yet. Click "Add Result" to add one.
@@ -335,7 +381,7 @@ export function ResultsManager() {
         </Card>
       ) : (
         <div className="space-y-3">
-          {results.map((result) => (
+          {filteredResults.map((result) => (
             <Card key={result.id}>
               <CardContent className="py-4">
                 <div className="flex items-center justify-between gap-4">
@@ -364,6 +410,7 @@ export function ResultsManager() {
                         )}
                       </div>
                       <p className="text-sm text-muted-foreground">
+                        {result.class_name && `${result.class_name} • `}
                         {examTypes.find(t => t.value === result.exam_type)?.label || result.exam_type} • {result.year}
                       </p>
                     </div>

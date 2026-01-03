@@ -7,14 +7,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { 
   LogOut, Bell, Trophy, Image, Users, FileText, Home, Link as LinkIcon, 
-  Calendar, GraduationCap, BookOpen, Star
+  Calendar, GraduationCap, BookOpen, Star, Settings
 } from "lucide-react";
 import { User, Session } from "@supabase/supabase-js";
 import { 
   NoticesManager, GalleryManager, ResultsManager, StaffManager,
   UsefulLinksManager, QuickLinksManager, TopAchieversManager,
   ClassRoutineManager, HolidaysManager, WebsiteContentManager,
-  FacultyManager, StudentsManager
+  FacultyManager, StudentsManager, AccountSettings
 } from "@/components/admin";
 
 export default function Admin() {
@@ -117,6 +117,9 @@ export default function Admin() {
             </TabsTrigger>
             <TabsTrigger value="links" className="flex items-center gap-2 py-2 px-3">
               <LinkIcon className="w-4 h-4" /><span className="hidden sm:inline">Links</span>
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="flex items-center gap-2 py-2 px-3">
+              <Settings className="w-4 h-4" /><span className="hidden sm:inline">Settings</span>
             </TabsTrigger>
           </TabsList>
 
@@ -228,6 +231,16 @@ export default function Admin() {
                   </div>
                 </div>
               </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="settings">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2"><Settings className="w-5 h-5" />Account Settings</CardTitle>
+                <CardDescription>Manage your account and invite other administrators</CardDescription>
+              </CardHeader>
+              <CardContent><AccountSettings /></CardContent>
             </Card>
           </TabsContent>
         </Tabs>

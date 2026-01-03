@@ -1,4 +1,5 @@
 export { NoticesManager } from "./NoticesManager";
+export { AccountSettings } from "./AccountSettings";
 export { GalleryManager } from "./GalleryManager";
 export { ResultsManager } from "./ResultsManager";
 export { StaffManager } from "./StaffManager";

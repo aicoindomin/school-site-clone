@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, ChevronDown, Phone, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,10 +19,10 @@ const navItems = [
     title: "About",
     href: "/about",
     submenu: [
-      { title: "Overview", href: "/about" },
-      { title: "Mission & Vision", href: "/about/mission" },
-      { title: "Chairman's Message", href: "/about/chairman-message" },
-      { title: "Principal's Message", href: "/about/principal-message" },
+      { title: "Overview", href: "/about#overview" },
+      { title: "Mission & Vision", href: "/about#mission" },
+      { title: "Secretary's Message", href: "/about#secretary-message" },
+      { title: "Headmaster's Message", href: "/about#headmaster-message" },
     ],
   },
   { title: "Faculty", href: "/faculty" },
@@ -46,6 +46,7 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -55,7 +56,38 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const isActive = (path: string) => location.pathname === path;
+  // Handle hash navigation after page load
+  useEffect(() => {
+    if (location.hash) {
+      setTimeout(() => {
+        const element = document.querySelector(location.hash);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 100);
+    }
+  }, [location]);
+
+  const isActive = (path: string) => {
+    const pathWithoutHash = path.split("#")[0];
+    return location.pathname === pathWithoutHash;
+  };
+
+  const handleNavClick = (href: string) => {
+    if (href.includes("#")) {
+      const [path, hash] = href.split("#");
+      if (location.pathname === path || (path === "/about" && location.pathname === "/about")) {
+        // Same page, just scroll
+        const element = document.getElementById(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      } else {
+        // Different page, navigate first
+        navigate(href);
+      }
+    }
+  };
 
   return (
     <>
@@ -104,8 +136,8 @@ export function Navbar() {
             <div className="hidden lg:flex items-center w-full">
               <NavigationMenu className="w-full">
                 <NavigationMenuList className="gap-0 w-full justify-start">
-                  {navItems.map((item) => (
-                    <NavigationMenuItem key={item.title}>
+                  {navItems.map((item, index) => (
+                    <NavigationMenuItem key={item.title} className={item.title === "Others" ? "relative" : ""}>
                       {item.submenu ? (
                         <>
                           <NavigationMenuTrigger
@@ -116,20 +148,31 @@ export function Navbar() {
                           >
                             {item.title}
                           </NavigationMenuTrigger>
-                          <NavigationMenuContent>
-                            <ul className="grid w-[200px] gap-1 p-2 bg-white">
+                          <NavigationMenuContent className={item.title === "Others" ? "right-0 left-auto" : ""}>
+                            <ul className="grid w-[200px] gap-1 p-2 bg-white shadow-lg rounded-md">
                               {item.submenu.map((subItem) => (
                                 <li key={subItem.title}>
                                   <NavigationMenuLink asChild>
-                                    <Link
-                                      to={subItem.href}
-                                      className={cn(
-                                        "block select-none rounded-md p-3 text-sm leading-none no-underline outline-none transition-colors hover:bg-muted hover:text-primary text-foreground",
-                                        isActive(subItem.href) && "bg-muted text-primary"
-                                      )}
-                                    >
-                                      {subItem.title}
-                                    </Link>
+                                    {subItem.href.includes("#") ? (
+                                      <button
+                                        onClick={() => handleNavClick(subItem.href)}
+                                        className={cn(
+                                          "block w-full text-left select-none rounded-md p-3 text-sm leading-none no-underline outline-none transition-colors hover:bg-muted hover:text-primary text-foreground"
+                                        )}
+                                      >
+                                        {subItem.title}
+                                      </button>
+                                    ) : (
+                                      <Link
+                                        to={subItem.href}
+                                        className={cn(
+                                          "block select-none rounded-md p-3 text-sm leading-none no-underline outline-none transition-colors hover:bg-muted hover:text-primary text-foreground",
+                                          isActive(subItem.href) && "bg-muted text-primary"
+                                        )}
+                                      >
+                                        {subItem.title}
+                                      </Link>
+                                    )}
                                   </NavigationMenuLink>
                                 </li>
                               ))}
@@ -186,14 +229,27 @@ export function Navbar() {
                         </summary>
                         <div className="pl-4 mt-1 space-y-1">
                           {item.submenu.map((subItem) => (
-                            <Link
-                              key={subItem.title}
-                              to={subItem.href}
-                              className="block p-2 text-sm text-white/80 hover:text-white transition-colors"
-                              onClick={() => setIsOpen(false)}
-                            >
-                              {subItem.title}
-                            </Link>
+                            subItem.href.includes("#") ? (
+                              <button
+                                key={subItem.title}
+                                onClick={() => {
+                                  handleNavClick(subItem.href);
+                                  setIsOpen(false);
+                                }}
+                                className="block w-full text-left p-2 text-sm text-white/80 hover:text-white transition-colors"
+                              >
+                                {subItem.title}
+                              </button>
+                            ) : (
+                              <Link
+                                key={subItem.title}
+                                to={subItem.href}
+                                className="block p-2 text-sm text-white/80 hover:text-white transition-colors"
+                                onClick={() => setIsOpen(false)}
+                              >
+                                {subItem.title}
+                              </Link>
+                            )
                           ))}
                         </div>
                       </details>

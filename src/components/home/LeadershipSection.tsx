@@ -1,18 +1,18 @@
 import { Quote } from "lucide-react";
-import chairmanImg from "@/assets/leadership/chairman.png";
-import principalImg from "@/assets/leadership/principal.png";
+import secretaryImg from "@/assets/leadership/secretary.png";
+import headmasterImg from "@/assets/leadership/headmaster.png";
 
 const leaders = [
   {
-    title: "Chairman's Vision",
+    title: "Secretary's Vision",
     name: "Puspendu Sekhar Dey",
-    image: chairmanImg,
+    image: secretaryImg,
     quote: "Building the leaders of tomorrow starts with a strong foundation today. We are dedicated to excellence in every step of your child's growth.",
   },
   {
-    title: "Principal's Note",
+    title: "Headmaster's Note",
     name: "Puspendu Pradhan",
-    image: principalImg,
+    image: headmasterImg,
     quote: "Every child is a star waiting to shine. Our job is to provide the sky. Welcome to a place where learning comes alive.",
   },
 ];
@@ -32,6 +32,7 @@ export function LeadershipSection() {
           {leaders.map((leader, index) => (
             <div
               key={index}
+              id={index === 0 ? "secretary-message" : "headmaster-message"}
               className="group relative bg-card rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500"
               style={{
                 background: 'linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--muted)) 100%)',
