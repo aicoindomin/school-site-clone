@@ -189,13 +189,14 @@ export function ClassRoutineManager() {
                       <SelectValue placeholder="Select class" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Prep-1">Prep-1</SelectItem>
-                      <SelectItem value="Kg-1">Kg-1</SelectItem>
-                      <SelectItem value="Std-1">Std-1</SelectItem>
-                      <SelectItem value="Std-2">Std-2</SelectItem>
-                      <SelectItem value="Std-3">Std-3</SelectItem>
-                      <SelectItem value="Std-4">Std-4</SelectItem>
-                      <SelectItem value="Std-5">Std-5</SelectItem>
+                      <SelectItem value="Prep-I">Prep-I</SelectItem>
+                      <SelectItem value="Kg-I">Kg-I</SelectItem>
+                      <SelectItem value="Kg-II">Kg-II</SelectItem>
+                      <SelectItem value="Std-I">Std-I</SelectItem>
+                      <SelectItem value="Std-II">Std-II</SelectItem>
+                      <SelectItem value="Std-III">Std-III</SelectItem>
+                      <SelectItem value="Std-IV">Std-IV</SelectItem>
+                      <SelectItem value="Std-V">Std-V</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

@@ -16,7 +16,7 @@ interface Result {
   class_name: string | null;
 }
 
-const classOptions = ["Prep-1", "Kg-1", "Std-1", "Std-2", "Std-3", "Std-4", "Std-5"];
+const classOptions = ["Prep-I", "Kg-I", "Kg-II", "Std-I", "Std-II", "Std-III", "Std-IV", "Std-V"];
 
 const examTypes: Record<string, string> = {
   annual: "Annual Exam",
@@ -29,7 +29,7 @@ const examTypes: Record<string, string> = {
 const Results = () => {
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedClass, setSelectedClass] = useState<string>("Prep-1");
+  const [selectedClass, setSelectedClass] = useState<string>("Prep-I");
 
   useEffect(() => {
     const fetchResults = async () => {
