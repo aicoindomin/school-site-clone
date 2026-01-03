@@ -559,6 +559,7 @@ export type Database = {
           image_url: string | null
           is_active: boolean | null
           name: string
+          parent_contact: string | null
           parent_name: string | null
           roll_number: string | null
           section: string | null
@@ -572,6 +573,7 @@ export type Database = {
           image_url?: string | null
           is_active?: boolean | null
           name: string
+          parent_contact?: string | null
           parent_name?: string | null
           roll_number?: string | null
           section?: string | null
@@ -585,6 +587,7 @@ export type Database = {
           image_url?: string | null
           is_active?: boolean | null
           name?: string
+          parent_contact?: string | null
           parent_name?: string | null
           roll_number?: string | null
           section?: string | null
