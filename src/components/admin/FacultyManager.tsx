@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, User, Mail, Phone } from "lucide-react";
+import { ImageUpload } from "@/components/ui/image-upload";
 
 interface Faculty {
   id: string;
@@ -187,6 +188,14 @@ export function FacultyManager() {
             <DialogTitle>{editingFaculty ? "Edit Faculty" : "Add Faculty Member"}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
+            <div>
+              <Label>Photo</Label>
+              <ImageUpload
+                value={imageUrl}
+                onChange={setImageUrl}
+                folder="faculty"
+              />
+            </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label>Name</Label>
@@ -206,10 +215,6 @@ export function FacultyManager() {
                 <Label>Qualification</Label>
                 <Input value={qualification} onChange={(e) => setQualification(e.target.value)} />
               </div>
-            </div>
-            <div>
-              <Label>Image URL</Label>
-              <Input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="https://..." />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>

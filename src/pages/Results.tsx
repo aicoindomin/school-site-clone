@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { Trophy, Medal, Award } from "lucide-react";
 
@@ -13,11 +14,21 @@ interface Result {
   percentage: number;
   rank: number | null;
   image_url: string | null;
+  class_name: string | null;
 }
+
+const examTypeLabels: Record<string, string> = {
+  annual: "Annual Exam",
+  half_yearly: "Half Yearly",
+  quarterly: "Quarterly",
+  unit_test: "Unit Test",
+  board: "Board Exam",
+};
 
 const Results = () => {
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filterClass, setFilterClass] = useState<string>("");
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -43,6 +54,11 @@ const Results = () => {
     return null;
   };
 
+  const uniqueClasses = [...new Set(results.map((r) => r.class_name).filter(Boolean))];
+  const filteredResults = filterClass
+    ? results.filter((r) => r.class_name === filterClass)
+    : results;
+
   return (
     <MainLayout>
       <section className="py-16 bg-background">
@@ -54,6 +70,21 @@ const Results = () => {
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Academic achievements of our students
             </p>
+          </div>
+
+          {/* Filter */}
+          <div className="flex justify-center mb-8">
+            <Select value={filterClass || "all"} onValueChange={(val) => setFilterClass(val === "all" ? "" : val)}>
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Filter by Class" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Classes</SelectItem>
+                {uniqueClasses.map((cls) => (
+                  <SelectItem key={cls} value={cls!}>{cls}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {loading ? (
@@ -68,19 +99,22 @@ const Results = () => {
                 </Card>
               ))}
             </div>
-          ) : results.length === 0 ? (
+          ) : filteredResults.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
               No results available
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {results.map((result) => (
+              {filteredResults.map((result) => (
                 <Card key={result.id} className="hover:shadow-lg transition-shadow">
                   <CardContent className="p-6">
                     <div className="flex items-start justify-between">
                       <div>
                         <h3 className="font-semibold text-lg">{result.student_name}</h3>
-                        <p className="text-muted-foreground text-sm">{result.exam_type} - {result.year}</p>
+                        <p className="text-muted-foreground text-sm">
+                          {result.class_name && `${result.class_name} • `}
+                          {examTypeLabels[result.exam_type] || result.exam_type} - {result.year}
+                        </p>
                       </div>
                       {getRankIcon(result.rank)}
                     </div>

@@ -35,7 +35,12 @@ export function Footer() {
               Nurturing young minds and building a foundation for a brighter future through quality education and holistic development.
             </p>
             <div className="flex gap-3">
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition-colors">
+              <a 
+                href="https://www.facebook.com/p/Balisai-Public-School-Patnahat-Balisai-Purba-Medinipur-100090241681438/" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-10 h-10 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition-colors"
+              >
                 <Facebook className="w-5 h-5" />
               </a>
               <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition-colors">

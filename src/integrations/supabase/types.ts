@@ -489,6 +489,7 @@ export type Database = {
       }
       results: {
         Row: {
+          class_name: string | null
           created_at: string
           exam_type: string
           id: string
@@ -501,6 +502,7 @@ export type Database = {
           year: number
         }
         Insert: {
+          class_name?: string | null
           created_at?: string
           exam_type: string
           id?: string
@@ -513,6 +515,7 @@ export type Database = {
           year: number
         }
         Update: {
+          class_name?: string | null
           created_at?: string
           exam_type?: string
           id?: string

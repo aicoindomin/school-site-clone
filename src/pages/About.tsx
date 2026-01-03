@@ -1,7 +1,7 @@
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Card, CardContent } from "@/components/ui/card";
-import chairmanImg from "@/assets/leadership/chairman.png";
-import principalImg from "@/assets/leadership/principal.png";
+import secretaryImg from "@/assets/leadership/secretary.png";
+import headmasterImg from "@/assets/leadership/headmaster.png";
 
 const About = () => {
   return (
@@ -18,7 +18,7 @@ const About = () => {
           </div>
 
           {/* Overview */}
-          <div className="max-w-4xl mx-auto mb-16">
+          <div id="overview" className="max-w-4xl mx-auto mb-16">
             <Card>
               <CardContent className="p-8">
                 <h2 className="font-display text-2xl font-bold mb-4">Our Story</h2>
@@ -37,7 +37,7 @@ const About = () => {
           </div>
 
           {/* Mission & Vision */}
-          <div className="grid md:grid-cols-2 gap-8 mb-16">
+          <div id="mission" className="grid md:grid-cols-2 gap-8 mb-16">
             <Card className="bg-primary text-primary-foreground">
               <CardContent className="p-8">
                 <h2 className="font-display text-2xl font-bold mb-4">Our Mission</h2>
@@ -62,14 +62,14 @@ const About = () => {
 
           {/* Leadership Messages */}
           <div className="space-y-12">
-            <div className="flex flex-col md:flex-row items-center gap-8 bg-muted/50 rounded-xl p-8">
+            <div id="secretary-message" className="flex flex-col md:flex-row items-center gap-8 bg-muted/50 rounded-xl p-8">
               <img 
-                src={chairmanImg} 
-                alt="Chairman" 
+                src={secretaryImg} 
+                alt="Secretary" 
                 className="w-48 h-48 rounded-full object-cover border-4 border-primary"
               />
               <div>
-                <h3 className="font-display text-2xl font-bold mb-2">Chairman's Message</h3>
+                <h3 className="font-display text-2xl font-bold mb-2">Secretary's Message</h3>
                 <p className="text-muted-foreground">
                   "At Balisai Public School, we are committed to providing an environment where every 
                   child can flourish. Education is not just about textbooks; it's about building 
@@ -77,23 +77,25 @@ const About = () => {
                   tomorrow. Together with our dedicated teachers and supportive parents, we are 
                   shaping the leaders of the future."
                 </p>
+                <p className="font-semibold mt-4 text-primary">— Puspendu Sekhar Dey, Secretary</p>
               </div>
             </div>
 
-            <div className="flex flex-col md:flex-row-reverse items-center gap-8 bg-muted/50 rounded-xl p-8">
+            <div id="headmaster-message" className="flex flex-col md:flex-row-reverse items-center gap-8 bg-muted/50 rounded-xl p-8">
               <img 
-                src={principalImg} 
-                alt="Principal" 
+                src={headmasterImg} 
+                alt="Headmaster" 
                 className="w-48 h-48 rounded-full object-cover border-4 border-secondary"
               />
               <div>
-                <h3 className="font-display text-2xl font-bold mb-2">Principal's Message</h3>
+                <h3 className="font-display text-2xl font-bold mb-2">Headmaster's Message</h3>
                 <p className="text-muted-foreground">
                   "Welcome to Balisai Public School! Our dedicated team of educators works tirelessly 
                   to ensure that every student receives personalized attention and guidance. We believe 
                   in nurturing not just the intellect but also the creativity, curiosity, and compassion 
                   in every child. Join us in this beautiful journey of learning and growth."
                 </p>
+                <p className="font-semibold mt-4 text-secondary">— Puspendu Pradhan, Headmaster</p>
               </div>
             </div>
           </div>
