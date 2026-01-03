@@ -42,6 +42,7 @@ interface Student {
   roll_number: string | null;
   image_url: string | null;
   parent_name: string | null;
+  parent_contact: string | null;
   admission_year: number | null;
   is_active: boolean;
 }
@@ -58,6 +59,7 @@ export function StudentsManager() {
   const [rollNumber, setRollNumber] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [parentName, setParentName] = useState("");
+  const [parentContact, setParentContact] = useState("");
   const [admissionYear, setAdmissionYear] = useState(new Date().getFullYear());
   const [isActive, setIsActive] = useState(true);
   const [filterClass, setFilterClass] = useState<string>("");
@@ -89,6 +91,7 @@ export function StudentsManager() {
     setRollNumber("");
     setImageUrl("");
     setParentName("");
+    setParentContact("");
     setAdmissionYear(new Date().getFullYear());
     setIsActive(true);
     setEditingStudent(null);
@@ -102,6 +105,7 @@ export function StudentsManager() {
     setRollNumber(student.roll_number || "");
     setImageUrl(student.image_url || "");
     setParentName(student.parent_name || "");
+    setParentContact(student.parent_contact || "");
     setAdmissionYear(student.admission_year || new Date().getFullYear());
     setIsActive(student.is_active);
     setDialogOpen(true);
@@ -116,6 +120,7 @@ export function StudentsManager() {
       roll_number: rollNumber || null,
       image_url: imageUrl || null,
       parent_name: parentName || null,
+      parent_contact: parentContact || null,
       admission_year: admissionYear,
       is_active: isActive,
     };
@@ -243,7 +248,7 @@ export function StudentsManager() {
               </div>
               <div>
                 <Label>Parent's Contact Number</Label>
-                <Input placeholder="e.g., +91 9876543210" />
+                <Input value={parentContact} onChange={(e) => setParentContact(e.target.value)} placeholder="e.g., +91 9876543210" />
               </div>
               <div className="flex items-center gap-2">
                 <Switch checked={isActive} onCheckedChange={setIsActive} />
