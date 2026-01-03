@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { Trophy, Medal, Award } from "lucide-react";
 
@@ -10,14 +10,15 @@ interface Result {
   id: string;
   student_name: string;
   exam_type: string;
-  year: number;
   percentage: number;
   rank: number | null;
-  image_url: string | null;
+  year: number;
   class_name: string | null;
 }
 
-const examTypeLabels: Record<string, string> = {
+const classOptions = ["Prep-1", "Kg-1", "Std-1", "Std-2", "Std-3", "Std-4", "Std-5"];
+
+const examTypes: Record<string, string> = {
   annual: "Annual Exam",
   half_yearly: "Half Yearly",
   quarterly: "Quarterly",
@@ -28,14 +29,13 @@ const examTypeLabels: Record<string, string> = {
 const Results = () => {
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filterClass, setFilterClass] = useState<string>("");
+  const [selectedClass, setSelectedClass] = useState<string>("Prep-1");
 
   useEffect(() => {
     const fetchResults = async () => {
       const { data, error } = await supabase
         .from("results")
         .select("*")
-        .order("year", { ascending: false })
         .order("percentage", { ascending: false });
 
       if (!error && data) {
@@ -47,17 +47,20 @@ const Results = () => {
     fetchResults();
   }, []);
 
+  const getResultsByClass = (className: string) => {
+    return results.filter(r => r.class_name === className);
+  };
+
   const getRankIcon = (rank: number | null) => {
-    if (rank === 1) return <Trophy className="w-6 h-6 text-yellow-500" />;
-    if (rank === 2) return <Medal className="w-6 h-6 text-gray-400" />;
-    if (rank === 3) return <Award className="w-6 h-6 text-amber-600" />;
+    if (rank === 1) return <Trophy className="w-5 h-5 text-yellow-500" />;
+    if (rank === 2) return <Medal className="w-5 h-5 text-gray-400" />;
+    if (rank === 3) return <Award className="w-5 h-5 text-amber-600" />;
     return null;
   };
 
-  const uniqueClasses = [...new Set(results.map((r) => r.class_name).filter(Boolean))];
-  const filteredResults = filterClass
-    ? results.filter((r) => r.class_name === filterClass)
-    : results;
+  const availableClasses = classOptions.filter(cls => 
+    results.some(r => r.class_name === cls)
+  );
 
   return (
     <MainLayout>
@@ -68,23 +71,8 @@ const Results = () => {
               Exam Results
             </h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Academic achievements of our students
+              Celebrating academic excellence
             </p>
-          </div>
-
-          {/* Filter */}
-          <div className="flex justify-center mb-8">
-            <Select value={filterClass || "all"} onValueChange={(val) => setFilterClass(val === "all" ? "" : val)}>
-              <SelectTrigger className="w-[200px]">
-                <SelectValue placeholder="Filter by Class" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Classes</SelectItem>
-                {uniqueClasses.map((cls) => (
-                  <SelectItem key={cls} value={cls!}>{cls}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
           </div>
 
           {loading ? (
@@ -92,44 +80,56 @@ const Results = () => {
               {[...Array(6)].map((_, i) => (
                 <Card key={i}>
                   <CardContent className="p-6">
-                    <Skeleton className="h-6 w-3/4 mb-2" />
-                    <Skeleton className="h-4 w-1/2 mb-4" />
-                    <Skeleton className="h-8 w-1/3" />
+                    <Skeleton className="h-8 w-20 mb-3" />
+                    <Skeleton className="h-5 w-3/4 mb-2" />
+                    <Skeleton className="h-4 w-1/2" />
                   </CardContent>
                 </Card>
               ))}
             </div>
-          ) : filteredResults.length === 0 ? (
+          ) : results.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
               No results available
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredResults.map((result) => (
-                <Card key={result.id} className="hover:shadow-lg transition-shadow">
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h3 className="font-semibold text-lg">{result.student_name}</h3>
-                        <p className="text-muted-foreground text-sm">
-                          {result.class_name && `${result.class_name} • `}
-                          {examTypeLabels[result.exam_type] || result.exam_type} - {result.year}
-                        </p>
+            <Tabs value={selectedClass} onValueChange={setSelectedClass}>
+              <TabsList className="mb-6 flex-wrap h-auto gap-2">
+                {(availableClasses.length > 0 ? availableClasses : classOptions).map((cls) => (
+                  <TabsTrigger key={cls} value={cls} className="px-4 py-2">
+                    {cls}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+
+              {classOptions.map((cls) => (
+                <TabsContent key={cls} value={cls}>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {getResultsByClass(cls).map((result) => (
+                      <Card key={result.id} className="hover:shadow-lg transition-shadow">
+                        <CardContent className="p-6">
+                          <div className="flex items-start justify-between mb-3">
+                            <span className="text-3xl font-bold text-primary">{result.percentage}%</span>
+                            {getRankIcon(result.rank)}
+                          </div>
+                          <h3 className="font-semibold text-lg mb-1">{result.student_name}</h3>
+                          <p className="text-sm text-muted-foreground">
+                            {examTypes[result.exam_type] || result.exam_type} • {result.year}
+                          </p>
+                          {result.rank && (
+                            <p className="text-sm text-primary mt-1">Rank #{result.rank}</p>
+                          )}
+                        </CardContent>
+                      </Card>
+                    ))}
+                    {getResultsByClass(cls).length === 0 && (
+                      <div className="col-span-full text-center py-8 text-muted-foreground">
+                        No results for this class
                       </div>
-                      {getRankIcon(result.rank)}
-                    </div>
-                    <div className="mt-4">
-                      <span className="text-3xl font-bold text-primary">{result.percentage}%</span>
-                      {result.rank && (
-                        <span className="ml-2 text-sm text-muted-foreground">
-                          Rank: {result.rank}
-                        </span>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
+                    )}
+                  </div>
+                </TabsContent>
               ))}
-            </div>
+            </Tabs>
           )}
         </div>
       </section>

@@ -184,7 +184,20 @@ export function ClassRoutineManager() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Class Name</Label>
-                  <Input value={className} onChange={(e) => setClassName(e.target.value)} placeholder="e.g., Class 5" />
+                  <Select value={className} onValueChange={setClassName}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select class" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Prep-1">Prep-1</SelectItem>
+                      <SelectItem value="Kg-1">Kg-1</SelectItem>
+                      <SelectItem value="Std-1">Std-1</SelectItem>
+                      <SelectItem value="Std-2">Std-2</SelectItem>
+                      <SelectItem value="Std-3">Std-3</SelectItem>
+                      <SelectItem value="Std-4">Std-4</SelectItem>
+                      <SelectItem value="Std-5">Std-5</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
                   <Label>Day</Label>
