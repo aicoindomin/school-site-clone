@@ -137,48 +137,57 @@ export function Navbar() {
               <NavigationMenu className="w-full">
                 <NavigationMenuList className="gap-0 w-full justify-start">
                   {navItems.map((item, index) => (
-                    <NavigationMenuItem key={item.title} className={item.title === "Others" ? "relative" : ""}>
+                    <NavigationMenuItem key={item.title}>
                       {item.submenu ? (
-                        <>
-                          <NavigationMenuTrigger
+                        <div className="relative group">
+                          <button
                             className={cn(
-                              "bg-transparent text-white hover:bg-white/20 rounded-none px-4 py-3 h-auto",
+                              "inline-flex items-center bg-transparent text-white hover:bg-white/20 rounded-none px-4 py-3 h-auto text-sm font-medium transition-colors",
                               isActive(item.href) && "bg-white/20"
                             )}
                           >
                             {item.title}
-                          </NavigationMenuTrigger>
-                          <NavigationMenuContent className={item.title === "Others" ? "absolute right-0 left-auto top-full" : ""}>
-                            <ul className="grid w-[200px] gap-1 p-2 bg-white shadow-lg rounded-md">
+                            <svg
+                              className="relative top-[1px] ml-1 h-3 w-3 transition duration-200 group-hover:rotate-180"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </button>
+                          <div className={cn(
+                            "absolute top-full z-50 hidden group-hover:block pt-1",
+                            item.title === "Others" ? "right-0" : "left-0"
+                          )}>
+                            <ul className="grid w-[200px] gap-1 p-2 bg-white shadow-lg rounded-md border">
                               {item.submenu.map((subItem) => (
                                 <li key={subItem.title}>
-                                  <NavigationMenuLink asChild>
-                                    {subItem.href.includes("#") ? (
-                                      <button
-                                        onClick={() => handleNavClick(subItem.href)}
-                                        className={cn(
-                                          "block w-full text-left select-none rounded-md p-3 text-sm leading-none no-underline outline-none transition-colors hover:bg-muted hover:text-primary text-foreground"
-                                        )}
-                                      >
-                                        {subItem.title}
-                                      </button>
-                                    ) : (
-                                      <Link
-                                        to={subItem.href}
-                                        className={cn(
-                                          "block select-none rounded-md p-3 text-sm leading-none no-underline outline-none transition-colors hover:bg-muted hover:text-primary text-foreground",
-                                          isActive(subItem.href) && "bg-muted text-primary"
-                                        )}
-                                      >
-                                        {subItem.title}
-                                      </Link>
-                                    )}
-                                  </NavigationMenuLink>
+                                  {subItem.href.includes("#") ? (
+                                    <button
+                                      onClick={() => handleNavClick(subItem.href)}
+                                      className={cn(
+                                        "block w-full text-left select-none rounded-md p-3 text-sm leading-none no-underline outline-none transition-colors hover:bg-muted hover:text-primary text-foreground"
+                                      )}
+                                    >
+                                      {subItem.title}
+                                    </button>
+                                  ) : (
+                                    <Link
+                                      to={subItem.href}
+                                      className={cn(
+                                        "block select-none rounded-md p-3 text-sm leading-none no-underline outline-none transition-colors hover:bg-muted hover:text-primary text-foreground",
+                                        isActive(subItem.href) && "bg-muted text-primary"
+                                      )}
+                                    >
+                                      {subItem.title}
+                                    </Link>
+                                  )}
                                 </li>
                               ))}
                             </ul>
-                          </NavigationMenuContent>
-                        </>
+                          </div>
+                        </div>
                       ) : (
                         <Link
                           to={item.href}
