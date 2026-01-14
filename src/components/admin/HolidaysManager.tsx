@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
+import { BilingualToggle } from "./BilingualToggle";
 import {
   Dialog,
   DialogContent,
@@ -38,8 +39,10 @@ import { format } from "date-fns";
 interface Holiday {
   id: string;
   title: string;
+  title_bn: string | null;
   holiday_date: string;
   description: string | null;
+  description_bn: string | null;
   holiday_type: string;
   is_active: boolean;
 }
@@ -52,9 +55,16 @@ export function HolidaysManager() {
   const [saving, setSaving] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingHoliday, setEditingHoliday] = useState<Holiday | null>(null);
+  const [editLanguage, setEditLanguage] = useState<"en" | "bn">("en");
+  
+  // English fields
   const [title, setTitle] = useState("");
-  const [holidayDate, setHolidayDate] = useState("");
   const [description, setDescription] = useState("");
+  // Bengali fields
+  const [titleBn, setTitleBn] = useState("");
+  const [descriptionBn, setDescriptionBn] = useState("");
+  // Common fields
+  const [holidayDate, setHolidayDate] = useState("");
   const [holidayType, setHolidayType] = useState("general");
   const [isActive, setIsActive] = useState(true);
   const { toast } = useToast();
@@ -79,20 +89,26 @@ export function HolidaysManager() {
 
   const resetForm = () => {
     setTitle("");
-    setHolidayDate("");
     setDescription("");
+    setTitleBn("");
+    setDescriptionBn("");
+    setHolidayDate("");
     setHolidayType("general");
     setIsActive(true);
     setEditingHoliday(null);
+    setEditLanguage("en");
   };
 
   const openEditDialog = (holiday: Holiday) => {
     setEditingHoliday(holiday);
     setTitle(holiday.title);
-    setHolidayDate(holiday.holiday_date);
     setDescription(holiday.description || "");
+    setTitleBn(holiday.title_bn || "");
+    setDescriptionBn(holiday.description_bn || "");
+    setHolidayDate(holiday.holiday_date);
     setHolidayType(holiday.holiday_type);
     setIsActive(holiday.is_active);
+    setEditLanguage("en");
     setDialogOpen(true);
   };
 
@@ -100,8 +116,10 @@ export function HolidaysManager() {
     setSaving(true);
     const holidayData = {
       title,
+      title_bn: titleBn.trim() || null,
       holiday_date: holidayDate,
       description: description || null,
+      description_bn: descriptionBn.trim() || null,
       holiday_type: holidayType,
       is_active: isActive,
     };
@@ -171,11 +189,36 @@ export function HolidaysManager() {
           <DialogHeader>
             <DialogTitle>{editingHoliday ? "Edit Holiday" : "Add Holiday"}</DialogTitle>
           </DialogHeader>
+          
+          <BilingualToggle language={editLanguage} onLanguageChange={setEditLanguage} />
+          
           <div className="space-y-4">
-            <div>
-              <Label>Title</Label>
-              <Input value={title} onChange={(e) => setTitle(e.target.value)} />
-            </div>
+            {editLanguage === "en" ? (
+              <>
+                <div>
+                  <Label>Title (English)</Label>
+                  <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Holiday title in English" />
+                </div>
+                <div>
+                  <Label>Description (English - Optional)</Label>
+                  <Textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description in English" />
+                </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <Label>Title (Bengali) - শিরোনাম</Label>
+                  <Input value={titleBn} onChange={(e) => setTitleBn(e.target.value)} placeholder="বাংলায় শিরোনাম লিখুন (Optional)" />
+                  <p className="text-xs text-muted-foreground mt-1">Leave empty to use auto-translation</p>
+                </div>
+                <div>
+                  <Label>Description (Bengali) - বিবরণ</Label>
+                  <Textarea value={descriptionBn} onChange={(e) => setDescriptionBn(e.target.value)} placeholder="বাংলায় বিবরণ লিখুন (Optional)" />
+                  <p className="text-xs text-muted-foreground mt-1">Leave empty to use auto-translation</p>
+                </div>
+              </>
+            )}
+            
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label>Date</Label>
@@ -194,10 +237,6 @@ export function HolidaysManager() {
                   </SelectContent>
                 </Select>
               </div>
-            </div>
-            <div>
-              <Label>Description (Optional)</Label>
-              <Textarea value={description} onChange={(e) => setDescription(e.target.value)} />
             </div>
             <div className="flex items-center gap-2">
               <Switch checked={isActive} onCheckedChange={setIsActive} />
@@ -219,7 +258,14 @@ export function HolidaysManager() {
                   <Calendar className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <h4 className="font-medium">{holiday.title}</h4>
+                  <div className="flex items-center gap-2">
+                    <h4 className="font-medium">{holiday.title}</h4>
+                    {holiday.title_bn && (
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/10 text-green-600">
+                        বাংলা
+                      </span>
+                    )}
+                  </div>
                   <p className="text-sm text-muted-foreground">
                     {format(new Date(holiday.holiday_date), "dd MMM yyyy")} • 
                     <span className="capitalize ml-1">{holiday.holiday_type}</span>

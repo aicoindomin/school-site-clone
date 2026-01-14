@@ -3,12 +3,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
+import { BilingualToggle } from "./BilingualToggle";
 import {
   Dialog,
   DialogContent,
@@ -31,7 +32,9 @@ import {
 interface Notice {
   id: string;
   title: string;
+  title_bn: string | null;
   content: string;
+  content_bn: string | null;
   category: string;
   is_active: boolean;
   priority: number;
@@ -55,11 +58,16 @@ export function NoticesManager() {
   const [saving, setSaving] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingNotice, setEditingNotice] = useState<Notice | null>(null);
+  const [editLanguage, setEditLanguage] = useState<"en" | "bn">("en");
   const { toast } = useToast();
 
-  // Form state
+  // Form state - English
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  // Form state - Bengali
+  const [titleBn, setTitleBn] = useState("");
+  const [contentBn, setContentBn] = useState("");
+  // Common fields
   const [category, setCategory] = useState("general");
   const [isActive, setIsActive] = useState(true);
   const [priority, setPriority] = useState(0);
@@ -90,19 +98,25 @@ export function NoticesManager() {
   const resetForm = () => {
     setTitle("");
     setContent("");
+    setTitleBn("");
+    setContentBn("");
     setCategory("general");
     setIsActive(true);
     setPriority(0);
     setEditingNotice(null);
+    setEditLanguage("en");
   };
 
   const openEditDialog = (notice: Notice) => {
     setEditingNotice(notice);
     setTitle(notice.title);
     setContent(notice.content);
+    setTitleBn(notice.title_bn || "");
+    setContentBn(notice.content_bn || "");
     setCategory(notice.category);
     setIsActive(notice.is_active);
     setPriority(notice.priority);
+    setEditLanguage("en");
     setDialogOpen(true);
   };
 
@@ -113,6 +127,8 @@ export function NoticesManager() {
     const noticeData = {
       title: title.trim(),
       content: content.trim(),
+      title_bn: titleBn.trim() || null,
+      content_bn: contentBn.trim() || null,
       category,
       is_active: isActive,
       priority,
@@ -215,29 +231,65 @@ export function NoticesManager() {
             <DialogHeader>
               <DialogTitle>{editingNotice ? "Edit Notice" : "Add New Notice"}</DialogTitle>
             </DialogHeader>
+            
+            <BilingualToggle language={editLanguage} onLanguageChange={setEditLanguage} />
+            
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="title">Title</Label>
-                <Input
-                  id="title"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Notice title"
-                  required
-                />
-              </div>
+              {editLanguage === "en" ? (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="title">Title (English)</Label>
+                    <Input
+                      id="title"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="Notice title in English"
+                      required
+                    />
+                  </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="content">Content</Label>
-                <Textarea
-                  id="content"
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  placeholder="Notice content..."
-                  rows={4}
-                  required
-                />
-              </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="content">Content (English)</Label>
+                    <Textarea
+                      id="content"
+                      value={content}
+                      onChange={(e) => setContent(e.target.value)}
+                      placeholder="Notice content in English..."
+                      rows={4}
+                      required
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="title_bn">Title (Bengali) - শিরোনাম</Label>
+                    <Input
+                      id="title_bn"
+                      value={titleBn}
+                      onChange={(e) => setTitleBn(e.target.value)}
+                      placeholder="বাংলায় শিরোনাম লিখুন (Optional)"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Leave empty to use auto-translation
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="content_bn">Content (Bengali) - বিষয়বস্তু</Label>
+                    <Textarea
+                      id="content_bn"
+                      value={contentBn}
+                      onChange={(e) => setContentBn(e.target.value)}
+                      placeholder="বাংলায় বিষয়বস্তু লিখুন (Optional)"
+                      rows={4}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Leave empty to use auto-translation
+                    </p>
+                  </div>
+                </>
+              )}
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -310,6 +362,11 @@ export function NoticesManager() {
                       <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">
                         {categories.find(c => c.value === notice.category)?.label || notice.category}
                       </span>
+                      {notice.title_bn && (
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/10 text-green-600">
+                          বাংলা
+                        </span>
+                      )}
                       {!notice.is_active && (
                         <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
                           Inactive

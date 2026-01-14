@@ -13,3 +13,4 @@ export { WebsiteContentManager } from "./WebsiteContentManager";
 export { FacultyManager } from "./FacultyManager";
 export { StudentsManager } from "./StudentsManager";
 export { TelegramSettingsManager } from "./TelegramSettingsManager";
+export { BilingualToggle } from "./BilingualToggle";

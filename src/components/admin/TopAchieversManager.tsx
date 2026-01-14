@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent } from "@/components/ui/card";
+import { BilingualToggle } from "./BilingualToggle";
 import {
   Dialog,
   DialogContent,
@@ -30,8 +31,11 @@ import { ImageUpload } from "@/components/ui/image-upload";
 interface TopAchiever {
   id: string;
   student_name: string;
+  student_name_bn: string | null;
   class_label: string;
+  class_label_bn: string | null;
   position: string;
+  position_bn: string | null;
   image_url: string | null;
   year: number;
   order_index: number;
@@ -44,9 +48,17 @@ export function TopAchieversManager() {
   const [saving, setSaving] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingAchiever, setEditingAchiever] = useState<TopAchiever | null>(null);
+  const [editLanguage, setEditLanguage] = useState<"en" | "bn">("en");
+  
+  // English fields
   const [studentName, setStudentName] = useState("");
   const [classLabel, setClassLabel] = useState("");
   const [position, setPosition] = useState("1st");
+  // Bengali fields
+  const [studentNameBn, setStudentNameBn] = useState("");
+  const [classLabelBn, setClassLabelBn] = useState("");
+  const [positionBn, setPositionBn] = useState("");
+  // Common fields
   const [imageUrl, setImageUrl] = useState("");
   const [year, setYear] = useState(new Date().getFullYear());
   const [orderIndex, setOrderIndex] = useState(0);
@@ -75,11 +87,15 @@ export function TopAchieversManager() {
     setStudentName("");
     setClassLabel("");
     setPosition("1st");
+    setStudentNameBn("");
+    setClassLabelBn("");
+    setPositionBn("");
     setImageUrl("");
     setYear(new Date().getFullYear());
     setOrderIndex(0);
     setIsActive(true);
     setEditingAchiever(null);
+    setEditLanguage("en");
   };
 
   const openEditDialog = (achiever: TopAchiever) => {
@@ -87,10 +103,14 @@ export function TopAchieversManager() {
     setStudentName(achiever.student_name);
     setClassLabel(achiever.class_label);
     setPosition(achiever.position);
+    setStudentNameBn(achiever.student_name_bn || "");
+    setClassLabelBn(achiever.class_label_bn || "");
+    setPositionBn(achiever.position_bn || "");
     setImageUrl(achiever.image_url || "");
     setYear(achiever.year);
     setOrderIndex(achiever.order_index);
     setIsActive(achiever.is_active);
+    setEditLanguage("en");
     setDialogOpen(true);
   };
 
@@ -98,8 +118,11 @@ export function TopAchieversManager() {
     setSaving(true);
     const achieverData = {
       student_name: studentName,
+      student_name_bn: studentNameBn.trim() || null,
       class_label: classLabel,
+      class_label_bn: classLabelBn.trim() || null,
       position,
+      position_bn: positionBn.trim() || null,
       image_url: imageUrl || null,
       year,
       order_index: orderIndex,
@@ -171,22 +194,49 @@ export function TopAchieversManager() {
           <DialogHeader>
             <DialogTitle>{editingAchiever ? "Edit Achiever" : "Add Top Achiever"}</DialogTitle>
           </DialogHeader>
+          
+          <BilingualToggle language={editLanguage} onLanguageChange={setEditLanguage} />
+          
           <div className="space-y-4">
-            <div>
-              <Label>Student Name</Label>
-              <Input value={studentName} onChange={(e) => setStudentName(e.target.value)} />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>Class</Label>
-                <Input value={classLabel} onChange={(e) => setClassLabel(e.target.value)} placeholder="e.g., Class 5" />
-              </div>
-              <div>
-                <Label>Position</Label>
-                <Input value={position} onChange={(e) => setPosition(e.target.value)} placeholder="e.g., 1st" />
-              </div>
-            </div>
+            {editLanguage === "en" ? (
+              <>
+                <div>
+                  <Label>Student Name (English)</Label>
+                  <Input value={studentName} onChange={(e) => setStudentName(e.target.value)} placeholder="Student name in English" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Class (English)</Label>
+                    <Input value={classLabel} onChange={(e) => setClassLabel(e.target.value)} placeholder="e.g., Class 5" />
+                  </div>
+                  <div>
+                    <Label>Position (English)</Label>
+                    <Input value={position} onChange={(e) => setPosition(e.target.value)} placeholder="e.g., 1st" />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <Label>Student Name (Bengali) - ছাত্রের নাম</Label>
+                  <Input value={studentNameBn} onChange={(e) => setStudentNameBn(e.target.value)} placeholder="বাংলায় ছাত্রের নাম (Optional)" />
+                  <p className="text-xs text-muted-foreground mt-1">Leave empty to use auto-translation</p>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Class (Bengali) - শ্রেণী</Label>
+                    <Input value={classLabelBn} onChange={(e) => setClassLabelBn(e.target.value)} placeholder="e.g., পঞ্চম শ্রেণী" />
+                  </div>
+                  <div>
+                    <Label>Position (Bengali) - স্থান</Label>
+                    <Input value={positionBn} onChange={(e) => setPositionBn(e.target.value)} placeholder="e.g., প্রথম" />
+                  </div>
+                </div>
+              </>
+            )}
+            
             <ImageUpload value={imageUrl} onChange={setImageUrl} folder="achievers" />
+            
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label>Year</Label>
@@ -222,7 +272,14 @@ export function TopAchieversManager() {
                     </div>
                   )}
                   <div>
-                    <h4 className="font-medium">{achiever.student_name}</h4>
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-medium">{achiever.student_name}</h4>
+                      {achiever.student_name_bn && (
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/10 text-green-600">
+                          বাংলা
+                        </span>
+                      )}
+                    </div>
                     <p className="text-sm text-muted-foreground">{achiever.class_label}</p>
                     <div className="flex items-center gap-1 text-sm text-primary">
                       <Trophy className="w-3 h-3" />

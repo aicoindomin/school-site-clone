@@ -95,7 +95,8 @@ export function useTranslatedTexts(texts: string[]): string[] {
   return translatedTexts;
 }
 
-// Hook for translating dynamic database content (notices, etc.)
+// Hook for translating dynamic database content
+// Prefers manually written Bengali content (_bn columns), falls back to auto-translation
 export function useDynamicTranslation<T extends Record<string, any>>(
   items: T[],
   fieldsToTranslate: (keyof T)[]
@@ -109,19 +110,34 @@ export function useDynamicTranslation<T extends Record<string, any>>(
       return;
     }
 
-    // Collect all texts to translate
+    // Collect texts that need translation (no _bn content available)
     const textsToTranslate: string[] = [];
-    items.forEach((item) => {
+    const translationMap: { itemIndex: number; field: keyof T }[] = [];
+    
+    // First pass: use _bn content where available, collect remaining for translation
+    const partiallyTranslatedItems = items.map((item, itemIndex) => {
+      const newItem = { ...item };
       fieldsToTranslate.forEach((field) => {
-        const value = item[field];
-        if (typeof value === "string" && value.trim()) {
-          textsToTranslate.push(value);
+        const bnField = `${String(field)}_bn` as keyof T;
+        const bnValue = item[bnField];
+        const enValue = item[field];
+        
+        // If Bengali content exists, use it
+        if (typeof bnValue === "string" && bnValue.trim()) {
+          (newItem as any)[field] = bnValue;
+        } 
+        // Otherwise, queue for auto-translation
+        else if (typeof enValue === "string" && enValue.trim()) {
+          textsToTranslate.push(enValue);
+          translationMap.push({ itemIndex, field });
         }
       });
+      return newItem;
     });
 
+    // If no texts need translation, we're done
     if (textsToTranslate.length === 0) {
-      setTranslatedItems(items);
+      setTranslatedItems(partiallyTranslatedItems);
       return;
     }
 
@@ -129,18 +145,12 @@ export function useDynamicTranslation<T extends Record<string, any>>(
     translateBatch(textsToTranslate).then((translations) => {
       if (!isMounted) return;
 
-      let translationIndex = 0;
-      const newItems = items.map((item) => {
-        const newItem = { ...item };
-        fieldsToTranslate.forEach((field) => {
-          const value = item[field];
-          if (typeof value === "string" && value.trim()) {
-            (newItem as any)[field] = translations[translationIndex++];
-          }
-        });
-        return newItem;
+      const finalItems = [...partiallyTranslatedItems];
+      translations.forEach((translation, idx) => {
+        const { itemIndex, field } = translationMap[idx];
+        (finalItems[itemIndex] as any)[field] = translation;
       });
-      setTranslatedItems(newItems);
+      setTranslatedItems(finalItems);
     });
 
     return () => {
