@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { Briefcase } from "lucide-react";
+import { TranslatedText, useDynamicTranslation } from "@/components/TranslatedText";
 
 interface CareerOpening {
   id: string;
@@ -36,16 +37,19 @@ const Careers = () => {
     fetchOpenings();
   }, []);
 
+  // Translate dynamic content
+  const translatedOpenings = useDynamicTranslation(openings, ["title", "department", "description", "requirements"]);
+
   return (
     <MainLayout>
       <section className="py-16 bg-background">
         <div className="container">
           <div className="text-center mb-12">
             <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Career Opportunities
+              <TranslatedText>Career Opportunities</TranslatedText>
             </h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Join our team and make a difference in education
+              <TranslatedText>Join our team and make a difference in education</TranslatedText>
             </p>
           </div>
 
@@ -55,20 +59,21 @@ const Careers = () => {
                 <Skeleton key={i} className="h-48 w-full" />
               ))}
             </div>
-          ) : openings.length === 0 ? (
+          ) : translatedOpenings.length === 0 ? (
             <Card className="max-w-lg mx-auto text-center">
               <CardContent className="py-12">
                 <Briefcase className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                <h3 className="font-semibold text-lg mb-2">No Current Openings</h3>
+                <h3 className="font-semibold text-lg mb-2">
+                  <TranslatedText>No Current Openings</TranslatedText>
+                </h3>
                 <p className="text-muted-foreground">
-                  There are no job openings at the moment. Please check back later or 
-                  send your resume to info@balisaipublicschool.in
+                  <TranslatedText>There are no job openings at the moment. Please check back later or send your resume to info@balisaipublicschool.in</TranslatedText>
                 </p>
               </CardContent>
             </Card>
           ) : (
             <div className="space-y-6 max-w-3xl mx-auto">
-              {openings.map((opening) => (
+              {translatedOpenings.map((opening) => (
                 <Card key={opening.id} className="hover:shadow-lg transition-shadow">
                   <CardHeader>
                     <div className="flex items-start justify-between">
@@ -82,13 +87,15 @@ const Careers = () => {
                     <p className="text-muted-foreground mb-4">{opening.description}</p>
                     {opening.requirements && (
                       <div>
-                        <h4 className="font-semibold mb-2">Requirements:</h4>
+                        <h4 className="font-semibold mb-2">
+                          <TranslatedText>Requirements:</TranslatedText>
+                        </h4>
                         <p className="text-muted-foreground text-sm">{opening.requirements}</p>
                       </div>
                     )}
                     <Button className="mt-4" asChild>
-                      <a href="mailto:info@balisaipublicschool.in?subject=Application for ${opening.title}">
-                        Apply Now
+                      <a href={`mailto:info@balisaipublicschool.in?subject=Application for ${opening.title}`}>
+                        <TranslatedText>Apply Now</TranslatedText>
                       </a>
                     </Button>
                   </CardContent>
