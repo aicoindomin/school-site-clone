@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Send, CheckCircle, MessageCircle } from "lucide-react";
+import { Send, CheckCircle } from "lucide-react";
 import { TranslatedText } from "@/components/TranslatedText";
 
 const grades = [
@@ -25,7 +25,6 @@ const grades = [
 const Admission = () => {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [whatsappSettings, setWhatsappSettings] = useState<{ whatsapp_number: string; is_active: boolean } | null>(null);
   const [formData, setFormData] = useState({
     student_name: "",
     parent_name: "",
@@ -35,43 +34,27 @@ const Admission = () => {
     message: ""
   });
 
-  useEffect(() => {
-    const fetchWhatsappSettings = async () => {
-      const { data } = await supabase
-        .from("whatsapp_settings")
-        .select("whatsapp_number, is_active")
-        .eq("is_active", true)
-        .maybeSingle();
-      
-      if (data) {
-        setWhatsappSettings(data);
-      }
-    };
-    fetchWhatsappSettings();
-  }, []);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const sendToWhatsApp = () => {
-    if (!whatsappSettings?.whatsapp_number) return;
+  const sendTelegramNotification = async () => {
+    try {
+      const { error } = await supabase.functions.invoke('send-telegram-notification', {
+        body: {
+          studentName: formData.student_name,
+          className: formData.grade_applying,
+          phone: formData.phone,
+          parentName: formData.parent_name
+        }
+      });
 
-    const message = `🎓 *New Admission Inquiry*
-
-👤 *Student Name:* ${formData.student_name}
-👨‍👩‍👦 *Parent Name:* ${formData.parent_name}
-📧 *Email:* ${formData.email || "Not provided"}
-📱 *Phone:* ${formData.phone}
-📚 *Grade:* ${formData.grade_applying}
-${formData.message ? `💬 *Message:* ${formData.message}` : ""}
-
-_Sent from Balisai Public School Website_`;
-
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/${whatsappSettings.whatsapp_number}?text=${encodedMessage}`;
-    
-    window.open(whatsappUrl, "_blank");
+      if (error) {
+        console.error('Telegram notification error:', error);
+      }
+    } catch (err) {
+      console.error('Failed to send Telegram notification:', err);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -92,13 +75,11 @@ _Sent from Balisai Public School Website_`;
       toast.error("Failed to submit. Please try again.");
       console.error(error);
     } else {
+      // Send Telegram notification after successful database save
+      await sendTelegramNotification();
+      
       setSubmitted(true);
       toast.success("Application submitted successfully!");
-      
-      // Send to WhatsApp if enabled
-      if (whatsappSettings?.is_active) {
-        sendToWhatsApp();
-      }
     }
     
     setLoading(false);
@@ -157,11 +138,8 @@ _Sent from Balisai Public School Website_`;
 
           <Card className="max-w-2xl mx-auto">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle>
                 <TranslatedText>Admission Inquiry Form</TranslatedText>
-                {whatsappSettings?.is_active && (
-                  <MessageCircle className="w-5 h-5 text-green-500" />
-                )}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -270,13 +248,6 @@ _Sent from Balisai Public School Website_`;
                     </>
                   )}
                 </Button>
-
-                {whatsappSettings?.is_active && (
-                  <p className="text-center text-sm text-muted-foreground">
-                    <MessageCircle className="w-4 h-4 inline-block mr-1 text-green-500" />
-                    <TranslatedText>Your inquiry will also be sent to our WhatsApp for faster response</TranslatedText>
-                  </p>
-                )}
               </form>
             </CardContent>
           </Card>
