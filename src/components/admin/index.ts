@@ -1,3 +1,4 @@
+// Admin panel component exports
 export { NoticesManager } from "./NoticesManager";
 export { AccountSettings } from "./AccountSettings";
 export { GalleryManager } from "./GalleryManager";
