@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,9 +22,16 @@ const grades = [
   "Class V"
 ];
 
+interface TelegramSettings {
+  bot_token: string;
+  chat_id: string;
+  is_active: boolean;
+}
+
 const Admission = () => {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [telegramSettings, setTelegramSettings] = useState<TelegramSettings | null>(null);
   const [formData, setFormData] = useState({
     student_name: "",
     parent_name: "",
@@ -34,24 +41,34 @@ const Admission = () => {
     message: ""
   });
 
+  useEffect(() => {
+    fetchTelegramSettings();
+  }, []);
+
+  const fetchTelegramSettings = async () => {
+    const { data } = await supabase
+      .from("telegram_settings")
+      .select("bot_token, chat_id, is_active")
+      .limit(1)
+      .maybeSingle();
+    
+    if (data) {
+      setTelegramSettings(data);
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const sendTelegramNotification = async () => {
-    try {
-      const { error } = await supabase.functions.invoke('send-telegram-notification', {
-        body: {
-          studentName: formData.student_name,
-          className: formData.grade_applying,
-          phone: formData.phone,
-          parentName: formData.parent_name
-        }
-      });
+    if (!telegramSettings || !telegramSettings.is_active) return;
 
-      if (error) {
-        console.error('Telegram notification error:', error);
-      }
+    try {
+      const message = `🎓 New Admission: ${formData.student_name} , ${formData.grade_applying} , ${formData.phone} , ${formData.parent_name}.`;
+      const telegramUrl = `https://api.telegram.org/bot${telegramSettings.bot_token}/sendMessage?chat_id=${telegramSettings.chat_id}&text=${encodeURIComponent(message)}`;
+      
+      await fetch(telegramUrl);
     } catch (err) {
       console.error('Failed to send Telegram notification:', err);
     }
