@@ -1,4 +1,5 @@
 import { GraduationCap, Users, Award, Calendar } from "lucide-react";
+import { TranslatedText, useTranslatedTexts } from "@/components/TranslatedText";
 
 const stats = [
   {
@@ -28,6 +29,9 @@ const stats = [
 ];
 
 export function StatsSection() {
+  const labels = useTranslatedTexts(stats.map(s => s.label));
+  const descriptions = useTranslatedTexts(stats.map(s => s.description));
+
   return (
     <section className="py-16 bg-primary text-primary-foreground">
       <div className="container">
@@ -38,8 +42,8 @@ export function StatsSection() {
                 <stat.icon className="w-8 h-8" />
               </div>
               <p className="font-display text-4xl font-bold mb-2">{stat.value}</p>
-              <p className="text-lg font-medium mb-1">{stat.label}</p>
-              <p className="text-primary-foreground/70 text-sm">{stat.description}</p>
+              <p className="text-lg font-medium mb-1">{labels[index]}</p>
+              <p className="text-primary-foreground/70 text-sm">{descriptions[index]}</p>
             </div>
           ))}
         </div>

@@ -1,4 +1,5 @@
 import { Quote } from "lucide-react";
+import { TranslatedText, useTranslatedTexts } from "@/components/TranslatedText";
 import secretaryImg from "@/assets/leadership/secretary.png";
 import headmasterImg from "@/assets/leadership/headmaster.png";
 
@@ -18,12 +19,15 @@ const leaders = [
 ];
 
 export function LeadershipSection() {
+  const titles = useTranslatedTexts(leaders.map(l => l.title));
+  const quotes = useTranslatedTexts(leaders.map(l => l.quote));
+
   return (
     <section id="leadership-section" className="py-16 bg-gradient-to-b from-muted to-background">
       <div className="container">
         <div className="text-center mb-12">
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Our Leadership
+            <TranslatedText>Our Leadership</TranslatedText>
           </h2>
           <div className="w-24 h-1 bg-primary mx-auto rounded-full" />
         </div>
@@ -66,13 +70,13 @@ export function LeadershipSection() {
                 {/* Content Section */}
                 <div className="lg:w-3/5 p-6 lg:p-8 flex flex-col justify-center">
                   <h3 className="font-display text-xl lg:text-2xl font-bold text-primary mb-4">
-                    {leader.title}
+                    {titles[index]}
                   </h3>
 
                   <div className="relative">
                     <Quote className="absolute -top-2 -left-2 w-8 h-8 text-primary/20" />
                     <p className="text-foreground/80 italic text-base lg:text-lg leading-relaxed pl-6">
-                      "{leader.quote}"
+                      "{quotes[index]}"
                     </p>
                   </div>
 

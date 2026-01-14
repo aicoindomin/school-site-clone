@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { TranslatedText } from "@/components/TranslatedText";
 import yogaImg from "@/assets/gallery/yoga.jpg";
 
 interface GalleryItem {
@@ -31,8 +32,12 @@ export function GallerySection() {
       <section id="gallery" className="py-16 bg-background">
         <div className="container">
           <div className="text-center mb-12">
-            <p className="text-primary font-medium mb-2">Memories & Moments</p>
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">Photo Gallery</h2>
+            <p className="text-primary font-medium mb-2">
+              <TranslatedText>Memories & Moments</TranslatedText>
+            </p>
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
+              <TranslatedText>Photo Gallery</TranslatedText>
+            </h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {[...Array(6)].map((_, i) => <div key={i} className="aspect-square bg-muted animate-pulse rounded-lg" />)}
@@ -48,8 +53,12 @@ export function GallerySection() {
     <section id="gallery" className="py-16 bg-background">
       <div className="container">
         <div className="text-center mb-12">
-          <p className="text-primary font-medium mb-2">Memories & Moments</p>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">Photo Gallery</h2>
+          <p className="text-primary font-medium mb-2">
+            <TranslatedText>Memories & Moments</TranslatedText>
+          </p>
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
+            <TranslatedText>Photo Gallery</TranslatedText>
+          </h2>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
@@ -71,7 +80,10 @@ export function GallerySection() {
 
         <div className="text-center">
           <Button asChild variant="outline">
-            <Link to="/gallery">View Full Gallery<ArrowRight className="ml-2 w-4 h-4" /></Link>
+            <Link to="/gallery">
+              <TranslatedText>View Full Gallery</TranslatedText>
+              <ArrowRight className="ml-2 w-4 h-4" />
+            </Link>
           </Button>
         </div>
       </div>

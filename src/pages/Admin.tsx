@@ -7,14 +7,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { 
   LogOut, Bell, Trophy, Image, Users, FileText, Home, Link as LinkIcon, 
-  Calendar, GraduationCap, BookOpen, Star, Settings
+  Calendar, GraduationCap, BookOpen, Star, Settings, MessageCircle
 } from "lucide-react";
 import { User, Session } from "@supabase/supabase-js";
 import { 
   NoticesManager, GalleryManager, ResultsManager, StaffManager,
   UsefulLinksManager, QuickLinksManager, TopAchieversManager,
   ClassRoutineManager, HolidaysManager, WebsiteContentManager,
-  FacultyManager, StudentsManager, AccountSettings
+  FacultyManager, StudentsManager, AccountSettings, WhatsAppSettingsManager
 } from "@/components/admin";
 
 export default function Admin() {
@@ -235,13 +235,22 @@ export default function Admin() {
           </TabsContent>
 
           <TabsContent value="settings">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2"><Settings className="w-5 h-5" />Account Settings</CardTitle>
-                <CardDescription>Manage your account and invite other administrators</CardDescription>
-              </CardHeader>
-              <CardContent><AccountSettings /></CardContent>
-            </Card>
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2"><MessageCircle className="w-5 h-5 text-green-500" />WhatsApp Settings</CardTitle>
+                  <CardDescription>Configure WhatsApp integration for admission inquiries</CardDescription>
+                </CardHeader>
+                <CardContent><WhatsAppSettingsManager /></CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2"><Settings className="w-5 h-5" />Account Settings</CardTitle>
+                  <CardDescription>Manage your account and invite other administrators</CardDescription>
+                </CardHeader>
+                <CardContent><AccountSettings /></CardContent>
+              </Card>
+            </div>
           </TabsContent>
         </Tabs>
       </main>

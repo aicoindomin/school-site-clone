@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Send, CheckCircle } from "lucide-react";
+import { Send, CheckCircle, MessageCircle } from "lucide-react";
+import { TranslatedText } from "@/components/TranslatedText";
 
 const grades = [
   "Prep-I",
@@ -24,6 +25,7 @@ const grades = [
 const Admission = () => {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [whatsappSettings, setWhatsappSettings] = useState<{ whatsapp_number: string; is_active: boolean } | null>(null);
   const [formData, setFormData] = useState({
     student_name: "",
     parent_name: "",
@@ -33,14 +35,49 @@ const Admission = () => {
     message: ""
   });
 
+  useEffect(() => {
+    const fetchWhatsappSettings = async () => {
+      const { data } = await supabase
+        .from("whatsapp_settings")
+        .select("whatsapp_number, is_active")
+        .eq("is_active", true)
+        .maybeSingle();
+      
+      if (data) {
+        setWhatsappSettings(data);
+      }
+    };
+    fetchWhatsappSettings();
+  }, []);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const sendToWhatsApp = () => {
+    if (!whatsappSettings?.whatsapp_number) return;
+
+    const message = `🎓 *New Admission Inquiry*
+
+👤 *Student Name:* ${formData.student_name}
+👨‍👩‍👦 *Parent Name:* ${formData.parent_name}
+📧 *Email:* ${formData.email || "Not provided"}
+📱 *Phone:* ${formData.phone}
+📚 *Grade:* ${formData.grade_applying}
+${formData.message ? `💬 *Message:* ${formData.message}` : ""}
+
+_Sent from Balisai Public School Website_`;
+
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${whatsappSettings.whatsapp_number}?text=${encodedMessage}`;
+    
+    window.open(whatsappUrl, "_blank");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.student_name || !formData.parent_name || !formData.email || !formData.phone || !formData.grade_applying) {
+    if (!formData.student_name || !formData.parent_name || !formData.phone || !formData.grade_applying) {
       toast.error("Please fill all required fields");
       return;
     }
@@ -57,6 +94,11 @@ const Admission = () => {
     } else {
       setSubmitted(true);
       toast.success("Application submitted successfully!");
+      
+      // Send to WhatsApp if enabled
+      if (whatsappSettings?.is_active) {
+        sendToWhatsApp();
+      }
     }
     
     setLoading(false);
@@ -70,10 +112,14 @@ const Admission = () => {
             <Card className="max-w-lg mx-auto text-center">
               <CardContent className="py-12">
                 <CheckCircle className="w-20 h-20 text-green-500 mx-auto mb-6" />
-                <h2 className="font-display text-2xl font-bold mb-4">Application Submitted!</h2>
+                <h2 className="font-display text-2xl font-bold mb-4">
+                  <TranslatedText>Application Submitted!</TranslatedText>
+                </h2>
                 <p className="text-muted-foreground mb-6">
-                  Thank you for your interest in Balisai Public School. 
-                  We have received your admission inquiry and will contact you soon.
+                  <TranslatedText>
+                    Thank you for your interest in Balisai Public School. 
+                    We have received your admission inquiry and will contact you soon.
+                  </TranslatedText>
                 </p>
                 <Button onClick={() => {
                   setSubmitted(false);
@@ -86,7 +132,7 @@ const Admission = () => {
                     message: ""
                   });
                 }}>
-                  Submit Another Application
+                  <TranslatedText>Submit Another Application</TranslatedText>
                 </Button>
               </CardContent>
             </Card>
@@ -102,22 +148,29 @@ const Admission = () => {
         <div className="container">
           <div className="text-center mb-12">
             <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Apply for Admission
+              <TranslatedText>Apply for Admission</TranslatedText>
             </h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Fill out the form below to apply for admission at Balisai Public School
+              <TranslatedText>Fill out the form below to apply for admission at Balisai Public School</TranslatedText>
             </p>
           </div>
 
           <Card className="max-w-2xl mx-auto">
             <CardHeader>
-              <CardTitle>Admission Inquiry Form</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <TranslatedText>Admission Inquiry Form</TranslatedText>
+                {whatsappSettings?.is_active && (
+                  <MessageCircle className="w-5 h-5 text-green-500" />
+                )}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="student_name">Student Name *</Label>
+                    <Label htmlFor="student_name">
+                      <TranslatedText>Student Name</TranslatedText> *
+                    </Label>
                     <Input
                       id="student_name"
                       name="student_name"
@@ -128,7 +181,9 @@ const Admission = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="parent_name">Parent/Guardian Name *</Label>
+                    <Label htmlFor="parent_name">
+                      <TranslatedText>Parent/Guardian Name</TranslatedText> *
+                    </Label>
                     <Input
                       id="parent_name"
                       name="parent_name"
@@ -142,7 +197,9 @@ const Admission = () => {
 
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email Address *</Label>
+                    <Label htmlFor="email">
+                      <TranslatedText>Email Address (Optional)</TranslatedText>
+                    </Label>
                     <Input
                       id="email"
                       name="email"
@@ -150,11 +207,12 @@ const Admission = () => {
                       value={formData.email}
                       onChange={handleChange}
                       placeholder="example@email.com"
-                      required
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="phone">Phone Number *</Label>
+                    <Label htmlFor="phone">
+                      <TranslatedText>Phone Number</TranslatedText> *
+                    </Label>
                     <Input
                       id="phone"
                       name="phone"
@@ -168,7 +226,9 @@ const Admission = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="grade_applying">Grade Applying For *</Label>
+                  <Label htmlFor="grade_applying">
+                    <TranslatedText>Grade Applying For</TranslatedText> *
+                  </Label>
                   <Select
                     value={formData.grade_applying}
                     onValueChange={(value) => setFormData({ ...formData, grade_applying: value })}
@@ -187,7 +247,9 @@ const Admission = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="message">Additional Message (Optional)</Label>
+                  <Label htmlFor="message">
+                    <TranslatedText>Additional Message (Optional)</TranslatedText>
+                  </Label>
                   <Textarea
                     id="message"
                     name="message"
@@ -200,14 +262,21 @@ const Admission = () => {
 
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? (
-                    "Submitting..."
+                    <TranslatedText>Submitting...</TranslatedText>
                   ) : (
                     <>
                       <Send className="w-4 h-4 mr-2" />
-                      Submit Application
+                      <TranslatedText>Submit Application</TranslatedText>
                     </>
                   )}
                 </Button>
+
+                {whatsappSettings?.is_active && (
+                  <p className="text-center text-sm text-muted-foreground">
+                    <MessageCircle className="w-4 h-4 inline-block mr-1 text-green-500" />
+                    <TranslatedText>Your inquiry will also be sent to our WhatsApp for faster response</TranslatedText>
+                  </p>
+                )}
               </form>
             </CardContent>
           </Card>

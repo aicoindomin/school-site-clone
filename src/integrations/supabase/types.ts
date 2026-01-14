@@ -17,7 +17,7 @@ export type Database = {
       admission_inquiries: {
         Row: {
           created_at: string
-          email: string
+          email: string | null
           grade_applying: string
           id: string
           message: string | null
@@ -29,7 +29,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
-          email: string
+          email?: string | null
           grade_applying: string
           id?: string
           message?: string | null
@@ -41,7 +41,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
-          email?: string
+          email?: string | null
           grade_applying?: string
           id?: string
           message?: string | null
@@ -715,6 +715,33 @@ export type Database = {
           section_key?: string
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      whatsapp_settings: {
+        Row: {
+          api_key: string | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          updated_at: string
+          whatsapp_number: string
+        }
+        Insert: {
+          api_key?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string
+          whatsapp_number: string
+        }
+        Update: {
+          api_key?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string
+          whatsapp_number?: string
         }
         Relationships: []
       }

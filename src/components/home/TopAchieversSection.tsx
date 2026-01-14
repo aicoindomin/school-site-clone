@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { TranslatedText, useTranslatedTexts } from "@/components/TranslatedText";
 import prep1Img from "@/assets/toppers/prep1.png";
 
 interface Achiever {
@@ -33,6 +34,10 @@ const AchieverCard = ({ achiever }: { achiever: Achiever }) => {
 export const TopAchieversSection = () => {
   const [achievers, setAchievers] = useState<Achiever[]>([]);
   const [loading, setLoading] = useState(true);
+  const translatedTexts = useTranslatedTexts([
+    "Our Top Achievers",
+    "Celebrating excellence - Meet our brilliant students who secured 1st position in their respective classes"
+  ]);
 
   useEffect(() => {
     const fetchAchievers = async () => {
@@ -70,10 +75,10 @@ export const TopAchieversSection = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            🏆 Our Top Achievers
+            🏆 {translatedTexts[0]}
           </h2>
           <p className="text-slate-400 max-w-2xl mx-auto">
-            Celebrating excellence - Meet our brilliant students who secured 1st position in their respective classes
+            {translatedTexts[1]}
           </p>
         </div>
         
