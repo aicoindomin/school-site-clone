@@ -65,8 +65,14 @@ const Admission = () => {
     if (!telegramSettings || !telegramSettings.is_active) return;
 
     try {
-      const message = `🎓 New Admission: ${formData.student_name} , ${formData.grade_applying} , ${formData.phone} , ${formData.parent_name}.`;
-      const telegramUrl = `https://api.telegram.org/bot${telegramSettings.bot_token}/sendMessage?chat_id=${telegramSettings.chat_id}&text=${encodeURIComponent(message)}`;
+      const message = `🎓 *New Admission Inquiry*
+
+📚 *Student Name:* ${formData.student_name}
+📞 *Phone Number:* ${formData.phone}
+🏫 *Grade Applying For:* ${formData.grade_applying}
+👨‍👩‍👧 *Parent/Guardian Name:* ${formData.parent_name}${formData.email ? `\n📧 *Email:* ${formData.email}` : ''}${formData.message ? `\n💬 *Message:* ${formData.message}` : ''}`;
+
+      const telegramUrl = `https://api.telegram.org/bot${telegramSettings.bot_token}/sendMessage?chat_id=${telegramSettings.chat_id}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
       
       await fetch(telegramUrl);
     } catch (err) {
