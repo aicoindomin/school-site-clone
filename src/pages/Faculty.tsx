@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "lucide-react";
+import { useTranslatedTexts, useDynamicTranslation } from "@/components/TranslatedText";
 
 interface Faculty {
   id: string;
@@ -17,6 +18,26 @@ interface Faculty {
 const Faculty = () => {
   const [faculty, setFaculty] = useState<Faculty[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Static text translations
+  const textsToTranslate = useMemo(() => [
+    "Our Faculty",
+    "Meet our dedicated team of educators",
+    "No faculty members available"
+  ], []);
+
+  const translatedTexts = useTranslatedTexts(textsToTranslate);
+  
+  const t = useMemo(() => {
+    const map: Record<string, string> = {};
+    textsToTranslate.forEach((text, index) => {
+      map[text] = translatedTexts[index] || text;
+    });
+    return map;
+  }, [textsToTranslate, translatedTexts]);
+
+  // Translate dynamic content
+  const translatedFaculty = useDynamicTranslation(faculty, ["name", "designation", "department", "qualification"]);
 
   useEffect(() => {
     const fetchFaculty = async () => {
@@ -41,10 +62,10 @@ const Faculty = () => {
         <div className="container">
           <div className="text-center mb-12">
             <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Our Faculty
+              {t["Our Faculty"]}
             </h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Meet our dedicated team of educators
+              {t["Meet our dedicated team of educators"]}
             </p>
           </div>
 
@@ -60,18 +81,18 @@ const Faculty = () => {
                 </Card>
               ))}
             </div>
-          ) : faculty.length === 0 ? (
+          ) : translatedFaculty.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
-              No faculty members available
+              {t["No faculty members available"]}
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {faculty.map((member) => (
+              {translatedFaculty.map((member, index) => (
                 <Card key={member.id} className="hover:shadow-lg transition-shadow">
                   <CardContent className="p-6 text-center">
-                    {member.image_url ? (
+                    {faculty[index]?.image_url ? (
                       <img
-                        src={member.image_url}
+                        src={faculty[index].image_url!}
                         alt={member.name}
                         className="w-32 h-32 rounded-full object-cover mx-auto mb-4 border-4 border-primary/20"
                       />

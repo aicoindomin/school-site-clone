@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
+import { useTranslatedTexts, useDynamicTranslation } from "@/components/TranslatedText";
 
 interface GalleryItem {
   id: string;
@@ -14,6 +15,26 @@ interface GalleryItem {
 const Gallery = () => {
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Static text translations
+  const textsToTranslate = useMemo(() => [
+    "Photo Gallery",
+    "Memories and moments from our school",
+    "No gallery images available"
+  ], []);
+
+  const translatedTexts = useTranslatedTexts(textsToTranslate);
+  
+  const t = useMemo(() => {
+    const map: Record<string, string> = {};
+    textsToTranslate.forEach((text, index) => {
+      map[text] = translatedTexts[index] || text;
+    });
+    return map;
+  }, [textsToTranslate, translatedTexts]);
+
+  // Translate dynamic content
+  const translatedGallery = useDynamicTranslation(gallery, ["title", "description", "category"]);
 
   useEffect(() => {
     const fetchGallery = async () => {
@@ -37,10 +58,10 @@ const Gallery = () => {
         <div className="container">
           <div className="text-center mb-12">
             <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Photo Gallery
+              {t["Photo Gallery"]}
             </h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Memories and moments from our school
+              {t["Memories and moments from our school"]}
             </p>
           </div>
 
@@ -50,13 +71,13 @@ const Gallery = () => {
                 <Skeleton key={i} className="aspect-square rounded-lg" />
               ))}
             </div>
-          ) : gallery.length === 0 ? (
+          ) : translatedGallery.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
-              No gallery images available
+              {t["No gallery images available"]}
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {gallery.map((image) => (
+              {translatedGallery.map((image, index) => (
                 <div
                   key={image.id}
                   className="group relative overflow-hidden rounded-lg aspect-square [perspective:1000px]"
@@ -65,7 +86,7 @@ const Gallery = () => {
                     {/* Front - Image */}
                     <div className="absolute inset-0 [backface-visibility:hidden]">
                       <img
-                        src={image.image_url}
+                        src={gallery[index].image_url}
                         alt={image.title}
                         className="w-full h-full object-cover"
                       />

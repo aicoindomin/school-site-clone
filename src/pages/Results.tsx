@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { Trophy, Medal, Award } from "lucide-react";
+import { useTranslatedTexts, useDynamicTranslation } from "@/components/TranslatedText";
 
 interface Result {
   id: string;
@@ -31,6 +32,33 @@ const Results = () => {
   const [loading, setLoading] = useState(true);
   const [selectedClass, setSelectedClass] = useState<string>("Prep-I");
 
+  // Static text translations
+  const textsToTranslate = useMemo(() => [
+    "Exam Results",
+    "Celebrating academic excellence",
+    "No results available",
+    "No results for this class",
+    "Rank",
+    "Annual Exam",
+    "Half Yearly",
+    "Quarterly",
+    "Unit Test",
+    "Board Exam"
+  ], []);
+
+  const translatedTexts = useTranslatedTexts(textsToTranslate);
+  
+  const t = useMemo(() => {
+    const map: Record<string, string> = {};
+    textsToTranslate.forEach((text, index) => {
+      map[text] = translatedTexts[index] || text;
+    });
+    return map;
+  }, [textsToTranslate, translatedTexts]);
+
+  // Translate dynamic content
+  const translatedResults = useDynamicTranslation(results, ["student_name"]);
+
   useEffect(() => {
     const fetchResults = async () => {
       const { data, error } = await supabase
@@ -48,7 +76,7 @@ const Results = () => {
   }, []);
 
   const getResultsByClass = (className: string) => {
-    return results.filter(r => r.class_name === className);
+    return translatedResults.filter(r => r.class_name === className);
   };
 
   const getRankIcon = (rank: number | null) => {
@@ -56,6 +84,11 @@ const Results = () => {
     if (rank === 2) return <Medal className="w-5 h-5 text-gray-400" />;
     if (rank === 3) return <Award className="w-5 h-5 text-amber-600" />;
     return null;
+  };
+
+  const getTranslatedExamType = (examType: string) => {
+    const englishName = examTypes[examType] || examType;
+    return t[englishName] || englishName;
   };
 
   const availableClasses = classOptions.filter(cls => 
@@ -68,10 +101,10 @@ const Results = () => {
         <div className="container">
           <div className="text-center mb-12">
             <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Exam Results
+              {t["Exam Results"]}
             </h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Celebrating academic excellence
+              {t["Celebrating academic excellence"]}
             </p>
           </div>
 
@@ -87,9 +120,9 @@ const Results = () => {
                 </Card>
               ))}
             </div>
-          ) : results.length === 0 ? (
+          ) : translatedResults.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
-              No results available
+              {t["No results available"]}
             </div>
           ) : (
             <Tabs value={selectedClass} onValueChange={setSelectedClass}>
@@ -104,26 +137,26 @@ const Results = () => {
               {classOptions.map((cls) => (
                 <TabsContent key={cls} value={cls}>
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {getResultsByClass(cls).map((result) => (
+                    {getResultsByClass(cls).map((result, index) => (
                       <Card key={result.id} className="hover:shadow-lg transition-shadow">
                         <CardContent className="p-6">
                           <div className="flex items-start justify-between mb-3">
                             <span className="text-3xl font-bold text-primary">{result.percentage}%</span>
-                            {getRankIcon(result.rank)}
+                            {getRankIcon(results.find(r => r.id === result.id)?.rank || null)}
                           </div>
                           <h3 className="font-semibold text-lg mb-1">{result.student_name}</h3>
                           <p className="text-sm text-muted-foreground">
-                            {examTypes[result.exam_type] || result.exam_type} • {result.year}
+                            {getTranslatedExamType(results.find(r => r.id === result.id)?.exam_type || "")} • {result.year}
                           </p>
-                          {result.rank && (
-                            <p className="text-sm text-primary mt-1">Rank #{result.rank}</p>
+                          {results.find(r => r.id === result.id)?.rank && (
+                            <p className="text-sm text-primary mt-1">{t["Rank"]} #{results.find(r => r.id === result.id)?.rank}</p>
                           )}
                         </CardContent>
                       </Card>
                     ))}
                     {getResultsByClass(cls).length === 0 && (
                       <div className="col-span-full text-center py-8 text-muted-foreground">
-                        No results for this class
+                        {t["No results for this class"]}
                       </div>
                     )}
                   </div>

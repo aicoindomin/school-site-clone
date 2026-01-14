@@ -94,3 +94,59 @@ export function useTranslatedTexts(texts: string[]): string[] {
 
   return translatedTexts;
 }
+
+// Hook for translating dynamic database content (notices, etc.)
+export function useDynamicTranslation<T extends Record<string, any>>(
+  items: T[],
+  fieldsToTranslate: (keyof T)[]
+): T[] {
+  const { language, translateBatch } = useTranslation();
+  const [translatedItems, setTranslatedItems] = useState<T[]>(items);
+
+  useEffect(() => {
+    if (language === "en" || items.length === 0) {
+      setTranslatedItems(items);
+      return;
+    }
+
+    // Collect all texts to translate
+    const textsToTranslate: string[] = [];
+    items.forEach((item) => {
+      fieldsToTranslate.forEach((field) => {
+        const value = item[field];
+        if (typeof value === "string" && value.trim()) {
+          textsToTranslate.push(value);
+        }
+      });
+    });
+
+    if (textsToTranslate.length === 0) {
+      setTranslatedItems(items);
+      return;
+    }
+
+    let isMounted = true;
+    translateBatch(textsToTranslate).then((translations) => {
+      if (!isMounted) return;
+
+      let translationIndex = 0;
+      const newItems = items.map((item) => {
+        const newItem = { ...item };
+        fieldsToTranslate.forEach((field) => {
+          const value = item[field];
+          if (typeof value === "string" && value.trim()) {
+            (newItem as any)[field] = translations[translationIndex++];
+          }
+        });
+        return newItem;
+      });
+      setTranslatedItems(newItems);
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [items, language, translateBatch, fieldsToTranslate.join(",")]);
+
+  return translatedItems;
+}
