@@ -197,7 +197,7 @@ export function CareersManager() {
             <DialogTitle>{editingOpening ? "Edit Career Opening" : "Add Career Opening"}</DialogTitle>
           </DialogHeader>
           
-          <BilingualToggle value={inputLanguage} onChange={setInputLanguage} />
+          <BilingualToggle language={inputLanguage} onLanguageChange={setInputLanguage} />
           
           <div className="space-y-4">
             {inputLanguage === "en" ? (

@@ -218,7 +218,7 @@ export function StudentsManager() {
               <DialogTitle>{editingStudent ? "Edit Student" : "Add Student"}</DialogTitle>
             </DialogHeader>
             
-            <BilingualToggle value={inputLanguage} onChange={setInputLanguage} />
+            <BilingualToggle language={inputLanguage} onLanguageChange={setInputLanguage} />
             
             <div className="space-y-4">
               <div>

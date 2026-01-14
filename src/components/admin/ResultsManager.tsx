@@ -274,7 +274,7 @@ export function ResultsManager() {
               <DialogTitle>{editingResult ? "Edit Result" : "Add New Result"}</DialogTitle>
             </DialogHeader>
             
-            <BilingualToggle value={inputLanguage} onChange={setInputLanguage} />
+            <BilingualToggle language={inputLanguage} onLanguageChange={setInputLanguage} />
             
             <form onSubmit={handleSubmit} className="space-y-4">
               {inputLanguage === "en" ? (
