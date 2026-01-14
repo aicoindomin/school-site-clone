@@ -65,16 +65,41 @@ const Admission = () => {
     if (!telegramSettings || !telegramSettings.is_active) return;
 
     try {
+      // Clean phone number (remove spaces, dashes)
+      const cleanPhone = formData.phone.replace(/[\s-]/g, '');
+      
       const message = `🎓 *New Admission Inquiry*
 
 📚 *Student Name:* ${formData.student_name}
 📞 *Phone Number:* ${formData.phone}
 🏫 *Grade Applying For:* ${formData.grade_applying}
-👨‍👩‍👧 *Parent/Guardian Name:* ${formData.parent_name}${formData.email ? `\n📧 *Email:* ${formData.email}` : ''}${formData.message ? `\n💬 *Message:* ${formData.message}` : ''}`;
+👨‍👩‍👧 *Parent/Guardian Name:* ${formData.parent_name}${formData.email ? `\n📧 *Email:* ${formData.email}` : ''}${formData.message ? `\n💬 *Message:* ${formData.message}` : ''}
 
-      const telegramUrl = `https://api.telegram.org/bot${telegramSettings.bot_token}/sendMessage?chat_id=${telegramSettings.chat_id}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
+📞 *Call Now:* [+91${cleanPhone}](tel:+91${cleanPhone})`;
+
+      const telegramUrl = `https://api.telegram.org/bot${telegramSettings.bot_token}/sendMessage`;
       
-      await fetch(telegramUrl);
+      await fetch(telegramUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          chat_id: telegramSettings.chat_id,
+          text: message,
+          parse_mode: 'Markdown',
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: '💬 Chat on WhatsApp',
+                  url: `https://wa.me/91${cleanPhone}`
+                }
+              ]
+            ]
+          }
+        })
+      });
     } catch (err) {
       console.error('Failed to send Telegram notification:', err);
     }
