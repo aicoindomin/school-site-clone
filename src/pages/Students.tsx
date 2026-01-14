@@ -15,7 +15,7 @@ interface Student {
   image_url: string | null;
 }
 
-const classOptions = ["Prep-I", "Kg-I", "Kg-II", "Std-I", "Std-II", "Std-III", "Std-IV", "Std-V"];
+const classOptions = ["Prep-I", "Kg-I", "Kg-II", "Std-V"];
 
 const Students = () => {
   const [students, setStudents] = useState<Student[]>([]);
