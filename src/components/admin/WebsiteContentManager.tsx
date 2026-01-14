@@ -14,13 +14,17 @@ import {
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Pencil, FileText, Eye, EyeOff } from "lucide-react";
+import { BilingualToggle } from "./BilingualToggle";
 
 interface WebsiteContent {
   id: string;
   section_key: string;
   title: string;
+  title_bn: string | null;
   content: string | null;
+  content_bn: string | null;
   meta_description: string | null;
+  meta_description_bn: string | null;
   is_published: boolean;
 }
 
@@ -30,9 +34,18 @@ export function WebsiteContentManager() {
   const [saving, setSaving] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingContent, setEditingContent] = useState<WebsiteContent | null>(null);
+  const [inputLanguage, setInputLanguage] = useState<"en" | "bn">("en");
+  
+  // English fields
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
+  
+  // Bengali fields
+  const [titleBn, setTitleBn] = useState("");
+  const [contentBn, setContentBn] = useState("");
+  const [metaDescriptionBn, setMetaDescriptionBn] = useState("");
+  
   const [isPublished, setIsPublished] = useState(true);
   const { toast } = useToast();
 
@@ -57,9 +70,13 @@ export function WebsiteContentManager() {
   const openEditDialog = (item: WebsiteContent) => {
     setEditingContent(item);
     setTitle(item.title);
+    setTitleBn(item.title_bn || "");
     setContent(item.content || "");
+    setContentBn(item.content_bn || "");
     setMetaDescription(item.meta_description || "");
+    setMetaDescriptionBn(item.meta_description_bn || "");
     setIsPublished(item.is_published);
+    setInputLanguage("en");
     setDialogOpen(true);
   };
 
@@ -71,8 +88,11 @@ export function WebsiteContentManager() {
       .from("website_content")
       .update({
         title,
+        title_bn: titleBn || null,
         content,
+        content_bn: contentBn || null,
         meta_description: metaDescription || null,
+        meta_description_bn: metaDescriptionBn || null,
         is_published: isPublished,
       })
       .eq("id", editingContent.id);
@@ -164,29 +184,62 @@ export function WebsiteContentManager() {
               Edit {editingContent && getSectionLabel(editingContent.section_key)}
             </DialogTitle>
           </DialogHeader>
+          
+          <BilingualToggle value={inputLanguage} onChange={setInputLanguage} />
+          
           <div className="space-y-4">
-            <div>
-              <Label>Page Title</Label>
-              <Input value={title} onChange={(e) => setTitle(e.target.value)} />
-            </div>
-            <div>
-              <Label>Content</Label>
-              <Textarea
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                rows={10}
-                placeholder="Write the content here..."
-              />
-            </div>
-            <div>
-              <Label>Meta Description (SEO)</Label>
-              <Textarea
-                value={metaDescription}
-                onChange={(e) => setMetaDescription(e.target.value)}
-                rows={2}
-                placeholder="Brief description for search engines..."
-              />
-            </div>
+            {inputLanguage === "en" ? (
+              <>
+                <div>
+                  <Label>Page Title</Label>
+                  <Input value={title} onChange={(e) => setTitle(e.target.value)} />
+                </div>
+                <div>
+                  <Label>Content</Label>
+                  <Textarea
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    rows={10}
+                    placeholder="Write the content here..."
+                  />
+                </div>
+                <div>
+                  <Label>Meta Description (SEO)</Label>
+                  <Textarea
+                    value={metaDescription}
+                    onChange={(e) => setMetaDescription(e.target.value)}
+                    rows={2}
+                    placeholder="Brief description for search engines..."
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <Label>পাতার শিরোনাম (Bengali)</Label>
+                  <Input value={titleBn} onChange={(e) => setTitleBn(e.target.value)} />
+                </div>
+                <div>
+                  <Label>বিষয়বস্তু (Bengali)</Label>
+                  <Textarea
+                    value={contentBn}
+                    onChange={(e) => setContentBn(e.target.value)}
+                    rows={10}
+                    placeholder="বাংলায় বিষয়বস্তু লিখুন..."
+                  />
+                </div>
+                <div>
+                  <Label>মেটা বিবরণ (Bengali)</Label>
+                  <Textarea
+                    value={metaDescriptionBn}
+                    onChange={(e) => setMetaDescriptionBn(e.target.value)}
+                    rows={2}
+                    placeholder="সার্চ ইঞ্জিনের জন্য সংক্ষিপ্ত বিবরণ..."
+                  />
+                </div>
+              </>
+            )}
+            
             <div className="flex items-center gap-2">
               <Switch checked={isPublished} onCheckedChange={setIsPublished} />
               <Label>Published</Label>

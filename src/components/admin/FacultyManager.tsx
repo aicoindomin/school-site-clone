@@ -27,17 +27,23 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, User, Mail, Phone } from "lucide-react";
 import { ImageUpload } from "@/components/ui/image-upload";
+import { BilingualToggle } from "./BilingualToggle";
 
 interface Faculty {
   id: string;
   name: string;
+  name_bn: string | null;
   designation: string;
+  designation_bn: string | null;
   department: string | null;
+  department_bn: string | null;
   qualification: string | null;
+  qualification_bn: string | null;
   image_url: string | null;
   email: string | null;
   phone: string | null;
   bio: string | null;
+  bio_bn: string | null;
   order_index: number;
   is_active: boolean;
 }
@@ -48,14 +54,26 @@ export function FacultyManager() {
   const [saving, setSaving] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingFaculty, setEditingFaculty] = useState<Faculty | null>(null);
+  const [inputLanguage, setInputLanguage] = useState<"en" | "bn">("en");
+  
+  // English fields
   const [name, setName] = useState("");
   const [designation, setDesignation] = useState("");
   const [department, setDepartment] = useState("");
   const [qualification, setQualification] = useState("");
+  const [bio, setBio] = useState("");
+  
+  // Bengali fields
+  const [nameBn, setNameBn] = useState("");
+  const [designationBn, setDesignationBn] = useState("");
+  const [departmentBn, setDepartmentBn] = useState("");
+  const [qualificationBn, setQualificationBn] = useState("");
+  const [bioBn, setBioBn] = useState("");
+  
+  // Common fields
   const [imageUrl, setImageUrl] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [bio, setBio] = useState("");
   const [orderIndex, setOrderIndex] = useState(0);
   const [isActive, setIsActive] = useState(true);
   const { toast } = useToast();
@@ -80,30 +98,42 @@ export function FacultyManager() {
 
   const resetForm = () => {
     setName("");
+    setNameBn("");
     setDesignation("");
+    setDesignationBn("");
     setDepartment("");
+    setDepartmentBn("");
     setQualification("");
+    setQualificationBn("");
     setImageUrl("");
     setEmail("");
     setPhone("");
     setBio("");
+    setBioBn("");
     setOrderIndex(0);
     setIsActive(true);
     setEditingFaculty(null);
+    setInputLanguage("en");
   };
 
   const openEditDialog = (member: Faculty) => {
     setEditingFaculty(member);
     setName(member.name);
+    setNameBn(member.name_bn || "");
     setDesignation(member.designation);
+    setDesignationBn(member.designation_bn || "");
     setDepartment(member.department || "");
+    setDepartmentBn(member.department_bn || "");
     setQualification(member.qualification || "");
+    setQualificationBn(member.qualification_bn || "");
     setImageUrl(member.image_url || "");
     setEmail(member.email || "");
     setPhone(member.phone || "");
     setBio(member.bio || "");
+    setBioBn(member.bio_bn || "");
     setOrderIndex(member.order_index);
     setIsActive(member.is_active);
+    setInputLanguage("en");
     setDialogOpen(true);
   };
 
@@ -111,13 +141,18 @@ export function FacultyManager() {
     setSaving(true);
     const facultyData = {
       name,
+      name_bn: nameBn || null,
       designation,
+      designation_bn: designationBn || null,
       department: department || null,
+      department_bn: departmentBn || null,
       qualification: qualification || null,
+      qualification_bn: qualificationBn || null,
       image_url: imageUrl || null,
       email: email || null,
       phone: phone || null,
       bio: bio || null,
+      bio_bn: bioBn || null,
       order_index: orderIndex,
       is_active: isActive,
     };
@@ -187,6 +222,9 @@ export function FacultyManager() {
           <DialogHeader>
             <DialogTitle>{editingFaculty ? "Edit Faculty" : "Add Faculty Member"}</DialogTitle>
           </DialogHeader>
+          
+          <BilingualToggle value={inputLanguage} onChange={setInputLanguage} />
+          
           <div className="space-y-4">
             <div>
               <Label>Photo</Label>
@@ -196,26 +234,63 @@ export function FacultyManager() {
                 folder="faculty"
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>Name</Label>
-                <Input value={name} onChange={(e) => setName(e.target.value)} />
-              </div>
-              <div>
-                <Label>Designation</Label>
-                <Input value={designation} onChange={(e) => setDesignation(e.target.value)} />
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>Department</Label>
-                <Input value={department} onChange={(e) => setDepartment(e.target.value)} />
-              </div>
-              <div>
-                <Label>Qualification</Label>
-                <Input value={qualification} onChange={(e) => setQualification(e.target.value)} />
-              </div>
-            </div>
+            
+            {inputLanguage === "en" ? (
+              <>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Name</Label>
+                    <Input value={name} onChange={(e) => setName(e.target.value)} />
+                  </div>
+                  <div>
+                    <Label>Designation</Label>
+                    <Input value={designation} onChange={(e) => setDesignation(e.target.value)} />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Department</Label>
+                    <Input value={department} onChange={(e) => setDepartment(e.target.value)} />
+                  </div>
+                  <div>
+                    <Label>Qualification</Label>
+                    <Input value={qualification} onChange={(e) => setQualification(e.target.value)} />
+                  </div>
+                </div>
+                <div>
+                  <Label>Bio</Label>
+                  <Textarea value={bio} onChange={(e) => setBio(e.target.value)} rows={3} />
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>নাম (Bengali)</Label>
+                    <Input value={nameBn} onChange={(e) => setNameBn(e.target.value)} />
+                  </div>
+                  <div>
+                    <Label>পদবী (Bengali)</Label>
+                    <Input value={designationBn} onChange={(e) => setDesignationBn(e.target.value)} />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>বিভাগ (Bengali)</Label>
+                    <Input value={departmentBn} onChange={(e) => setDepartmentBn(e.target.value)} />
+                  </div>
+                  <div>
+                    <Label>যোগ্যতা (Bengali)</Label>
+                    <Input value={qualificationBn} onChange={(e) => setQualificationBn(e.target.value)} />
+                  </div>
+                </div>
+                <div>
+                  <Label>পরিচিতি (Bengali)</Label>
+                  <Textarea value={bioBn} onChange={(e) => setBioBn(e.target.value)} rows={3} />
+                </div>
+              </>
+            )}
+            
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label>Email</Label>
@@ -225,10 +300,6 @@ export function FacultyManager() {
                 <Label>Phone</Label>
                 <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
               </div>
-            </div>
-            <div>
-              <Label>Bio</Label>
-              <Textarea value={bio} onChange={(e) => setBio(e.target.value)} rows={3} />
             </div>
             <div>
               <Label>Order</Label>
