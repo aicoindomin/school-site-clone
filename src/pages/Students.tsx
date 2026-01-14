@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "lucide-react";
+import { useTranslatedTexts, useDynamicTranslation } from "@/components/TranslatedText";
 
 interface Student {
   id: string;
@@ -21,6 +22,28 @@ const Students = () => {
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedClass, setSelectedClass] = useState<string>("Prep-I");
+
+  // Static text translations
+  const textsToTranslate = useMemo(() => [
+    "Our Students",
+    "The pride of Balisai Public School",
+    "No students available",
+    "No students in this class",
+    "Section"
+  ], []);
+
+  const translatedTexts = useTranslatedTexts(textsToTranslate);
+  
+  const t = useMemo(() => {
+    const map: Record<string, string> = {};
+    textsToTranslate.forEach((text, index) => {
+      map[text] = translatedTexts[index] || text;
+    });
+    return map;
+  }, [textsToTranslate, translatedTexts]);
+
+  // Translate dynamic content
+  const translatedStudents = useDynamicTranslation(students, ["name"]);
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -41,7 +64,7 @@ const Students = () => {
   }, []);
 
   const getStudentsByClass = (className: string) => {
-    return students.filter(s => s.class === className);
+    return translatedStudents.filter((s, index) => students[index]?.class === className);
   };
 
   const availableClasses = classOptions.filter(cls => 
@@ -54,10 +77,10 @@ const Students = () => {
         <div className="container">
           <div className="text-center mb-12">
             <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Our Students
+              {t["Our Students"]}
             </h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              The pride of Balisai Public School
+              {t["The pride of Balisai Public School"]}
             </p>
           </div>
 
@@ -73,9 +96,9 @@ const Students = () => {
                 </Card>
               ))}
             </div>
-          ) : students.length === 0 ? (
+          ) : translatedStudents.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
-              No students available
+              {t["No students available"]}
             </div>
           ) : (
             <Tabs value={selectedClass} onValueChange={setSelectedClass}>
@@ -90,29 +113,33 @@ const Students = () => {
               {classOptions.map((cls) => (
                 <TabsContent key={cls} value={cls}>
                   <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3">
-                    {getStudentsByClass(cls).map((student) => (
-                      <div key={student.id} className="flex flex-col items-center p-2 rounded-2xl bg-card hover:shadow-md transition-shadow">
-                        {student.image_url ? (
-                          <img
-                            src={student.image_url}
-                            alt={student.name}
-                            className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-primary/20"
-                          />
-                        ) : (
-                          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-muted flex items-center justify-center">
-                            <User className="w-8 h-8 sm:w-10 sm:h-10 text-muted-foreground" />
-                          </div>
-                        )}
-                        <h3 className="font-medium text-xs mt-2 text-center leading-tight">{student.name}</h3>
-                        <p className="text-primary text-[10px]">{student.class}</p>
-                        {student.section && (
-                          <p className="text-muted-foreground text-[10px]">Sec: {student.section}</p>
-                        )}
-                      </div>
-                    ))}
+                    {getStudentsByClass(cls).map((student, index) => {
+                      const originalStudent = students.find(s => s.class === cls && students.indexOf(s) === students.findIndex(st => st.id === translatedStudents[translatedStudents.findIndex(ts => ts.name === student.name && ts.class === student.class)]?.id));
+                      const actualStudent = students.find(s => s.id === student.id);
+                      return (
+                        <div key={student.id} className="flex flex-col items-center p-2 rounded-2xl bg-card hover:shadow-md transition-shadow">
+                          {actualStudent?.image_url ? (
+                            <img
+                              src={actualStudent.image_url}
+                              alt={student.name}
+                              className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-primary/20"
+                            />
+                          ) : (
+                            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-muted flex items-center justify-center">
+                              <User className="w-8 h-8 sm:w-10 sm:h-10 text-muted-foreground" />
+                            </div>
+                          )}
+                          <h3 className="font-medium text-xs mt-2 text-center leading-tight">{student.name}</h3>
+                          <p className="text-primary text-[10px]">{student.class}</p>
+                          {actualStudent?.section && (
+                            <p className="text-muted-foreground text-[10px]">{t["Section"]}: {actualStudent.section}</p>
+                          )}
+                        </div>
+                      );
+                    })}
                     {getStudentsByClass(cls).length === 0 && (
                       <div className="col-span-full text-center py-8 text-muted-foreground">
-                        No students in this class
+                        {t["No students in this class"]}
                       </div>
                     )}
                   </div>
