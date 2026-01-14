@@ -353,7 +353,7 @@ export function HeroSlider3D() {
                     <img
                       src={person.image}
                       alt={person.title}
-                      className="w-full h-full object-cover"
+                      className={`w-full h-full object-cover ${person.title === "Secretary" ? "object-top" : ""}`}
                     />
                   </div>
                   <div className="flex-1">
