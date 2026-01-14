@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
 import logo from "@/assets/logo.png";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 const navItems = [
   { title: "Home", href: "/" },
@@ -157,10 +158,11 @@ export function Navbar() {
                             </svg>
                           </button>
                           <div className={cn(
-                            "absolute top-full z-50 hidden group-hover:block",
+                            "absolute top-full z-50 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-150",
                             item.title === "Others" ? "right-0" : "left-0"
                           )}>
-                            <div className="pt-1">
+                            {/* Invisible bridge to prevent gap-related hover loss */}
+                            <div className="h-2" />
                             <ul className="grid w-[200px] gap-1 p-2 bg-white shadow-lg rounded-md border">
                               {item.submenu.map((subItem) => (
                                 <li key={subItem.title}>
@@ -187,7 +189,6 @@ export function Navbar() {
                                 </li>
                               ))}
                             </ul>
-                            </div>
                           </div>
                         </div>
                       ) : (
@@ -206,7 +207,8 @@ export function Navbar() {
                 </NavigationMenuList>
               </NavigationMenu>
               
-              <div className="flex items-center gap-2 ml-auto">
+              <div className="flex items-center gap-1 ml-auto">
+                <LanguageSwitcher />
                 <Button asChild className="bg-orange-500 hover:bg-orange-600 text-white rounded-none">
                   <Link to="/notices">Notice</Link>
                 </Button>
