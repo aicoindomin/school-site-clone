@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { ChevronRight, ExternalLink } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
+import { useTranslatedTexts } from "@/components/TranslatedText";
 
 interface Notice {
   id: string;
@@ -26,6 +27,24 @@ export function NoticesSection() {
   const [loading, setLoading] = useState(true);
   const [selectedNotice, setSelectedNotice] = useState<Notice | null>(null);
 
+  const textsToTranslate = useMemo(() => [
+    "Latest Notices",
+    "Useful Links",
+    "No notices available",
+    "No links available",
+    "Posted on"
+  ], []);
+
+  const translatedTexts = useTranslatedTexts(textsToTranslate);
+  
+  const t = useMemo(() => {
+    const map: Record<string, string> = {};
+    textsToTranslate.forEach((text, index) => {
+      map[text] = translatedTexts[index] || text;
+    });
+    return map;
+  }, [textsToTranslate, translatedTexts]);
+
   useEffect(() => {
     const fetchData = async () => {
       const [noticesRes, linksRes] = await Promise.all([
@@ -45,13 +64,13 @@ export function NoticesSection() {
         <div className="grid md:grid-cols-2 gap-8">
           <Card>
             <CardHeader className="border-b">
-              <CardTitle className="text-2xl font-display">Latest Notices</CardTitle>
+              <CardTitle className="text-2xl font-display">{t["Latest Notices"]}</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
               {loading ? (
                 <div className="p-4 space-y-3">{[...Array(5)].map((_, i) => <div key={i} className="h-6 bg-muted animate-pulse rounded" />)}</div>
               ) : notices.length === 0 ? (
-                <div className="p-4 text-center text-muted-foreground">No notices available</div>
+                <div className="p-4 text-center text-muted-foreground">{t["No notices available"]}</div>
               ) : (
                 <ul className="divide-y">
                   {notices.map((notice) => (
@@ -69,13 +88,13 @@ export function NoticesSection() {
 
           <Card>
             <CardHeader className="border-b">
-              <CardTitle className="text-2xl font-display">Useful Links</CardTitle>
+              <CardTitle className="text-2xl font-display">{t["Useful Links"]}</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
               {loading ? (
                 <div className="p-4 space-y-3">{[...Array(5)].map((_, i) => <div key={i} className="h-6 bg-muted animate-pulse rounded" />)}</div>
               ) : usefulLinks.length === 0 ? (
-                <div className="p-4 text-center text-muted-foreground">No links available</div>
+                <div className="p-4 text-center text-muted-foreground">{t["No links available"]}</div>
               ) : (
                 <ul className="divide-y">
                   {usefulLinks.map((link) => (
@@ -99,7 +118,7 @@ export function NoticesSection() {
           <DialogHeader>
             <Badge className="w-fit mb-2">{selectedNotice?.category}</Badge>
             <DialogTitle className="text-xl">{selectedNotice?.title}</DialogTitle>
-            {selectedNotice && <p className="text-sm text-muted-foreground">Posted on {format(new Date(selectedNotice.created_at), "MMMM d, yyyy")}</p>}
+            {selectedNotice && <p className="text-sm text-muted-foreground">{t["Posted on"]} {format(new Date(selectedNotice.created_at), "MMMM d, yyyy")}</p>}
           </DialogHeader>
           <div className="mt-4 text-foreground whitespace-pre-wrap">{selectedNotice?.content}</div>
         </DialogContent>

@@ -1,6 +1,8 @@
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, BookOpen, Users, Trophy, Heart } from "lucide-react";
+import { useTranslatedTexts } from "@/components/TranslatedText";
 
 const features = [
   {
@@ -26,29 +28,51 @@ const features = [
 ];
 
 export function AboutSection() {
+  const textsToTranslate = useMemo(() => [
+    "Welcome to",
+    "Balisai Public School",
+    "Established in 2009, Balisai Public School has been a beacon of quality education in Purba Medinipur district. We are committed to nurturing young minds and preparing students for the challenges of tomorrow.",
+    "Our school provides a balanced education that emphasizes academic excellence alongside co-curricular activities. We believe in developing well-rounded individuals who can contribute positively to society.",
+    "Learn More About Us",
+    "Quality Education",
+    "Comprehensive curriculum with modern teaching methods",
+    "Experienced Faculty",
+    "Dedicated teachers committed to student success",
+    "Co-curricular Activities",
+    "Sports, arts, and cultural programs for holistic development",
+    "Value-Based Learning",
+    "Instilling moral values and ethics in young minds",
+  ], []);
+
+  const translatedTexts = useTranslatedTexts(textsToTranslate);
+  
+  const t = useMemo(() => {
+    const map: Record<string, string> = {};
+    textsToTranslate.forEach((text, index) => {
+      map[text] = translatedTexts[index] || text;
+    });
+    return map;
+  }, [textsToTranslate, translatedTexts]);
+
   return (
     <section className="py-16 bg-muted/50">
       <div className="container">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Content */}
           <div>
-            <p className="text-primary font-medium mb-2">Welcome to</p>
+            <p className="text-primary font-medium mb-2">{t["Welcome to"]}</p>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-6">
-              Balisai Public School
+              {t["Balisai Public School"]}
             </h2>
             <p className="text-muted-foreground mb-6 leading-relaxed">
-              Established in 2009, Balisai Public School has been a beacon of quality education in 
-              Purba Medinipur district. We are committed to nurturing young minds and preparing 
-              students for the challenges of tomorrow.
+              {t["Established in 2009, Balisai Public School has been a beacon of quality education in Purba Medinipur district. We are committed to nurturing young minds and preparing students for the challenges of tomorrow."]}
             </p>
             <p className="text-muted-foreground mb-8 leading-relaxed">
-              Our school provides a balanced education that emphasizes academic excellence alongside 
-              co-curricular activities. We believe in developing well-rounded individuals who 
-              can contribute positively to society.
+              {t["Our school provides a balanced education that emphasizes academic excellence alongside co-curricular activities. We believe in developing well-rounded individuals who can contribute positively to society."]}
             </p>
             <Button asChild>
               <Link to="/about">
-                Learn More About Us
+                {t["Learn More About Us"]}
                 <ArrowRight className="ml-2 w-4 h-4" />
               </Link>
             </Button>
@@ -65,10 +89,10 @@ export function AboutSection() {
                   <feature.icon className="w-6 h-6 text-primary" />
                 </div>
                 <h3 className="font-display text-lg font-semibold text-foreground mb-2">
-                  {feature.title}
+                  {t[feature.title] || feature.title}
                 </h3>
                 <p className="text-muted-foreground text-sm">
-                  {feature.description}
+                  {t[feature.description] || feature.description}
                 </p>
               </div>
             ))}
