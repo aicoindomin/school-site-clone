@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Loader2, Image as ImageIcon } from "lucide-react";
 import { ImageUpload } from "@/components/ui/image-upload";
+import { BilingualToggle } from "./BilingualToggle";
 import {
   Dialog,
   DialogContent,
@@ -32,9 +33,12 @@ import {
 interface GalleryItem {
   id: string;
   title: string;
+  title_bn: string | null;
   description: string | null;
+  description_bn: string | null;
   image_url: string;
   category: string;
+  category_bn: string | null;
   event_date: string | null;
   is_featured: boolean | null;
   created_at: string;
@@ -55,11 +59,16 @@ export function GalleryManager() {
   const [saving, setSaving] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<GalleryItem | null>(null);
+  const [editLanguage, setEditLanguage] = useState<"en" | "bn">("en");
   const { toast } = useToast();
 
-  // Form state
+  // English form state
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  // Bengali form state
+  const [titleBn, setTitleBn] = useState("");
+  const [descriptionBn, setDescriptionBn] = useState("");
+  // Common fields
   const [imageUrl, setImageUrl] = useState("");
   const [category, setCategory] = useState("events");
   const [eventDate, setEventDate] = useState("");
@@ -91,21 +100,27 @@ export function GalleryManager() {
   const resetForm = () => {
     setTitle("");
     setDescription("");
+    setTitleBn("");
+    setDescriptionBn("");
     setImageUrl("");
     setCategory("events");
     setEventDate("");
     setIsFeatured(false);
     setEditingItem(null);
+    setEditLanguage("en");
   };
 
   const openEditDialog = (item: GalleryItem) => {
     setEditingItem(item);
     setTitle(item.title);
     setDescription(item.description || "");
+    setTitleBn(item.title_bn || "");
+    setDescriptionBn(item.description_bn || "");
     setImageUrl(item.image_url);
     setCategory(item.category);
     setEventDate(item.event_date || "");
     setIsFeatured(item.is_featured || false);
+    setEditLanguage("en");
     setDialogOpen(true);
   };
 
@@ -115,7 +130,9 @@ export function GalleryManager() {
 
     const itemData = {
       title: title.trim(),
+      title_bn: titleBn.trim() || null,
       description: description.trim() || null,
+      description_bn: descriptionBn.trim() || null,
       image_url: imageUrl.trim(),
       category,
       event_date: eventDate || null,
@@ -219,30 +236,62 @@ export function GalleryManager() {
             <DialogHeader>
               <DialogTitle>{editingItem ? "Edit Image" : "Add New Image"}</DialogTitle>
             </DialogHeader>
+            
+            <BilingualToggle language={editLanguage} onLanguageChange={setEditLanguage} />
+            
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="title">Title</Label>
-                <Input
-                  id="title"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Image title"
-                  required
-                />
-              </div>
+              {editLanguage === "en" ? (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="title">Title (English)</Label>
+                    <Input
+                      id="title"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="Image title in English"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="description">Description (English - Optional)</Label>
+                    <Textarea
+                      id="description"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder="Image description in English..."
+                      rows={3}
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="title_bn">Title (Bengali) - শিরোনাম</Label>
+                    <Input
+                      id="title_bn"
+                      value={titleBn}
+                      onChange={(e) => setTitleBn(e.target.value)}
+                      placeholder="বাংলায় শিরোনাম লিখুন (Optional)"
+                    />
+                    <p className="text-xs text-muted-foreground">Leave empty to use auto-translation</p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="description_bn">Description (Bengali) - বিবরণ</Label>
+                    <Textarea
+                      id="description_bn"
+                      value={descriptionBn}
+                      onChange={(e) => setDescriptionBn(e.target.value)}
+                      placeholder="বাংলায় বিবরণ লিখুন (Optional)"
+                      rows={3}
+                    />
+                    <p className="text-xs text-muted-foreground">Leave empty to use auto-translation</p>
+                  </div>
+                </>
+              )}
 
               <ImageUpload value={imageUrl} onChange={setImageUrl} folder="gallery" />
-
-              <div className="space-y-2">
-                <Label htmlFor="description">Description (Optional)</Label>
-                <Textarea
-                  id="description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Image description..."
-                  rows={3}
-                />
-              </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -329,7 +378,14 @@ export function GalleryManager() {
               <CardContent className="py-3">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold truncate">{item.title}</h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-semibold truncate">{item.title}</h3>
+                      {item.title_bn && (
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/10 text-green-600">
+                          বাংলা
+                        </span>
+                      )}
+                    </div>
                     <p className="text-xs text-muted-foreground">
                       {categories.find(c => c.value === item.category)?.label || item.category}
                     </p>
