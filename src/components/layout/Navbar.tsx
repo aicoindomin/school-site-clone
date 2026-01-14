@@ -157,9 +157,10 @@ export function Navbar() {
                             </svg>
                           </button>
                           <div className={cn(
-                            "absolute top-full z-50 hidden group-hover:block pt-1",
+                            "absolute top-full z-50 hidden group-hover:block",
                             item.title === "Others" ? "right-0" : "left-0"
                           )}>
+                            <div className="pt-1">
                             <ul className="grid w-[200px] gap-1 p-2 bg-white shadow-lg rounded-md border">
                               {item.submenu.map((subItem) => (
                                 <li key={subItem.title}>
@@ -186,6 +187,7 @@ export function Navbar() {
                                 </li>
                               ))}
                             </ul>
+                            </div>
                           </div>
                         </div>
                       ) : (
@@ -208,7 +210,7 @@ export function Navbar() {
                 <Button asChild className="bg-orange-500 hover:bg-orange-600 text-white rounded-none">
                   <Link to="/notices">Notice</Link>
                 </Button>
-                <Button asChild variant="outline" className="border-white text-white hover:bg-white hover:text-primary rounded-none">
+                <Button asChild className="bg-sky-500 hover:bg-sky-600 text-white rounded-none border-0">
                   <Link to="/admin">Login</Link>
                 </Button>
               </div>
