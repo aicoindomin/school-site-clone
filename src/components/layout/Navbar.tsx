@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, ChevronDown, Phone, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import {
 import { cn } from "@/lib/utils";
 import logo from "@/assets/logo.png";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useTranslatedTexts } from "@/components/TranslatedText";
 
 const navItems = [
   { title: "Home", href: "/" },
@@ -48,6 +49,23 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Collect all translatable texts
+  const textsToTranslate = useMemo(() => {
+    const texts = ["Home", "About", "Faculty", "Students", "Exam Results", "Class Routine", "Holidays", "Contact", "Others", "Notice", "Login", "Overview", "Mission & Vision", "Secretary's Message", "Headmaster's Message", "Gallery", "Admission", "Careers", "Balisai Public School", "Patnahat, Balisai, Ramnagar, Purba Medinipur"];
+    return texts;
+  }, []);
+  
+  const translatedTexts = useTranslatedTexts(textsToTranslate);
+  
+  // Create a translation map
+  const t = useMemo(() => {
+    const map: Record<string, string> = {};
+    textsToTranslate.forEach((text, index) => {
+      map[text] = translatedTexts[index] || text;
+    });
+    return map;
+  }, [textsToTranslate, translatedTexts]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -100,10 +118,10 @@ export function Navbar() {
               <img src={logo} alt="Balisai Public School" className="w-16 h-16 rounded-full bg-white p-1" />
               <div>
                 <h1 className="font-display text-2xl md:text-3xl font-bold">
-                  Balisai Public School
+                  {t["Balisai Public School"]}
                 </h1>
                 <p className="text-primary-foreground/80 text-sm">
-                  Patnahat, Balisai, Ramnagar, Purba Medinipur
+                  {t["Patnahat, Balisai, Ramnagar, Purba Medinipur"]}
                 </p>
                 <p className="text-primary-foreground/80 text-xs">
                   Estd. 2009 | Reg No: S/1L/69181
@@ -140,16 +158,16 @@ export function Navbar() {
                   {navItems.map((item, index) => (
                     <NavigationMenuItem key={item.title}>
                       {item.submenu ? (
-                        <div className="relative group">
+                        <div className="relative group/dropdown">
                           <button
                             className={cn(
                               "inline-flex items-center bg-transparent text-white hover:bg-white/20 rounded-none px-4 py-3 h-auto text-sm font-medium transition-colors",
                               isActive(item.href) && "bg-white/20"
                             )}
                           >
-                            {item.title}
+                            {t[item.title] || item.title}
                             <svg
-                              className="relative top-[1px] ml-1 h-3 w-3 transition duration-200 group-hover:rotate-180"
+                              className="relative top-[1px] ml-1 h-3 w-3 transition duration-200 group-hover/dropdown:rotate-180"
                               fill="none"
                               viewBox="0 0 24 24"
                               stroke="currentColor"
@@ -158,12 +176,12 @@ export function Navbar() {
                             </svg>
                           </button>
                           <div className={cn(
-                            "absolute top-full z-50 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-150",
+                            "absolute z-50 pt-0 opacity-0 pointer-events-none group-hover/dropdown:opacity-100 group-hover/dropdown:pointer-events-auto transition-opacity duration-200",
                             item.title === "Others" ? "right-0" : "left-0"
-                          )}>
-                            {/* Invisible bridge to prevent gap-related hover loss */}
-                            <div className="h-2" />
-                            <ul className="grid w-[200px] gap-1 p-2 bg-white shadow-lg rounded-md border">
+                          )}
+                          style={{ top: '100%' }}
+                          >
+                            <ul className="mt-0 grid w-[200px] gap-1 p-2 bg-white shadow-lg rounded-md border">
                               {item.submenu.map((subItem) => (
                                 <li key={subItem.title}>
                                   {subItem.href.includes("#") ? (
@@ -173,7 +191,7 @@ export function Navbar() {
                                         "block w-full text-left select-none rounded-md p-3 text-sm leading-none no-underline outline-none transition-colors hover:bg-muted hover:text-primary text-foreground"
                                       )}
                                     >
-                                      {subItem.title}
+                                      {t[subItem.title] || subItem.title}
                                     </button>
                                   ) : (
                                     <Link
@@ -183,7 +201,7 @@ export function Navbar() {
                                         isActive(subItem.href) && "bg-muted text-primary"
                                       )}
                                     >
-                                      {subItem.title}
+                                      {t[subItem.title] || subItem.title}
                                     </Link>
                                   )}
                                 </li>
@@ -199,7 +217,7 @@ export function Navbar() {
                             isActive(item.href) && "bg-white/20"
                           )}
                         >
-                          {item.title}
+                          {t[item.title] || item.title}
                         </Link>
                       )}
                     </NavigationMenuItem>
@@ -210,10 +228,10 @@ export function Navbar() {
               <div className="flex items-center gap-1 ml-auto">
                 <LanguageSwitcher />
                 <Button asChild className="bg-orange-500 hover:bg-orange-600 text-white rounded-none">
-                  <Link to="/notices">Notice</Link>
+                  <Link to="/notices">{t["Notice"]}</Link>
                 </Button>
                 <Button asChild className="bg-sky-500 hover:bg-sky-600 text-white rounded-none border-0">
-                  <Link to="/admin">Login</Link>
+                  <Link to="/admin">{t["Login"]}</Link>
                 </Button>
               </div>
             </div>
@@ -237,7 +255,7 @@ export function Navbar() {
                     {item.submenu ? (
                       <details className="group">
                         <summary className="flex items-center justify-between cursor-pointer p-3 rounded-lg hover:bg-white/20 transition-colors text-white">
-                          <span className="font-medium">{item.title}</span>
+                          <span className="font-medium">{t[item.title] || item.title}</span>
                           <ChevronDown className="w-4 h-4 transition-transform group-open:rotate-180" />
                         </summary>
                         <div className="pl-4 mt-1 space-y-1">
@@ -251,7 +269,7 @@ export function Navbar() {
                                 }}
                                 className="block w-full text-left p-2 text-sm text-white/80 hover:text-white transition-colors"
                               >
-                                {subItem.title}
+                                {t[subItem.title] || subItem.title}
                               </button>
                             ) : (
                               <Link
@@ -260,7 +278,7 @@ export function Navbar() {
                                 className="block p-2 text-sm text-white/80 hover:text-white transition-colors"
                                 onClick={() => setIsOpen(false)}
                               >
-                                {subItem.title}
+                                {t[subItem.title] || subItem.title}
                               </Link>
                             )
                           ))}
@@ -272,7 +290,7 @@ export function Navbar() {
                         className="block p-3 rounded-lg hover:bg-white/20 transition-colors font-medium text-white"
                         onClick={() => setIsOpen(false)}
                       >
-                        {item.title}
+                        {t[item.title] || item.title}
                       </Link>
                     )}
                   </div>
@@ -280,12 +298,12 @@ export function Navbar() {
                 <div className="pt-4 border-t border-white/20 mt-2 flex gap-2">
                   <Button asChild className="flex-1 bg-orange-500 text-white">
                     <Link to="/notices" onClick={() => setIsOpen(false)}>
-                      Notice
+                      {t["Notice"]}
                     </Link>
                   </Button>
                   <Button variant="outline" asChild className="flex-1 border-white text-white hover:bg-white hover:text-primary">
                     <Link to="/admin" onClick={() => setIsOpen(false)}>
-                      Login
+                      {t["Login"]}
                     </Link>
                   </Button>
                 </div>
