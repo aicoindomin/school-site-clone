@@ -7,14 +7,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { 
   LogOut, Bell, Trophy, Image, Users, FileText, Home, Link as LinkIcon, 
-  Calendar, GraduationCap, BookOpen, Star, Settings, MessageCircle
+  Calendar, GraduationCap, BookOpen, Star, Settings, Send
 } from "lucide-react";
 import { User, Session } from "@supabase/supabase-js";
 import { 
   NoticesManager, GalleryManager, ResultsManager, StaffManager,
   UsefulLinksManager, QuickLinksManager, TopAchieversManager,
   ClassRoutineManager, HolidaysManager, WebsiteContentManager,
-  FacultyManager, StudentsManager, AccountSettings, WhatsAppSettingsManager
+  FacultyManager, StudentsManager, AccountSettings, TelegramSettingsManager
 } from "@/components/admin";
 
 export default function Admin() {
@@ -238,10 +238,10 @@ export default function Admin() {
             <div className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2"><MessageCircle className="w-5 h-5 text-green-500" />WhatsApp Settings</CardTitle>
-                  <CardDescription>Configure WhatsApp integration for admission inquiries</CardDescription>
+                  <CardTitle className="flex items-center gap-2"><Send className="w-5 h-5 text-blue-500" />Telegram Settings</CardTitle>
+                  <CardDescription>Configure Telegram integration for admission inquiries</CardDescription>
                 </CardHeader>
-                <CardContent><WhatsAppSettingsManager /></CardContent>
+                <CardContent><TelegramSettingsManager /></CardContent>
               </Card>
               <Card>
                 <CardHeader>

@@ -31,16 +31,17 @@ export function TelegramSettingsManager() {
 
   const fetchSettings = async () => {
     const { data, error } = await supabase
-      .from("telegram_settings")
+      .from("telegram_settings" as any)
       .select("*")
       .limit(1)
       .maybeSingle();
 
     if (!error && data) {
-      setSettings(data);
-      setBotToken(data.bot_token);
-      setChatId(data.chat_id);
-      setIsActive(data.is_active);
+      const typedData = data as unknown as TelegramSettings;
+      setSettings(typedData);
+      setBotToken(typedData.bot_token);
+      setChatId(typedData.chat_id);
+      setIsActive(typedData.is_active);
     }
     setLoading(false);
   };
@@ -55,7 +56,7 @@ export function TelegramSettingsManager() {
 
     if (settings) {
       const { error } = await supabase
-        .from("telegram_settings")
+        .from("telegram_settings" as any)
         .update({
           bot_token: botToken,
           chat_id: chatId,
@@ -70,7 +71,7 @@ export function TelegramSettingsManager() {
       }
     } else {
       const { error } = await supabase
-        .from("telegram_settings")
+        .from("telegram_settings" as any)
         .insert({
           bot_token: botToken,
           chat_id: chatId,
