@@ -595,6 +595,33 @@ export type Database = {
         }
         Relationships: []
       }
+      telegram_settings: {
+        Row: {
+          bot_token: string
+          chat_id: string
+          created_at: string
+          id: string
+          is_active: boolean | null
+          updated_at: string
+        }
+        Insert: {
+          bot_token: string
+          chat_id: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string
+        }
+        Update: {
+          bot_token?: string
+          chat_id?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       top_achievers: {
         Row: {
           class_label: string
@@ -715,33 +742,6 @@ export type Database = {
           section_key?: string
           title?: string
           updated_at?: string
-        }
-        Relationships: []
-      }
-      whatsapp_settings: {
-        Row: {
-          api_key: string | null
-          created_at: string
-          id: string
-          is_active: boolean | null
-          updated_at: string
-          whatsapp_number: string
-        }
-        Insert: {
-          api_key?: string | null
-          created_at?: string
-          id?: string
-          is_active?: boolean | null
-          updated_at?: string
-          whatsapp_number: string
-        }
-        Update: {
-          api_key?: string | null
-          created_at?: string
-          id?: string
-          is_active?: boolean | null
-          updated_at?: string
-          whatsapp_number?: string
         }
         Relationships: []
       }

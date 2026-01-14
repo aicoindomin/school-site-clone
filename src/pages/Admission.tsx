@@ -47,13 +47,13 @@ const Admission = () => {
 
   const fetchTelegramSettings = async () => {
     const { data } = await supabase
-      .from("telegram_settings")
+      .from("telegram_settings" as any)
       .select("bot_token, chat_id, is_active")
       .limit(1)
       .maybeSingle();
     
     if (data) {
-      setTelegramSettings(data);
+      setTelegramSettings(data as unknown as TelegramSettings);
     }
   };
 

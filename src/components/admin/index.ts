@@ -11,4 +11,4 @@ export { HolidaysManager } from "./HolidaysManager";
 export { WebsiteContentManager } from "./WebsiteContentManager";
 export { FacultyManager } from "./FacultyManager";
 export { StudentsManager } from "./StudentsManager";
-export { WhatsAppSettingsManager } from "./WhatsAppSettingsManager";
+export { TelegramSettingsManager } from "./TelegramSettingsManager";
