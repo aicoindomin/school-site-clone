@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Phone, Mail, MapPin, Facebook, Youtube } from "lucide-react";
+import { TranslatedText, useTranslatedTexts } from "@/components/TranslatedText";
 import logo from "@/assets/logo.png";
 
 const quickLinks = [
@@ -19,6 +20,9 @@ const academicLinks = [
 ];
 
 export function Footer() {
+  const quickLinkTexts = useTranslatedTexts(quickLinks.map(l => l.title));
+  const academicLinkTexts = useTranslatedTexts(academicLinks.map(l => l.title));
+
   return (
     <footer className="bg-foreground text-background">
       <div className="container py-12">
@@ -32,7 +36,7 @@ export function Footer() {
               </div>
             </Link>
             <p className="text-sm text-muted-foreground mb-4">
-              Nurturing young minds and building a foundation for a brighter future through quality education and holistic development.
+              <TranslatedText>Nurturing young minds and building a foundation for a brighter future through quality education and holistic development.</TranslatedText>
             </p>
             <div className="flex gap-3">
               <a 
@@ -50,29 +54,39 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-display text-lg font-semibold mb-4">Quick Links</h4>
+            <h4 className="font-display text-lg font-semibold mb-4">
+              <TranslatedText>Quick Links</TranslatedText>
+            </h4>
             <ul className="space-y-2">
-              {quickLinks.map((link) => (
+              {quickLinks.map((link, index) => (
                 <li key={link.title}>
-                  <Link to={link.href} className="text-sm text-muted-foreground hover:text-primary transition-colors">{link.title}</Link>
+                  <Link to={link.href} className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                    {quickLinkTexts[index]}
+                  </Link>
                 </li>
               ))}
             </ul>
           </div>
 
           <div>
-            <h4 className="font-display text-lg font-semibold mb-4">Academics</h4>
+            <h4 className="font-display text-lg font-semibold mb-4">
+              <TranslatedText>Academics</TranslatedText>
+            </h4>
             <ul className="space-y-2">
-              {academicLinks.map((link) => (
+              {academicLinks.map((link, index) => (
                 <li key={link.title}>
-                  <Link to={link.href} className="text-sm text-muted-foreground hover:text-primary transition-colors">{link.title}</Link>
+                  <Link to={link.href} className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                    {academicLinkTexts[index]}
+                  </Link>
                 </li>
               ))}
             </ul>
           </div>
 
           <div>
-            <h4 className="font-display text-lg font-semibold mb-4">Contact Us</h4>
+            <h4 className="font-display text-lg font-semibold mb-4">
+              <TranslatedText>Contact Us</TranslatedText>
+            </h4>
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
@@ -97,7 +111,7 @@ export function Footer() {
       <div className="border-t border-white/10">
         <div className="container py-4">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-            <p>© {new Date().getFullYear()} Balisai Public School. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} Balisai Public School. <TranslatedText>All rights reserved.</TranslatedText></p>
             <p>Reg No: S/1L/69181</p>
           </div>
         </div>

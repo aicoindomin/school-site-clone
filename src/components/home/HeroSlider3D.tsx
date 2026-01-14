@@ -3,6 +3,7 @@ import { Calendar, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { TranslatedText } from "@/components/TranslatedText";
 
 import heroImg1 from "@/assets/slider/hero-bg.jpg";
 import heroImg2 from "@/assets/slider/event.jpg";
@@ -368,7 +369,7 @@ export function HeroSlider3D() {
                       href={person.link}
                       className="text-primary hover:text-primary/80 text-sm inline-flex items-center gap-1 mt-1 transition-all hover:gap-2"
                     >
-                      Read message
+                      <TranslatedText>Read message</TranslatedText>
                     </a>
                   </div>
                 </CardContent>
@@ -388,7 +389,7 @@ export function HeroSlider3D() {
               >
                 <Link to="/routine">
                   <Calendar className="w-6 h-6 text-cyan-500" />
-                  <span>Class Routine</span>
+                  <TranslatedText as="span">Class Routine</TranslatedText>
                 </Link>
               </Button>
               <Button
@@ -402,7 +403,7 @@ export function HeroSlider3D() {
               >
                 <Link to="/results">
                   <FileText className="w-6 h-6 text-fuchsia-500" />
-                  <span>Results</span>
+                  <TranslatedText as="span">Results</TranslatedText>
                 </Link>
               </Button>
             </div>

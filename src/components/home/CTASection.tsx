@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Phone, MapPin, Clock, BookOpen, ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { TranslatedText, useTranslatedTexts } from "@/components/TranslatedText";
 
 const admissionCriteria = [
   { grade: "প্রাক প্রাথমিক (Prep - I)", birthDate: "02.01.2022 থেকে 01.01.2023", age: "৩ বছর অথবা ৩ বছরের বেশি কিন্তু ৪ বছরের কম" },
@@ -16,15 +17,25 @@ const admissionCriteria = [
 
 export function CTASection() {
   const [isHovered, setIsHovered] = useState(false);
+  const translatedTexts = useTranslatedTexts([
+    "Admissions Open for 2026",
+    "Give your child the gift of quality education. Join Balisai Public School and become part of our growing family of achievers.",
+    "Apply for Admission",
+    "Contact Us",
+    "Our Location",
+    "Contact Numbers",
+    "School Timing",
+    "Monday - Saturday"
+  ]);
 
   return (
     <section id="admissions" className="py-16 bg-gradient-hero text-primary-foreground">
       <div className="container">
         <div className="grid lg:grid-cols-2 gap-12 items-start">
           <div>
-            <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">Admissions Open for 2026</h2>
+            <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">{translatedTexts[0]}</h2>
             <p className="text-primary-foreground/80 mb-6 text-lg">
-              Give your child the gift of quality education. Join Balisai Public School and become part of our growing family of achievers.
+              {translatedTexts[1]}
             </p>
             
             {/* Hover Dropdown for Admission Criteria */}
@@ -55,12 +66,12 @@ export function CTASection() {
             <div className="flex flex-col sm:flex-row gap-4">
               <Button asChild size="lg" className="bg-secondary text-secondary-foreground hover:bg-secondary/90">
                 <Link to="/admission">
-                  Apply for Admission
+                  {translatedTexts[2]}
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10">
-                <a href="#contact-section">Contact Us</a>
+                <a href="#contact-section">{translatedTexts[3]}</a>
               </Button>
             </div>
           </div>
@@ -73,7 +84,7 @@ export function CTASection() {
                   <MapPin className="w-6 h-6 text-secondary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg mb-1">Our Location</h3>
+                  <h3 className="font-semibold text-lg mb-1">{translatedTexts[4]}</h3>
                   <p className="text-primary-foreground/80">Patnahat, Balisai, Ramnagar<br />Purba Medinipur, West Bengal</p>
                 </div>
               </div>
@@ -85,7 +96,7 @@ export function CTASection() {
                   <Phone className="w-6 h-6 text-secondary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg mb-1">Contact Numbers</h3>
+                  <h3 className="font-semibold text-lg mb-1">{translatedTexts[5]}</h3>
                   <p className="text-primary-foreground/80">
                     <a href="tel:9732743315" className="hover:text-secondary transition-colors">9732743315</a> / <a href="tel:9800640998" className="hover:text-secondary transition-colors">9800640998</a><br />
                     <a href="tel:9093775146" className="hover:text-secondary transition-colors">9093775146</a> / <a href="tel:9735225176" className="hover:text-secondary transition-colors">9735225176</a>
@@ -100,8 +111,8 @@ export function CTASection() {
                   <Clock className="w-6 h-6 text-secondary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg mb-1">School Timing</h3>
-                  <p className="text-primary-foreground/80">Monday - Saturday<br />9:00 AM - 4:00 PM</p>
+                  <h3 className="font-semibold text-lg mb-1">{translatedTexts[6]}</h3>
+                  <p className="text-primary-foreground/80">{translatedTexts[7]}<br />9:00 AM - 4:00 PM</p>
                 </div>
               </div>
             </div>
