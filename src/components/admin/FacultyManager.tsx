@@ -223,7 +223,7 @@ export function FacultyManager() {
             <DialogTitle>{editingFaculty ? "Edit Faculty" : "Add Faculty Member"}</DialogTitle>
           </DialogHeader>
           
-          <BilingualToggle value={inputLanguage} onChange={setInputLanguage} />
+          <BilingualToggle language={inputLanguage} onLanguageChange={setInputLanguage} />
           
           <div className="space-y-4">
             <div>
