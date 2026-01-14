@@ -26,17 +26,21 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { BilingualToggle } from "./BilingualToggle";
 
 interface Result {
   id: string;
   student_name: string;
+  student_name_bn: string | null;
   exam_type: string;
+  exam_type_bn: string | null;
   percentage: number;
   rank: number | null;
   year: number;
   image_url: string | null;
   is_featured: boolean | null;
   class_name: string | null;
+  class_name_bn: string | null;
   created_at: string;
 }
 
@@ -59,17 +63,25 @@ export function ResultsManager() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingResult, setEditingResult] = useState<Result | null>(null);
   const [filterClass, setFilterClass] = useState<string>("");
+  const [inputLanguage, setInputLanguage] = useState<"en" | "bn">("en");
   const { toast } = useToast();
 
-  // Form state
+  // English fields
   const [studentName, setStudentName] = useState("");
   const [examType, setExamType] = useState("annual");
+  const [className, setClassName] = useState("");
+  
+  // Bengali fields
+  const [studentNameBn, setStudentNameBn] = useState("");
+  const [examTypeBn, setExamTypeBn] = useState("");
+  const [classNameBn, setClassNameBn] = useState("");
+  
+  // Common fields
   const [percentage, setPercentage] = useState("");
   const [rank, setRank] = useState("");
   const [year, setYear] = useState(new Date().getFullYear().toString());
   const [imageUrl, setImageUrl] = useState("");
   const [isFeatured, setIsFeatured] = useState(false);
-  const [className, setClassName] = useState("");
 
   const fetchResults = async () => {
     setLoading(true);
@@ -97,26 +109,34 @@ export function ResultsManager() {
 
   const resetForm = () => {
     setStudentName("");
+    setStudentNameBn("");
     setExamType("annual");
+    setExamTypeBn("");
+    setClassName("");
+    setClassNameBn("");
     setPercentage("");
     setRank("");
     setYear(new Date().getFullYear().toString());
     setImageUrl("");
     setIsFeatured(false);
-    setClassName("");
     setEditingResult(null);
+    setInputLanguage("en");
   };
 
   const openEditDialog = (result: Result) => {
     setEditingResult(result);
     setStudentName(result.student_name);
+    setStudentNameBn(result.student_name_bn || "");
     setExamType(result.exam_type);
+    setExamTypeBn(result.exam_type_bn || "");
+    setClassName(result.class_name || "");
+    setClassNameBn(result.class_name_bn || "");
     setPercentage(result.percentage.toString());
     setRank(result.rank?.toString() || "");
     setYear(result.year.toString());
     setImageUrl(result.image_url || "");
     setIsFeatured(result.is_featured || false);
-    setClassName(result.class_name || "");
+    setInputLanguage("en");
     setDialogOpen(true);
   };
 
@@ -126,13 +146,16 @@ export function ResultsManager() {
 
     const resultData = {
       student_name: studentName.trim(),
+      student_name_bn: studentNameBn.trim() || null,
       exam_type: examType,
+      exam_type_bn: examTypeBn.trim() || null,
+      class_name: className || null,
+      class_name_bn: classNameBn.trim() || null,
       percentage: parseFloat(percentage),
       rank: rank ? parseInt(rank) : null,
       year: parseInt(year),
       image_url: imageUrl.trim() || null,
       is_featured: isFeatured,
-      class_name: className || null,
     };
 
     let error;
@@ -246,55 +269,93 @@ export function ResultsManager() {
               Add Result
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-lg">
+          <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{editingResult ? "Edit Result" : "Add New Result"}</DialogTitle>
             </DialogHeader>
+            
+            <BilingualToggle value={inputLanguage} onChange={setInputLanguage} />
+            
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="student_name">Student Name</Label>
-                <Input
-                  id="student_name"
-                  value={studentName}
-                  onChange={(e) => setStudentName(e.target.value)}
-                  placeholder="Student name"
-                  required
-                />
-              </div>
+              {inputLanguage === "en" ? (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="student_name">Student Name</Label>
+                    <Input
+                      id="student_name"
+                      value={studentName}
+                      onChange={(e) => setStudentName(e.target.value)}
+                      placeholder="Student name"
+                      required
+                    />
+                  </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="class_name">Class</Label>
-                  <Select value={className} onValueChange={setClassName}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select class" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {classOptions.map((cls) => (
-                        <SelectItem key={cls} value={cls}>
-                          {cls}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="class_name">Class</Label>
+                      <Select value={className} onValueChange={setClassName}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select class" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {classOptions.map((cls) => (
+                            <SelectItem key={cls} value={cls}>
+                              {cls}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="exam_type">Exam Type</Label>
-                  <Select value={examType} onValueChange={setExamType}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {examTypes.map((type) => (
-                        <SelectItem key={type.value} value={type.value}>
-                          {type.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="exam_type">Exam Type</Label>
+                      <Select value={examType} onValueChange={setExamType}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {examTypes.map((type) => (
+                            <SelectItem key={type.value} value={type.value}>
+                              {type.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="space-y-2">
+                    <Label>ছাত্র/ছাত্রীর নাম (Bengali)</Label>
+                    <Input
+                      value={studentNameBn}
+                      onChange={(e) => setStudentNameBn(e.target.value)}
+                      placeholder="ছাত্র/ছাত্রীর নাম"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>শ্রেণী (Bengali)</Label>
+                      <Input
+                        value={classNameBn}
+                        onChange={(e) => setClassNameBn(e.target.value)}
+                        placeholder="e.g., প্রথম শ্রেণী"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>পরীক্ষার ধরন (Bengali)</Label>
+                      <Input
+                        value={examTypeBn}
+                        onChange={(e) => setExamTypeBn(e.target.value)}
+                        placeholder="e.g., বার্ষিক পরীক্ষা"
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
 
               <div className="grid grid-cols-3 gap-4">
                 <div className="space-y-2">

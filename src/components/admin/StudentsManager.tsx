@@ -33,15 +33,19 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, User } from "lucide-react";
 import { ImageUpload } from "@/components/ui/image-upload";
+import { BilingualToggle } from "./BilingualToggle";
 
 interface Student {
   id: string;
   name: string;
+  name_bn: string | null;
   class: string;
+  class_bn: string | null;
   section: string | null;
   roll_number: string | null;
   image_url: string | null;
   parent_name: string | null;
+  parent_name_bn: string | null;
   parent_contact: string | null;
   admission_year: number | null;
   is_active: boolean;
@@ -53,12 +57,21 @@ export function StudentsManager() {
   const [saving, setSaving] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
+  const [inputLanguage, setInputLanguage] = useState<"en" | "bn">("en");
+  
+  // English fields
   const [name, setName] = useState("");
+  const [parentName, setParentName] = useState("");
+  
+  // Bengali fields
+  const [nameBn, setNameBn] = useState("");
+  const [parentNameBn, setParentNameBn] = useState("");
+  
+  // Common fields
   const [studentClass, setStudentClass] = useState("");
   const [section, setSection] = useState("");
   const [rollNumber, setRollNumber] = useState("");
   const [imageUrl, setImageUrl] = useState("");
-  const [parentName, setParentName] = useState("");
   const [parentContact, setParentContact] = useState("");
   const [admissionYear, setAdmissionYear] = useState(new Date().getFullYear());
   const [isActive, setIsActive] = useState(true);
@@ -86,28 +99,34 @@ export function StudentsManager() {
 
   const resetForm = () => {
     setName("");
+    setNameBn("");
     setStudentClass("");
     setSection("");
     setRollNumber("");
     setImageUrl("");
     setParentName("");
+    setParentNameBn("");
     setParentContact("");
     setAdmissionYear(new Date().getFullYear());
     setIsActive(true);
     setEditingStudent(null);
+    setInputLanguage("en");
   };
 
   const openEditDialog = (student: Student) => {
     setEditingStudent(student);
     setName(student.name);
+    setNameBn(student.name_bn || "");
     setStudentClass(student.class);
     setSection(student.section || "");
     setRollNumber(student.roll_number || "");
     setImageUrl(student.image_url || "");
     setParentName(student.parent_name || "");
+    setParentNameBn(student.parent_name_bn || "");
     setParentContact(student.parent_contact || "");
     setAdmissionYear(student.admission_year || new Date().getFullYear());
     setIsActive(student.is_active);
+    setInputLanguage("en");
     setDialogOpen(true);
   };
 
@@ -115,11 +134,13 @@ export function StudentsManager() {
     setSaving(true);
     const studentData = {
       name,
+      name_bn: nameBn || null,
       class: studentClass,
       section: section || null,
       roll_number: rollNumber || null,
       image_url: imageUrl || null,
       parent_name: parentName || null,
+      parent_name_bn: parentNameBn || null,
       parent_contact: parentContact || null,
       admission_year: admissionYear,
       is_active: isActive,
@@ -192,10 +213,13 @@ export function StudentsManager() {
               <Plus className="w-4 h-4 mr-2" /> Add Student
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-md">
+          <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{editingStudent ? "Edit Student" : "Add Student"}</DialogTitle>
             </DialogHeader>
+            
+            <BilingualToggle value={inputLanguage} onChange={setInputLanguage} />
+            
             <div className="space-y-4">
               <div>
                 <Label>Photo</Label>
@@ -205,10 +229,31 @@ export function StudentsManager() {
                   folder="students"
                 />
               </div>
-              <div>
-                <Label>Student Name</Label>
-                <Input value={name} onChange={(e) => setName(e.target.value)} />
-              </div>
+              
+              {inputLanguage === "en" ? (
+                <>
+                  <div>
+                    <Label>Student Name</Label>
+                    <Input value={name} onChange={(e) => setName(e.target.value)} />
+                  </div>
+                  <div>
+                    <Label>Parent Name</Label>
+                    <Input value={parentName} onChange={(e) => setParentName(e.target.value)} />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <Label>ছাত্র/ছাত্রীর নাম (Bengali)</Label>
+                    <Input value={nameBn} onChange={(e) => setNameBn(e.target.value)} />
+                  </div>
+                  <div>
+                    <Label>অভিভাবকের নাম (Bengali)</Label>
+                    <Input value={parentNameBn} onChange={(e) => setParentNameBn(e.target.value)} />
+                  </div>
+                </>
+              )}
+              
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <Label>Class</Label>
@@ -237,15 +282,9 @@ export function StudentsManager() {
                   <Input value={rollNumber} onChange={(e) => setRollNumber(e.target.value)} />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>Parent Name</Label>
-                  <Input value={parentName} onChange={(e) => setParentName(e.target.value)} />
-                </div>
-                <div>
-                  <Label>Academic Year</Label>
-                  <Input type="number" value={admissionYear} onChange={(e) => setAdmissionYear(Number(e.target.value))} />
-                </div>
+              <div>
+                <Label>Academic Year</Label>
+                <Input type="number" value={admissionYear} onChange={(e) => setAdmissionYear(Number(e.target.value))} />
               </div>
               <div>
                 <Label>Parent's Contact Number</Label>

@@ -14,7 +14,8 @@ import {
   NoticesManager, GalleryManager, ResultsManager, StaffManager,
   UsefulLinksManager, QuickLinksManager, TopAchieversManager,
   ClassRoutineManager, HolidaysManager, WebsiteContentManager,
-  FacultyManager, StudentsManager, AccountSettings, TelegramSettingsManager
+  FacultyManager, StudentsManager, AccountSettings, TelegramSettingsManager,
+  CareersManager
 } from "@/components/admin";
 
 export default function Admin() {
