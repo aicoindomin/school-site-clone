@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,16 +22,9 @@ const grades = [
   "Class V"
 ];
 
-interface TelegramSettings {
-  bot_token: string;
-  chat_id: string;
-  is_active: boolean;
-}
-
 const Admission = () => {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [telegramSettings, setTelegramSettings] = useState<TelegramSettings | null>(null);
   const [formData, setFormData] = useState({
     student_name: "",
     parent_name: "",
@@ -41,65 +34,27 @@ const Admission = () => {
     message: ""
   });
 
-  useEffect(() => {
-    fetchTelegramSettings();
-  }, []);
-
-  const fetchTelegramSettings = async () => {
-    const { data } = await supabase
-      .from("telegram_settings" as any)
-      .select("bot_token, chat_id, is_active")
-      .limit(1)
-      .maybeSingle();
-    
-    if (data) {
-      setTelegramSettings(data as unknown as TelegramSettings);
-    }
-  };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const sendTelegramNotification = async () => {
-    if (!telegramSettings || !telegramSettings.is_active) return;
-
     try {
-      // Clean phone number (remove spaces, dashes)
-      const cleanPhone = formData.phone.replace(/[\s-]/g, '');
-      
-      const message = `🎓 *New Admission Inquiry*
-
-📚 *Student Name:* ${formData.student_name}
-📞 *Phone Number:* ${formData.phone}
-🏫 *Grade Applying For:* ${formData.grade_applying}
-👨‍👩‍👧 *Parent/Guardian Name:* ${formData.parent_name}${formData.email ? `\n📧 *Email:* ${formData.email}` : ''}${formData.message ? `\n💬 *Message:* ${formData.message}` : ''}
-
-📞 *Call Now:* [+91${cleanPhone}](tel:+91${cleanPhone})`;
-
-      const telegramUrl = `https://api.telegram.org/bot${telegramSettings.bot_token}/sendMessage`;
-      
-      await fetch(telegramUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          chat_id: telegramSettings.chat_id,
-          text: message,
-          parse_mode: 'Markdown',
-          reply_markup: {
-            inline_keyboard: [
-              [
-                {
-                  text: '💬 Chat on WhatsApp',
-                  url: `https://wa.me/91${cleanPhone}`
-                }
-              ]
-            ]
-          }
-        })
+      // Call secure edge function instead of exposing bot token
+      const { error } = await supabase.functions.invoke('send-telegram-notification', {
+        body: {
+          student_name: formData.student_name,
+          parent_name: formData.parent_name,
+          phone: formData.phone,
+          grade_applying: formData.grade_applying,
+          email: formData.email || undefined,
+          message: formData.message || undefined
+        }
       });
+
+      if (error) {
+        console.error('Failed to send Telegram notification:', error);
+      }
     } catch (err) {
       console.error('Failed to send Telegram notification:', err);
     }
