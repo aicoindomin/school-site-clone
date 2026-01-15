@@ -7,8 +7,8 @@ type Language = "en" | "bn";
 interface TranslationContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  translate: (text: string) => Promise<string>;
-  translateBatch: (texts: string[]) => Promise<string[]>;
+  translate: (text: string, targetLang?: Language) => Promise<string>;
+  translateBatch: (texts: string[], targetLang?: Language) => Promise<string[]>;
   isTranslating: boolean;
 }
 
@@ -33,18 +33,19 @@ export function TranslationProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("siteLanguage", lang);
   }, []);
 
-  const translateBatch = useCallback(async (texts: string[]): Promise<string[]> => {
-    if (language === "en") {
-      return texts; // No translation needed for English
-    }
-
+  // translateBatch now takes an optional targetLang parameter for explicit direction control
+  // This is needed when translating Bengali content to English
+  const translateBatch = useCallback(async (texts: string[], targetLang?: Language): Promise<string[]> => {
+    const effectiveTargetLang = targetLang || language;
+    
     // Check cache first
     const uncachedTexts: string[] = [];
     const uncachedIndices: number[] = [];
     const results: string[] = [...texts];
 
     texts.forEach((text, index) => {
-      const cached = translationCache[language][text];
+      const cacheKey = `${effectiveTargetLang}:${text}`;
+      const cached = translationCache[effectiveTargetLang][text];
       if (cached) {
         results[index] = cached;
       } else {
@@ -60,7 +61,7 @@ export function TranslationProvider({ children }: { children: ReactNode }) {
     setIsTranslating(true);
     try {
       const { data, error } = await supabase.functions.invoke("translate", {
-        body: { texts: uncachedTexts, targetLanguage: language },
+        body: { texts: uncachedTexts, targetLanguage: effectiveTargetLang },
       });
 
       if (error) {
@@ -78,7 +79,7 @@ export function TranslationProvider({ children }: { children: ReactNode }) {
           const originalIndex = uncachedIndices[idx];
           results[originalIndex] = translation;
           // Cache the translation
-          translationCache[language][uncachedTexts[idx]] = translation;
+          translationCache[effectiveTargetLang][uncachedTexts[idx]] = translation;
         });
       }
 
@@ -91,8 +92,8 @@ export function TranslationProvider({ children }: { children: ReactNode }) {
     }
   }, [language]);
 
-  const translate = useCallback(async (text: string): Promise<string> => {
-    const [result] = await translateBatch([text]);
+  const translate = useCallback(async (text: string, targetLang?: Language): Promise<string> => {
+    const [result] = await translateBatch([text], targetLang);
     return result;
   }, [translateBatch]);
 

@@ -12,7 +12,9 @@ import { useTranslation } from "@/hooks/useTranslation";
 interface Notice {
   id: string;
   title: string;
+  title_bn?: string | null;
   content: string;
+  content_bn?: string | null;
   category: string;
   created_at: string;
 }
@@ -55,7 +57,7 @@ export function NoticesSection() {
   useEffect(() => {
     const fetchData = async () => {
       const [noticesRes, linksRes] = await Promise.all([
-        supabase.from("notices").select("id, title, content, category, created_at").eq("is_active", true).order("priority", { ascending: false }).order("created_at", { ascending: false }).limit(5),
+        supabase.from("notices").select("id, title, title_bn, content, content_bn, category, created_at").eq("is_active", true).order("priority", { ascending: false }).order("created_at", { ascending: false }).limit(5),
         supabase.from("useful_links").select("id, title, url").eq("is_active", true).order("order_index").limit(5),
       ]);
       if (noticesRes.data) setNotices(noticesRes.data);
