@@ -14,7 +14,9 @@ import { useTranslation } from "@/hooks/useTranslation";
 interface Notice {
   id: string;
   title: string;
+  title_bn?: string | null;
   content: string;
+  content_bn?: string | null;
   category: string;
   created_at: string;
   priority: number;
