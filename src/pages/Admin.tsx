@@ -26,24 +26,60 @@ export default function Admin() {
   const { toast } = useToast();
 
   useEffect(() => {
+    const checkAdminAccess = async (session: Session | null) => {
+      if (!session) {
+        navigate("/auth");
+        return;
+      }
+
+      // Verify user has admin role
+      const { data: roleData, error: roleError } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', session.user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+
+      if (roleError || !roleData) {
+        toast({
+          title: "Access Denied",
+          description: "You do not have permission to access the admin panel.",
+          variant: "destructive"
+        });
+        await supabase.auth.signOut();
+        navigate("/");
+        return;
+      }
+
+      setSession(session);
+      setUser(session.user);
+      setLoading(false);
+    };
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        setLoading(false);
-        if (!session) navigate("/auth");
+        if (!session) {
+          setSession(null);
+          setUser(null);
+          setLoading(false);
+          navigate("/auth");
+        } else {
+          checkAdminAccess(session);
+        }
       }
     );
 
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-      if (!session) navigate("/auth");
+      if (!session) {
+        setLoading(false);
+        navigate("/auth");
+      } else {
+        checkAdminAccess(session);
+      }
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, toast]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
