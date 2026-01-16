@@ -158,8 +158,8 @@ const Notices = () => {
 
       {/* Notice Detail Dialog */}
       <Dialog open={!!selectedNotice} onOpenChange={() => setSelectedNotice(null)}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
+        <DialogContent className="max-w-3xl max-h-[85vh] flex flex-col">
+          <DialogHeader className="flex-shrink-0">
             <div className="flex items-center gap-2 mb-2">
               {translatedSelectedNotice && (
                 <>
@@ -179,7 +179,7 @@ const Notices = () => {
               </p>
             )}
           </DialogHeader>
-          <div className="mt-4 text-foreground whitespace-pre-wrap">
+          <div className="mt-4 text-foreground whitespace-pre-wrap overflow-y-auto flex-1">
             {translatedSelectedNotice?.content}
           </div>
         </DialogContent>

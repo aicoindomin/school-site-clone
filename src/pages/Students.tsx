@@ -52,7 +52,7 @@ const Students = () => {
         .select("*")
         .eq("is_active", true)
         .order("class")
-        .order("name");
+        .order("roll_number");
 
       if (!error && data) {
         setStudents(data);
@@ -64,7 +64,25 @@ const Students = () => {
   }, []);
 
   const getStudentsByClass = (className: string) => {
-    return translatedStudents.filter((s, index) => students[index]?.class === className);
+    // Filter students by class and maintain roll_number order from the database
+    const classStudents: { translated: Student; original: Student }[] = [];
+    students.forEach((student, index) => {
+      if (student.class === className) {
+        classStudents.push({
+          translated: translatedStudents[index],
+          original: student
+        });
+      }
+    });
+    
+    // Sort by roll_number (handle null and non-numeric values)
+    classStudents.sort((a, b) => {
+      const rollA = parseInt(a.original.roll_number || "999", 10);
+      const rollB = parseInt(b.original.roll_number || "999", 10);
+      return rollA - rollB;
+    });
+    
+    return classStudents;
   };
 
   const availableClasses = classOptions.filter(cls => 
@@ -113,30 +131,26 @@ const Students = () => {
               {classOptions.map((cls) => (
                 <TabsContent key={cls} value={cls}>
                   <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3">
-                    {getStudentsByClass(cls).map((student, index) => {
-                      const originalStudent = students.find(s => s.class === cls && students.indexOf(s) === students.findIndex(st => st.id === translatedStudents[translatedStudents.findIndex(ts => ts.name === student.name && ts.class === student.class)]?.id));
-                      const actualStudent = students.find(s => s.id === student.id);
-                      return (
-                        <div key={student.id} className="flex flex-col items-center p-2 rounded-2xl bg-card hover:shadow-md transition-shadow">
-                          {actualStudent?.image_url ? (
-                            <img
-                              src={actualStudent.image_url}
-                              alt={student.name}
-                              className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-primary/20"
-                            />
-                          ) : (
-                            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-muted flex items-center justify-center">
-                              <User className="w-8 h-8 sm:w-10 sm:h-10 text-muted-foreground" />
-                            </div>
-                          )}
-                          <h3 className="font-medium text-xs mt-2 text-center leading-tight">{student.name}</h3>
-                          <p className="text-primary text-[10px]">{student.class}</p>
-                          {actualStudent?.section && (
-                            <p className="text-muted-foreground text-[10px]">{t["Section"]}: {actualStudent.section}</p>
-                          )}
-                        </div>
-                      );
-                    })}
+                    {getStudentsByClass(cls).map(({ translated, original }) => (
+                      <div key={original.id} className="flex flex-col items-center p-2 rounded-2xl bg-card hover:shadow-md transition-shadow">
+                        {original.image_url ? (
+                          <img
+                            src={original.image_url}
+                            alt={translated.name}
+                            className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-primary/20"
+                          />
+                        ) : (
+                          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-muted flex items-center justify-center">
+                            <User className="w-8 h-8 sm:w-10 sm:h-10 text-muted-foreground" />
+                          </div>
+                        )}
+                        <h3 className="font-medium text-xs mt-2 text-center leading-tight">{translated.name}</h3>
+                        <p className="text-primary text-[10px]">{translated.class}</p>
+                        {original.section && (
+                          <p className="text-muted-foreground text-[10px]">{t["Section"]}: {original.section}</p>
+                        )}
+                      </div>
+                    ))}
                     {getStudentsByClass(cls).length === 0 && (
                       <div className="col-span-full text-center py-8 text-muted-foreground">
                         {t["No students in this class"]}
