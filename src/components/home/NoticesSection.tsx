@@ -135,13 +135,13 @@ export function NoticesSection() {
       </div>
 
       <Dialog open={!!selectedNotice} onOpenChange={() => setSelectedNotice(null)}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
+        <DialogContent className="max-w-3xl max-h-[85vh] flex flex-col">
+          <DialogHeader className="flex-shrink-0">
             <Badge className="w-fit mb-2">{translatedSelectedNotice?.category}</Badge>
             <DialogTitle className="text-xl">{translatedSelectedNotice?.title}</DialogTitle>
             {translatedSelectedNotice && <p className="text-sm text-muted-foreground">{t["Posted on"]} {formatDate(translatedSelectedNotice.created_at)}</p>}
           </DialogHeader>
-          <div className="mt-4 text-foreground whitespace-pre-wrap">{translatedSelectedNotice?.content}</div>
+          <div className="mt-4 text-foreground whitespace-pre-wrap overflow-y-auto flex-1">{translatedSelectedNotice?.content}</div>
         </DialogContent>
       </Dialog>
     </section>

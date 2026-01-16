@@ -227,7 +227,7 @@ export function NoticesManager() {
               Add Notice
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-lg">
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{editingNotice ? "Edit Notice" : "Add New Notice"}</DialogTitle>
             </DialogHeader>
@@ -255,7 +255,8 @@ export function NoticesManager() {
                       value={content}
                       onChange={(e) => setContent(e.target.value)}
                       placeholder="Notice content in English..."
-                      rows={4}
+                      rows={12}
+                      className="min-h-[250px] resize-y"
                       required
                     />
                   </div>
@@ -282,7 +283,8 @@ export function NoticesManager() {
                       value={contentBn}
                       onChange={(e) => setContentBn(e.target.value)}
                       placeholder="বাংলায় বিষয়বস্তু লিখুন (Optional)"
-                      rows={4}
+                      rows={12}
+                      className="min-h-[250px] resize-y"
                     />
                     <p className="text-xs text-muted-foreground">
                       Leave empty to use auto-translation
