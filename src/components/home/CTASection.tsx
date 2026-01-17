@@ -29,93 +29,99 @@ export function CTASection() {
   ]);
 
   return (
-    <section id="admissions" className="py-16 bg-gradient-hero text-primary-foreground">
-      <div className="container">
-        <div className="grid lg:grid-cols-2 gap-12 items-start">
-          <div>
-            <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">{translatedTexts[0]}</h2>
-            <p className="text-primary-foreground/80 mb-6 text-lg">
+    <section id="admissions" className="section-padding relative overflow-hidden">
+      {/* Background with gradient */}
+      <div className="absolute inset-0 bg-gradient-hero" />
+      
+      {/* Decorative elements */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-secondary/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-primary/20 rounded-full blur-3xl" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/5 rounded-full blur-3xl" />
+      
+      <div className="container relative">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+          <div className="text-primary-foreground">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm mb-6 border border-white/10">
+              <span className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
+              <span className="text-sm font-medium">2026 শিক্ষাবর্ষ</span>
+            </div>
+            
+            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">
+              {translatedTexts[0]}
+            </h2>
+            <p className="text-primary-foreground/85 mb-8 text-lg leading-relaxed">
               {translatedTexts[1]}
             </p>
             
             {/* Hover Dropdown for Admission Criteria */}
             <div 
-              className="bg-white/10 backdrop-blur-sm rounded-xl p-4 mb-6 relative"
+              className="bg-white/10 backdrop-blur-md rounded-2xl p-5 mb-8 border border-white/10 transition-all duration-300 hover:bg-white/15"
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
             >
-              <div className="flex items-center gap-2 cursor-pointer">
-                <BookOpen className="w-5 h-5 text-secondary" />
-                <h3 className="font-semibold text-lg">ভর্তির বয়স ও জন্ম তারিখ (২০২৬ শিক্ষাবর্ষ)</h3>
-                <ChevronDown className={`w-5 h-5 transition-transform ${isHovered ? 'rotate-180' : ''}`} />
+              <div className="flex items-center gap-3 cursor-pointer">
+                <div className="w-10 h-10 rounded-xl bg-secondary/20 flex items-center justify-center">
+                  <BookOpen className="w-5 h-5 text-secondary" />
+                </div>
+                <h3 className="font-semibold text-lg flex-1">ভর্তির বয়স ও জন্ম তারিখ (২০২৬ শিক্ষাবর্ষ)</h3>
+                <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${isHovered ? 'rotate-180' : ''}`} />
               </div>
               
-              {isHovered && (
-                <div className="mt-4 space-y-2 animate-fade-in">
-                  {admissionCriteria.map((item, index) => (
-                    <div key={index} className="bg-white/10 rounded-lg p-3">
-                      <p className="text-secondary font-medium text-sm">{item.grade}</p>
-                      <p className="text-primary-foreground/80 text-xs mt-1"><strong>জন্ম তারিখ:</strong> {item.birthDate}</p>
-                      <p className="text-primary-foreground/80 text-xs"><strong>বয়স:</strong> {item.age}</p>
-                    </div>
-                  ))}
+              <div className={`grid transition-all duration-500 ease-out ${isHovered ? 'grid-rows-[1fr] mt-5 opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                <div className="overflow-hidden">
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    {admissionCriteria.map((item, index) => (
+                      <div key={index} className="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/5 hover:bg-white/15 transition-colors">
+                        <p className="text-secondary font-semibold text-sm mb-2">{item.grade}</p>
+                        <p className="text-primary-foreground/80 text-xs leading-relaxed"><strong>জন্ম তারিখ:</strong> {item.birthDate}</p>
+                        <p className="text-primary-foreground/80 text-xs leading-relaxed"><strong>বয়স:</strong> {item.age}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              )}
+              </div>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button asChild size="lg" className="bg-secondary text-secondary-foreground hover:bg-secondary/90">
+              <Button asChild size="lg" className="btn-secondary text-secondary-foreground font-semibold text-base group">
                 <Link to="/admission">
                   {translatedTexts[2]}
-                  <ArrowRight className="ml-2 w-5 h-5" />
+                  <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10">
+              <Button asChild size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm font-medium">
                 <a href="#contact-section">{translatedTexts[3]}</a>
               </Button>
             </div>
           </div>
 
           {/* Contact Info Cards */}
-          <div id="contact-section" className="space-y-4">
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-lg bg-secondary/20 flex items-center justify-center flex-shrink-0">
-                  <MapPin className="w-6 h-6 text-secondary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg mb-1">{translatedTexts[4]}</h3>
-                  <p className="text-primary-foreground/80">Patnahat, Balisai, Ramnagar<br />Purba Medinipur, West Bengal</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-lg bg-secondary/20 flex items-center justify-center flex-shrink-0">
-                  <Phone className="w-6 h-6 text-secondary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg mb-1">{translatedTexts[5]}</h3>
-                  <p className="text-primary-foreground/80">
-                    <a href="tel:9732743315" className="hover:text-secondary transition-colors">9732743315</a> / <a href="tel:9800640998" className="hover:text-secondary transition-colors">9800640998</a><br />
-                    <a href="tel:9093775146" className="hover:text-secondary transition-colors">9093775146</a> / <a href="tel:9735225176" className="hover:text-secondary transition-colors">9735225176</a>
-                  </p>
+          <div id="contact-section" className="space-y-5">
+            {[
+              { icon: MapPin, title: translatedTexts[4], content: "Patnahat, Balisai, Ramnagar\nPurba Medinipur, West Bengal" },
+              { icon: Phone, title: translatedTexts[5], content: "phone" },
+              { icon: Clock, title: translatedTexts[6], content: `${translatedTexts[7]}\n9:00 AM - 4:00 PM` }
+            ].map((item, idx) => (
+              <div key={idx} className="group bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:bg-white/15 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                <div className="flex items-start gap-5">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-secondary/30 to-secondary/10 flex items-center justify-center flex-shrink-0 shadow-inner-glow group-hover:scale-110 transition-transform">
+                    <item.icon className="w-6 h-6 text-secondary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg mb-2 text-primary-foreground">{item.title}</h3>
+                    {item.content === "phone" ? (
+                      <p className="text-primary-foreground/80 leading-relaxed">
+                        <a href="tel:9732743315" className="hover:text-secondary transition-colors">9732743315</a> / <a href="tel:9800640998" className="hover:text-secondary transition-colors">9800640998</a><br />
+                        <a href="tel:9093775146" className="hover:text-secondary transition-colors">9093775146</a> / <a href="tel:9735225176" className="hover:text-secondary transition-colors">9735225176</a>
+                      </p>
+                    ) : (
+                      <p className="text-primary-foreground/80 leading-relaxed whitespace-pre-line">{item.content}</p>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-lg bg-secondary/20 flex items-center justify-center flex-shrink-0">
-                  <Clock className="w-6 h-6 text-secondary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg mb-1">{translatedTexts[6]}</h3>
-                  <p className="text-primary-foreground/80">{translatedTexts[7]}<br />9:00 AM - 4:00 PM</p>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
