@@ -501,6 +501,172 @@
   background: linear-gradient(180deg, hsl(var(--school-saffron)) 33%, hsl(0 0% 90%) 33%, hsl(0 0% 90%) 66%, hsl(var(--accent)) 66%);
 }
 
+/* ============================================
+   GLOWING GRADIENT BORDER NAV BUTTONS
+   India-friendly colors for school website
+   ============================================ */
+
+.nav-glow-btn {
+  @apply relative px-4 py-2.5 font-semibold text-sm rounded-full;
+  background: linear-gradient(135deg, 
+    hsl(217 91% 20%) 0%, 
+    hsl(217 91% 15%) 100%
+  );
+  color: white;
+  border: none;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  z-index: 1;
+}
+
+/* Gradient border using pseudo-element */
+.nav-glow-btn::before {
+  content: '';
+  @apply absolute -inset-[2px] rounded-full;
+  background: linear-gradient(135deg, 
+    hsl(217 91% 60%) 0%,
+    hsl(260 70% 55%) 50%,
+    hsl(217 91% 60%) 100%
+  );
+  z-index: -1;
+  transition: all 0.4s ease;
+}
+
+/* Inner background to create border effect */
+.nav-glow-btn::after {
+  content: '';
+  @apply absolute inset-[2px] rounded-full;
+  background: linear-gradient(135deg, 
+    hsl(217 91% 18%) 0%, 
+    hsl(220 25% 12%) 100%
+  );
+  z-index: -1;
+  transition: all 0.3s ease;
+}
+
+/* Outer glow effect */
+.nav-glow-btn {
+  box-shadow: 
+    0 0 15px hsl(217 91% 50% / 0.3),
+    0 0 30px hsl(260 70% 50% / 0.2),
+    0 0 45px hsl(217 91% 50% / 0.1);
+}
+
+.nav-glow-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 
+    0 0 20px hsl(217 91% 50% / 0.5),
+    0 0 40px hsl(260 70% 50% / 0.3),
+    0 0 60px hsl(217 91% 50% / 0.2);
+}
+
+.nav-glow-btn:hover::before {
+  background: linear-gradient(135deg, 
+    hsl(217 91% 70%) 0%,
+    hsl(280 70% 60%) 50%,
+    hsl(217 91% 70%) 100%
+  );
+}
+
+/* Active state for current page */
+.nav-glow-btn.active {
+  box-shadow: 
+    0 0 25px hsl(32 95% 52% / 0.5),
+    0 0 50px hsl(32 95% 52% / 0.3);
+}
+
+.nav-glow-btn.active::before {
+  background: linear-gradient(135deg, 
+    hsl(32 95% 55%) 0%,
+    hsl(45 93% 50%) 50%,
+    hsl(32 95% 55%) 100%
+  );
+}
+
+/* Navigation container with dark background */
+.nav-glow-container {
+  @apply flex flex-wrap items-center gap-2 p-3 rounded-2xl;
+  background: linear-gradient(135deg, 
+    hsl(220 25% 8%) 0%, 
+    hsl(217 91% 12%) 100%
+  );
+  border: 1px solid hsl(217 91% 30% / 0.3);
+  box-shadow: 
+    0 10px 40px hsl(220 25% 5% / 0.5),
+    inset 0 1px 0 hsl(0 0% 100% / 0.05);
+}
+
+/* Action buttons (Notice, Login) with special glow */
+.nav-glow-action {
+  @apply relative px-5 py-2.5 font-bold text-sm rounded-full text-white;
+  z-index: 1;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.nav-glow-action.notice {
+  background: linear-gradient(135deg, hsl(32 95% 45%), hsl(45 93% 50%));
+  box-shadow: 
+    0 0 20px hsl(32 95% 52% / 0.4),
+    0 0 40px hsl(45 93% 47% / 0.2);
+}
+
+.nav-glow-action.notice:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 
+    0 0 30px hsl(32 95% 52% / 0.6),
+    0 0 60px hsl(45 93% 47% / 0.4);
+}
+
+.nav-glow-action.login {
+  background: linear-gradient(135deg, hsl(160 60% 40%), hsl(160 60% 50%));
+  box-shadow: 
+    0 0 20px hsl(160 60% 42% / 0.4),
+    0 0 40px hsl(160 60% 42% / 0.2);
+}
+
+.nav-glow-action.login:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 
+    0 0 30px hsl(160 60% 42% / 0.6),
+    0 0 60px hsl(160 60% 42% / 0.4);
+}
+
+/* Mobile nav glow styles */
+.mobile-nav-glow {
+  @apply p-4 rounded-2xl mt-4;
+  background: linear-gradient(135deg, 
+    hsl(220 25% 8%) 0%, 
+    hsl(217 91% 12%) 100%
+  );
+  border: 1px solid hsl(217 91% 30% / 0.3);
+}
+
+.mobile-nav-glow-btn {
+  @apply w-full text-left px-4 py-3 rounded-xl font-medium text-white;
+  background: linear-gradient(135deg, 
+    hsl(217 91% 20%) 0%, 
+    hsl(217 91% 15%) 100%
+  );
+  border: 1px solid hsl(217 91% 40% / 0.3);
+  transition: all 0.3s ease;
+}
+
+.mobile-nav-glow-btn:hover {
+  background: linear-gradient(135deg, 
+    hsl(217 91% 25%) 0%, 
+    hsl(217 91% 20%) 100%
+  );
+  border-color: hsl(217 91% 50% / 0.5);
+  box-shadow: 0 0 20px hsl(217 91% 50% / 0.3);
+}
+
+.mobile-nav-glow-btn.active {
+  background: linear-gradient(135deg, 
+    hsl(32 95% 45%) 0%, 
+    hsl(45 93% 40%) 100%
+  );
+  border-color: hsl(32 95% 52% / 0.5);
+}
+
 /* Button improvements */
 .btn-primary {
   @apply relative overflow-hidden text-white font-semibold px-6 py-3 rounded-xl;

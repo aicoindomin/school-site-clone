@@ -157,138 +157,110 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Navigation Bar - Modern glassmorphism */}
+      {/* Navigation Bar - Glowing Gradient Style */}
       <header
         className={cn(
-          "sticky top-0 z-50 transition-all duration-500",
+          "sticky top-0 z-50 transition-all duration-500 py-3",
           scrolled 
-            ? "bg-white/90 dark:bg-background/90 backdrop-blur-xl shadow-lg shadow-foreground/5" 
-            : "bg-accent"
+            ? "bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 shadow-2xl" 
+            : "bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900"
         )}
       >
         <div className="container">
           <nav className="flex items-center justify-between">
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center w-full">
-              <NavigationMenu className="w-full">
-                <NavigationMenuList className="gap-0 w-full justify-start">
-                  {navItems.map((item, index) => (
-                    <NavigationMenuItem key={item.title}>
-                      {item.submenu ? (
-                        <div className="relative group/dropdown">
-                          <button
-                            className={cn(
-                              "inline-flex items-center bg-transparent px-4 py-4 h-auto text-sm font-medium transition-all duration-300",
-                              scrolled 
-                                ? "text-foreground hover:text-primary hover:bg-primary/5" 
-                                : "text-white hover:bg-white/20",
-                              isActive(item.href) && (scrolled ? "text-primary bg-primary/5" : "bg-white/20")
-                            )}
-                          >
-                            {t[item.title] || item.title}
-                            <svg
-                              className="relative top-[1px] ml-1 h-3 w-3 transition duration-300 group-hover/dropdown:rotate-180"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                            </svg>
-                          </button>
-                          <div className={cn(
-                            "absolute z-50 pt-2 opacity-0 pointer-events-none group-hover/dropdown:opacity-100 group-hover/dropdown:pointer-events-auto transition-all duration-300 group-hover/dropdown:translate-y-0 translate-y-2",
-                            item.title === "Others" ? "right-0" : "left-0"
-                          )}
-                          style={{ top: '100%' }}
-                          >
-                            <ul className="grid w-[220px] gap-1 p-2 glass-strong rounded-xl border-0 shadow-2xl">
-                              {item.submenu.map((subItem, subIndex) => (
-                                <li key={subItem.title} className={`animate-fade-in stagger-${subIndex + 1}`}>
-                                  {subItem.href.includes("#") ? (
-                                    <button
-                                      onClick={() => handleNavClick(subItem.href)}
-                                      className="block w-full text-left select-none rounded-lg p-3 text-sm leading-none no-underline outline-none transition-all duration-200 hover:bg-primary/10 hover:text-primary text-foreground hover:translate-x-1"
-                                    >
-                                      {t[subItem.title] || subItem.title}
-                                    </button>
-                                  ) : (
-                                    <Link
-                                      to={subItem.href}
-                                      className={cn(
-                                        "block select-none rounded-lg p-3 text-sm leading-none no-underline outline-none transition-all duration-200 hover:bg-primary/10 hover:text-primary text-foreground hover:translate-x-1",
-                                        isActive(subItem.href) && "bg-primary/10 text-primary"
-                                      )}
-                                    >
-                                      {t[subItem.title] || subItem.title}
-                                    </Link>
-                                  )}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-                      ) : (
-                        <Link
-                          to={item.href}
+            <div className="hidden lg:flex items-center w-full gap-4">
+              {/* Main nav buttons container with glow effect */}
+              <div className="nav-glow-container flex-1">
+                {navItems.map((item, index) => (
+                  <div key={item.title} className="relative">
+                    {item.submenu ? (
+                      <div className="relative group/dropdown">
+                        <button
                           className={cn(
-                            "px-4 py-4 text-sm font-medium transition-all duration-300 block relative",
-                            scrolled 
-                              ? "text-foreground hover:text-primary" 
-                              : "text-white hover:bg-white/20",
-                            isActive(item.href) && (scrolled 
-                              ? "text-primary after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-8 after:h-0.5 after:bg-primary after:rounded-full" 
-                              : "bg-white/20")
+                            "nav-glow-btn flex items-center gap-1",
+                            isActive(item.href) && "active"
                           )}
                         >
                           {t[item.title] || item.title}
-                        </Link>
-                      )}
-                    </NavigationMenuItem>
-                  ))}
-                </NavigationMenuList>
-              </NavigationMenu>
+                          <svg
+                            className="relative top-[1px] ml-1 h-3 w-3 transition duration-300 group-hover/dropdown:rotate-180"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </button>
+                        <div className={cn(
+                          "absolute z-50 pt-3 opacity-0 pointer-events-none group-hover/dropdown:opacity-100 group-hover/dropdown:pointer-events-auto transition-all duration-300 group-hover/dropdown:translate-y-0 translate-y-2",
+                          item.title === "Others" ? "right-0" : "left-0"
+                        )}
+                        style={{ top: '100%' }}
+                        >
+                          <ul className="grid w-[220px] gap-1 p-3 rounded-xl border border-blue-500/20 shadow-2xl"
+                            style={{
+                              background: 'linear-gradient(135deg, hsl(220 25% 10%) 0%, hsl(217 91% 15%) 100%)',
+                              boxShadow: '0 20px 50px hsl(220 25% 5% / 0.8), 0 0 30px hsl(217 91% 50% / 0.2)'
+                            }}
+                          >
+                            {item.submenu.map((subItem, subIndex) => (
+                              <li key={subItem.title} className={`animate-fade-in stagger-${subIndex + 1}`}>
+                                {subItem.href.includes("#") ? (
+                                  <button
+                                    onClick={() => handleNavClick(subItem.href)}
+                                    className="block w-full text-left select-none rounded-lg p-3 text-sm leading-none no-underline outline-none transition-all duration-200 text-white/80 hover:text-white hover:bg-blue-500/20 hover:translate-x-1"
+                                  >
+                                    {t[subItem.title] || subItem.title}
+                                  </button>
+                                ) : (
+                                  <Link
+                                    to={subItem.href}
+                                    className={cn(
+                                      "block select-none rounded-lg p-3 text-sm leading-none no-underline outline-none transition-all duration-200 text-white/80 hover:text-white hover:bg-blue-500/20 hover:translate-x-1",
+                                      isActive(subItem.href) && "bg-blue-500/30 text-white"
+                                    )}
+                                  >
+                                    {t[subItem.title] || subItem.title}
+                                  </Link>
+                                )}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    ) : (
+                      <Link
+                        to={item.href}
+                        className={cn(
+                          "nav-glow-btn block",
+                          isActive(item.href) && "active"
+                        )}
+                      >
+                        {t[item.title] || item.title}
+                      </Link>
+                    )}
+                  </div>
+                ))}
+              </div>
               
-              <div className="flex items-center gap-2 ml-auto">
+              {/* Action buttons */}
+              <div className="flex items-center gap-3">
                 <LanguageSwitcher />
-                <Button 
-                  asChild 
-                  className={cn(
-                    "rounded-xl font-semibold transition-all duration-300 shadow-lg",
-                    scrolled 
-                      ? "bg-secondary hover:bg-secondary/90 text-white shadow-secondary/20" 
-                      : "bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm"
-                  )}
-                >
-                  <Link to="/notices" className="flex items-center gap-2">
-                    <Bell className="w-4 h-4" />
-                    {t["Notice"]}
-                  </Link>
-                </Button>
-                <Button 
-                  asChild 
-                  className={cn(
-                    "rounded-xl font-semibold transition-all duration-300 shadow-lg",
-                    scrolled 
-                      ? "bg-primary hover:bg-primary/90 text-white shadow-primary/20" 
-                      : "bg-secondary hover:bg-secondary/90 text-white"
-                  )}
-                >
-                  <Link to="/admin" className="flex items-center gap-2">
-                    <LogIn className="w-4 h-4" />
-                    {t["Login"]}
-                  </Link>
-                </Button>
+                <Link to="/notices" className="nav-glow-action notice flex items-center gap-2">
+                  <Bell className="w-4 h-4" />
+                  {t["Notice"]}
+                </Link>
+                <Link to="/admin" className="nav-glow-action login flex items-center gap-2">
+                  <LogIn className="w-4 h-4" />
+                  {t["Login"]}
+                </Link>
               </div>
             </div>
 
             {/* Mobile Menu Button */}
             <button
-              className={cn(
-                "lg:hidden p-3 rounded-xl transition-all duration-300",
-                scrolled 
-                  ? "text-foreground hover:bg-primary/10" 
-                  : "text-white hover:bg-white/20"
-              )}
+              className="lg:hidden p-3 rounded-xl transition-all duration-300 text-white hover:bg-white/10"
               onClick={() => setIsOpen(!isOpen)}
               aria-label="Toggle menu"
             >
@@ -298,81 +270,79 @@ export function Navbar() {
 
           {/* Mobile Navigation */}
           {isOpen && (
-            <div className={cn(
-              "lg:hidden pb-6 animate-fade-in",
-              scrolled ? "text-foreground" : "text-white"
-            )}>
-              <div className="flex flex-col gap-2 pt-4">
-                {navItems.map((item) => (
-                  <div key={item.title}>
-                    {item.submenu ? (
-                      <details className="group">
-                        <summary className={cn(
-                          "flex items-center justify-between cursor-pointer p-3 rounded-xl transition-colors",
-                          scrolled ? "hover:bg-primary/10" : "hover:bg-white/20"
-                        )}>
-                          <span className="font-medium">{t[item.title] || item.title}</span>
-                          <ChevronDown className="w-4 h-4 transition-transform group-open:rotate-180" />
-                        </summary>
-                        <div className="pl-4 mt-1 space-y-1">
-                          {item.submenu.map((subItem) => (
-                            subItem.href.includes("#") ? (
-                              <button
-                                key={subItem.title}
-                                onClick={() => {
-                                  handleNavClick(subItem.href);
-                                  setIsOpen(false);
-                                }}
-                                className={cn(
-                                  "block w-full text-left p-3 text-sm rounded-lg transition-colors",
-                                  scrolled ? "text-muted-foreground hover:text-primary hover:bg-primary/5" : "text-white/80 hover:text-white hover:bg-white/10"
-                                )}
-                              >
-                                {t[subItem.title] || subItem.title}
-                              </button>
-                            ) : (
-                              <Link
-                                key={subItem.title}
-                                to={subItem.href}
-                                className={cn(
-                                  "block p-3 text-sm rounded-lg transition-colors",
-                                  scrolled ? "text-muted-foreground hover:text-primary hover:bg-primary/5" : "text-white/80 hover:text-white hover:bg-white/10"
-                                )}
-                                onClick={() => setIsOpen(false)}
-                              >
-                                {t[subItem.title] || subItem.title}
-                              </Link>
-                            )
-                          ))}
-                        </div>
-                      </details>
-                    ) : (
-                      <Link
-                        to={item.href}
-                        className={cn(
-                          "block p-3 rounded-xl transition-colors font-medium",
-                          scrolled ? "hover:bg-primary/10 hover:text-primary" : "hover:bg-white/20"
-                        )}
-                        onClick={() => setIsOpen(false)}
-                      >
-                        {t[item.title] || item.title}
-                      </Link>
-                    )}
-                  </div>
-                ))}
-                <div className="pt-4 border-t border-white/20 mt-2 flex gap-3">
-                  <Button asChild className="flex-1 bg-secondary hover:bg-secondary/90 text-white rounded-xl shadow-lg">
-                    <Link to="/notices" onClick={() => setIsOpen(false)} className="flex items-center justify-center gap-2">
+            <div className="lg:hidden pb-6 animate-fade-in">
+              {/* Mobile nav with glowing dark theme */}
+              <div className="mobile-nav-glow">
+                <div className="flex flex-col gap-2">
+                  {navItems.map((item) => (
+                    <div key={item.title}>
+                      {item.submenu ? (
+                        <details className="group">
+                          <summary className="mobile-nav-glow-btn flex items-center justify-between cursor-pointer">
+                            <span>{t[item.title] || item.title}</span>
+                            <ChevronDown className="w-4 h-4 transition-transform group-open:rotate-180" />
+                          </summary>
+                          <div className="pl-4 mt-2 space-y-1">
+                            {item.submenu.map((subItem) => (
+                              subItem.href.includes("#") ? (
+                                <button
+                                  key={subItem.title}
+                                  onClick={() => {
+                                    handleNavClick(subItem.href);
+                                    setIsOpen(false);
+                                  }}
+                                  className="block w-full text-left p-3 text-sm rounded-lg transition-colors text-white/70 hover:text-white hover:bg-blue-500/20"
+                                >
+                                  {t[subItem.title] || subItem.title}
+                                </button>
+                              ) : (
+                                <Link
+                                  key={subItem.title}
+                                  to={subItem.href}
+                                  className={cn(
+                                    "block p-3 text-sm rounded-lg transition-colors text-white/70 hover:text-white hover:bg-blue-500/20",
+                                    isActive(subItem.href) && "bg-blue-500/30 text-white"
+                                  )}
+                                  onClick={() => setIsOpen(false)}
+                                >
+                                  {t[subItem.title] || subItem.title}
+                                </Link>
+                              )
+                            ))}
+                          </div>
+                        </details>
+                      ) : (
+                        <Link
+                          to={item.href}
+                          className={cn(
+                            "mobile-nav-glow-btn block",
+                            isActive(item.href) && "active"
+                          )}
+                          onClick={() => setIsOpen(false)}
+                        >
+                          {t[item.title] || item.title}
+                        </Link>
+                      )}
+                    </div>
+                  ))}
+                  <div className="pt-4 border-t border-blue-500/20 mt-2 flex gap-3">
+                    <Link 
+                      to="/notices" 
+                      onClick={() => setIsOpen(false)} 
+                      className="nav-glow-action notice flex-1 flex items-center justify-center gap-2"
+                    >
                       <Bell className="w-4 h-4" />
                       {t["Notice"]}
                     </Link>
-                  </Button>
-                  <Button asChild className="flex-1 bg-primary hover:bg-primary/90 text-white rounded-xl shadow-lg">
-                    <Link to="/admin" onClick={() => setIsOpen(false)} className="flex items-center justify-center gap-2">
+                    <Link 
+                      to="/admin" 
+                      onClick={() => setIsOpen(false)} 
+                      className="nav-glow-action login flex-1 flex items-center justify-center gap-2"
+                    >
                       <LogIn className="w-4 h-4" />
                       {t["Login"]}
                     </Link>
-                  </Button>
+                  </div>
                 </div>
               </div>
             </div>
