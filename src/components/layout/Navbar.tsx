@@ -4,16 +4,14 @@ import { Menu, X, ChevronDown, Phone, Mail, Bell, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
 import logo from "@/assets/logo.png";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useTranslatedTexts } from "@/components/TranslatedText";
+import { LiquidButton } from "@/components/ui/LiquidButton";
 
 const navItems = [
   { title: "Home", href: "/" },
@@ -157,57 +155,44 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Navigation Bar - Modern glassmorphism */}
+      {/* Navigation Bar - Liquid Button Style */}
       <header
         className={cn(
           "sticky top-0 z-50 transition-all duration-500",
-          scrolled 
-            ? "bg-white/90 dark:bg-background/90 backdrop-blur-xl shadow-lg shadow-foreground/5" 
-            : "bg-accent"
+          "bg-gradient-to-b from-[#E8F4FC] to-[#D6ECFA]",
+          scrolled && "shadow-lg shadow-primary/10"
         )}
       >
-        <div className="container">
+        <div className="container py-2">
           <nav className="flex items-center justify-between">
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center w-full">
               <NavigationMenu className="w-full">
-                <NavigationMenuList className="gap-0 w-full justify-start">
-                  {navItems.map((item, index) => (
+                <NavigationMenuList className="gap-2 w-full justify-start flex-wrap">
+                  {navItems.map((item) => (
                     <NavigationMenuItem key={item.title}>
                       {item.submenu ? (
                         <div className="relative group/dropdown">
-                          <button
-                            className={cn(
-                              "inline-flex items-center bg-transparent px-4 py-4 h-auto text-sm font-medium transition-all duration-300",
-                              scrolled 
-                                ? "text-foreground hover:text-primary hover:bg-primary/5" 
-                                : "text-white hover:bg-white/20",
-                              isActive(item.href) && (scrolled ? "text-primary bg-primary/5" : "bg-white/20")
-                            )}
+                          <LiquidButton
+                            isActive={isActive(item.href)}
+                            className="flex items-center gap-1"
                           >
                             {t[item.title] || item.title}
-                            <svg
-                              className="relative top-[1px] ml-1 h-3 w-3 transition duration-300 group-hover/dropdown:rotate-180"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                            </svg>
-                          </button>
+                            <ChevronDown className="w-3.5 h-3.5 transition-transform duration-300 group-hover/dropdown:rotate-180" />
+                          </LiquidButton>
                           <div className={cn(
-                            "absolute z-50 pt-2 opacity-0 pointer-events-none group-hover/dropdown:opacity-100 group-hover/dropdown:pointer-events-auto transition-all duration-300 group-hover/dropdown:translate-y-0 translate-y-2",
+                            "absolute z-50 pt-3 opacity-0 pointer-events-none group-hover/dropdown:opacity-100 group-hover/dropdown:pointer-events-auto transition-all duration-300 group-hover/dropdown:translate-y-0 translate-y-3",
                             item.title === "Others" ? "right-0" : "left-0"
                           )}
                           style={{ top: '100%' }}
                           >
-                            <ul className="grid w-[220px] gap-1 p-2 glass-strong rounded-xl border-0 shadow-2xl">
+                            <ul className="grid w-[220px] gap-1 p-3 rounded-2xl border-0 shadow-2xl bg-gradient-to-b from-white to-blue-50/80 backdrop-blur-xl">
                               {item.submenu.map((subItem, subIndex) => (
                                 <li key={subItem.title} className={`animate-fade-in stagger-${subIndex + 1}`}>
                                   {subItem.href.includes("#") ? (
                                     <button
                                       onClick={() => handleNavClick(subItem.href)}
-                                      className="block w-full text-left select-none rounded-lg p-3 text-sm leading-none no-underline outline-none transition-all duration-200 hover:bg-primary/10 hover:text-primary text-foreground hover:translate-x-1"
+                                      className="block w-full text-left select-none rounded-xl p-3 text-sm leading-none no-underline outline-none transition-all duration-200 hover:bg-primary/10 hover:text-primary text-foreground hover:translate-x-1 hover:shadow-md"
                                     >
                                       {t[subItem.title] || subItem.title}
                                     </button>
@@ -215,7 +200,7 @@ export function Navbar() {
                                     <Link
                                       to={subItem.href}
                                       className={cn(
-                                        "block select-none rounded-lg p-3 text-sm leading-none no-underline outline-none transition-all duration-200 hover:bg-primary/10 hover:text-primary text-foreground hover:translate-x-1",
+                                        "block select-none rounded-xl p-3 text-sm leading-none no-underline outline-none transition-all duration-200 hover:bg-primary/10 hover:text-primary text-foreground hover:translate-x-1 hover:shadow-md",
                                         isActive(subItem.href) && "bg-primary/10 text-primary"
                                       )}
                                     >
@@ -228,19 +213,10 @@ export function Navbar() {
                           </div>
                         </div>
                       ) : (
-                        <Link
-                          to={item.href}
-                          className={cn(
-                            "px-4 py-4 text-sm font-medium transition-all duration-300 block relative",
-                            scrolled 
-                              ? "text-foreground hover:text-primary" 
-                              : "text-white hover:bg-white/20",
-                            isActive(item.href) && (scrolled 
-                              ? "text-primary after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-8 after:h-0.5 after:bg-primary after:rounded-full" 
-                              : "bg-white/20")
-                          )}
-                        >
-                          {t[item.title] || item.title}
+                        <Link to={item.href}>
+                          <LiquidButton isActive={isActive(item.href)}>
+                            {t[item.title] || item.title}
+                          </LiquidButton>
                         </Link>
                       )}
                     </NavigationMenuItem>
@@ -248,73 +224,47 @@ export function Navbar() {
                 </NavigationMenuList>
               </NavigationMenu>
               
-              <div className="flex items-center gap-2 ml-auto">
+              <div className="flex items-center gap-3 ml-auto">
                 <LanguageSwitcher />
-                <Button 
-                  asChild 
-                  className={cn(
-                    "rounded-xl font-semibold transition-all duration-300 shadow-lg",
-                    scrolled 
-                      ? "bg-secondary hover:bg-secondary/90 text-white shadow-secondary/20" 
-                      : "bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm"
-                  )}
-                >
-                  <Link to="/notices" className="flex items-center gap-2">
-                    <Bell className="w-4 h-4" />
-                    {t["Notice"]}
-                  </Link>
-                </Button>
-                <Button 
-                  asChild 
-                  className={cn(
-                    "rounded-xl font-semibold transition-all duration-300 shadow-lg",
-                    scrolled 
-                      ? "bg-primary hover:bg-primary/90 text-white shadow-primary/20" 
-                      : "bg-secondary hover:bg-secondary/90 text-white"
-                  )}
-                >
-                  <Link to="/admin" className="flex items-center gap-2">
-                    <LogIn className="w-4 h-4" />
-                    {t["Login"]}
-                  </Link>
-                </Button>
+                <Link to="/notices">
+                  <LiquidButton className="!bg-gradient-to-br !from-amber-100 !to-orange-200" isActive={isActive('/notices')}>
+                    <Bell className="w-4 h-4 text-orange-600" />
+                    <span className="text-orange-700">{t["Notice"]}</span>
+                  </LiquidButton>
+                </Link>
+                <Link to="/admin">
+                  <LiquidButton className="!bg-gradient-to-br !from-emerald-100 !to-green-200">
+                    <LogIn className="w-4 h-4 text-green-600" />
+                    <span className="text-green-700">{t["Login"]}</span>
+                  </LiquidButton>
+                </Link>
               </div>
             </div>
 
             {/* Mobile Menu Button */}
-            <button
-              className={cn(
-                "lg:hidden p-3 rounded-xl transition-all duration-300",
-                scrolled 
-                  ? "text-foreground hover:bg-primary/10" 
-                  : "text-white hover:bg-white/20"
-              )}
+            <LiquidButton
               onClick={() => setIsOpen(!isOpen)}
-              aria-label="Toggle menu"
+              className="lg:hidden"
             >
-              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
+              {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </LiquidButton>
           </nav>
 
           {/* Mobile Navigation */}
           {isOpen && (
-            <div className={cn(
-              "lg:hidden pb-6 animate-fade-in",
-              scrolled ? "text-foreground" : "text-white"
-            )}>
-              <div className="flex flex-col gap-2 pt-4">
+            <div className="lg:hidden pb-6 animate-fade-in">
+              <div className="flex flex-col gap-3 pt-4">
                 {navItems.map((item) => (
                   <div key={item.title}>
                     {item.submenu ? (
                       <details className="group">
-                        <summary className={cn(
-                          "flex items-center justify-between cursor-pointer p-3 rounded-xl transition-colors",
-                          scrolled ? "hover:bg-primary/10" : "hover:bg-white/20"
-                        )}>
-                          <span className="font-medium">{t[item.title] || item.title}</span>
-                          <ChevronDown className="w-4 h-4 transition-transform group-open:rotate-180" />
+                        <summary className="list-none">
+                          <LiquidButton className="w-full justify-between">
+                            <span>{t[item.title] || item.title}</span>
+                            <ChevronDown className="w-4 h-4 transition-transform group-open:rotate-180" />
+                          </LiquidButton>
                         </summary>
-                        <div className="pl-4 mt-1 space-y-1">
+                        <div className="pl-4 mt-2 space-y-2">
                           {item.submenu.map((subItem) => (
                             subItem.href.includes("#") ? (
                               <button
@@ -323,10 +273,7 @@ export function Navbar() {
                                   handleNavClick(subItem.href);
                                   setIsOpen(false);
                                 }}
-                                className={cn(
-                                  "block w-full text-left p-3 text-sm rounded-lg transition-colors",
-                                  scrolled ? "text-muted-foreground hover:text-primary hover:bg-primary/5" : "text-white/80 hover:text-white hover:bg-white/10"
-                                )}
+                                className="block w-full text-left p-3 text-sm rounded-xl transition-all duration-200 bg-white/60 hover:bg-primary/10 hover:text-primary text-foreground shadow-sm"
                               >
                                 {t[subItem.title] || subItem.title}
                               </button>
@@ -335,8 +282,8 @@ export function Navbar() {
                                 key={subItem.title}
                                 to={subItem.href}
                                 className={cn(
-                                  "block p-3 text-sm rounded-lg transition-colors",
-                                  scrolled ? "text-muted-foreground hover:text-primary hover:bg-primary/5" : "text-white/80 hover:text-white hover:bg-white/10"
+                                  "block p-3 text-sm rounded-xl transition-all duration-200 bg-white/60 hover:bg-primary/10 hover:text-primary text-foreground shadow-sm",
+                                  isActive(subItem.href) && "bg-primary/10 text-primary"
                                 )}
                                 onClick={() => setIsOpen(false)}
                               >
@@ -349,30 +296,28 @@ export function Navbar() {
                     ) : (
                       <Link
                         to={item.href}
-                        className={cn(
-                          "block p-3 rounded-xl transition-colors font-medium",
-                          scrolled ? "hover:bg-primary/10 hover:text-primary" : "hover:bg-white/20"
-                        )}
                         onClick={() => setIsOpen(false)}
                       >
-                        {t[item.title] || item.title}
+                        <LiquidButton isActive={isActive(item.href)} className="w-full">
+                          {t[item.title] || item.title}
+                        </LiquidButton>
                       </Link>
                     )}
                   </div>
                 ))}
-                <div className="pt-4 border-t border-white/20 mt-2 flex gap-3">
-                  <Button asChild className="flex-1 bg-secondary hover:bg-secondary/90 text-white rounded-xl shadow-lg">
-                    <Link to="/notices" onClick={() => setIsOpen(false)} className="flex items-center justify-center gap-2">
-                      <Bell className="w-4 h-4" />
-                      {t["Notice"]}
-                    </Link>
-                  </Button>
-                  <Button asChild className="flex-1 bg-primary hover:bg-primary/90 text-white rounded-xl shadow-lg">
-                    <Link to="/admin" onClick={() => setIsOpen(false)} className="flex items-center justify-center gap-2">
-                      <LogIn className="w-4 h-4" />
-                      {t["Login"]}
-                    </Link>
-                  </Button>
+                <div className="pt-4 border-t border-primary/20 mt-2 flex gap-3">
+                  <Link to="/notices" onClick={() => setIsOpen(false)} className="flex-1">
+                    <LiquidButton className="w-full justify-center !bg-gradient-to-br !from-amber-100 !to-orange-200">
+                      <Bell className="w-4 h-4 text-orange-600" />
+                      <span className="text-orange-700">{t["Notice"]}</span>
+                    </LiquidButton>
+                  </Link>
+                  <Link to="/admin" onClick={() => setIsOpen(false)} className="flex-1">
+                    <LiquidButton className="w-full justify-center !bg-gradient-to-br !from-emerald-100 !to-green-200">
+                      <LogIn className="w-4 h-4 text-green-600" />
+                      <span className="text-green-700">{t["Login"]}</span>
+                    </LiquidButton>
+                  </Link>
                 </div>
               </div>
             </div>
