@@ -82,9 +82,9 @@ export function AboutSection() {
               <span className="text-sm font-semibold text-primary">{t["Welcome to"]}</span>
             </div>
             
-            {/* Title - solid dark blue for visibility */}
-            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-              <span className="text-primary drop-shadow-md">{t["Balisai Public School"]}</span>
+            {/* Title with gradient */}
+            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight">
+              <span className="gradient-text">{t["Balisai Public School"]}</span>
             </h2>
             
             {/* Accent bar */}
