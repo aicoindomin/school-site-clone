@@ -83,8 +83,10 @@ export function AboutSection() {
             </div>
             
             {/* Title with gradient */}
-            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight">
-              <span className="gradient-text">{t["Balisai Public School"]}</span>
+            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+              <span className="bg-gradient-to-r from-primary via-blue-600 to-primary bg-clip-text text-transparent">
+                {t["Balisai Public School"]}
+              </span>
             </h2>
             
             {/* Accent bar */}

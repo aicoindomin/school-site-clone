@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, Dispatch, SetStateAction } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, ChevronDown, Phone, Mail, Bell, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,75 @@ import logo from "@/assets/logo.png";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useTranslatedTexts } from "@/components/TranslatedText";
 import { LiquidButton } from "@/components/ui/LiquidButton";
+
+// Mobile nav item component with proper dropdown state
+function MobileNavItem({
+  item,
+  t,
+  isActive,
+  handleNavClick,
+  setIsOpen,
+}: {
+  item: { title: string; href: string; submenu?: { title: string; href: string }[] };
+  t: Record<string, string>;
+  isActive: (path: string) => boolean;
+  handleNavClick: (href: string) => void;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+}) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  if (item.submenu) {
+    return (
+      <div>
+        <LiquidButton
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="w-full justify-between"
+        >
+          <span>{t[item.title] || item.title}</span>
+          <ChevronDown className={cn("w-4 h-4 transition-transform duration-200", isExpanded && "rotate-180")} />
+        </LiquidButton>
+        {isExpanded && (
+          <div className="pl-4 mt-2 space-y-2 animate-fade-in">
+            {item.submenu.map((subItem) =>
+              subItem.href.includes("#") ? (
+                <button
+                  key={subItem.title}
+                  onClick={() => {
+                    handleNavClick(subItem.href);
+                    setIsOpen(false);
+                  }}
+                  className="block w-full text-left p-3 text-sm rounded-xl transition-all duration-200 bg-white/60 hover:bg-primary/10 hover:text-primary text-foreground shadow-sm"
+                >
+                  {t[subItem.title] || subItem.title}
+                </button>
+              ) : (
+                <Link
+                  key={subItem.title}
+                  to={subItem.href}
+                  className={cn(
+                    "block p-3 text-sm rounded-xl transition-all duration-200 bg-white/60 hover:bg-primary/10 hover:text-primary text-foreground shadow-sm",
+                    isActive(subItem.href) && "bg-primary/10 text-primary"
+                  )}
+                  onClick={() => setIsOpen(false)}
+                >
+                  {t[subItem.title] || subItem.title}
+                </Link>
+              )
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <Link to={item.href} onClick={() => setIsOpen(false)}>
+      <LiquidButton isActive={isActive(item.href)} className="w-full">
+        {t[item.title] || item.title}
+      </LiquidButton>
+    </Link>
+  );
+}
 
 const navItems = [
   { title: "Home", href: "/" },
@@ -27,8 +96,6 @@ const navItems = [
   },
   { title: "Faculty", href: "/faculty" },
   { title: "Students", href: "/students" },
-  { title: "Exam Results", href: "/results" },
-  { title: "Class Routine", href: "/routine" },
   { title: "Holidays", href: "/holidays" },
   { title: "Contact", href: "/contact" },
   {
@@ -38,6 +105,8 @@ const navItems = [
       { title: "Gallery", href: "/gallery" },
       { title: "Admission", href: "/admission" },
       { title: "Careers", href: "/careers" },
+      { title: "Class Routine", href: "/routine" },
+      { title: "Exam Results", href: "/results" },
     ],
   },
 ];
@@ -50,7 +119,7 @@ export function Navbar() {
 
   // Collect all translatable texts
   const textsToTranslate = useMemo(() => {
-    const texts = ["Home", "About", "Faculty", "Students", "Exam Results", "Class Routine", "Holidays", "Contact", "Others", "Notice", "Login", "Overview", "Mission & Vision", "Secretary's Message", "Headmaster's Message", "Gallery", "Admission", "Careers", "Balisai Public School", "Patnahat, Balisai, Ramnagar, Purba Medinipur"];
+    const texts = ["Home", "About", "Faculty", "Students", "Holidays", "Contact", "Others", "Notice", "Login", "Overview", "Mission & Vision", "Secretary's Message", "Headmaster's Message", "Gallery", "Admission", "Careers", "Class Routine", "Exam Results", "Balisai Public School", "Patnahat, Balisai, Ramnagar, Purba Medinipur"];
     return texts;
   }, []);
   
@@ -168,7 +237,7 @@ export function Navbar() {
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center w-full">
               <NavigationMenu className="w-full">
-                <NavigationMenuList className="gap-2 w-full justify-start flex-wrap">
+                <NavigationMenuList className="gap-1.5 w-full justify-start flex-nowrap">
                   {navItems.map((item) => (
                     <NavigationMenuItem key={item.title}>
                       {item.submenu ? (
@@ -255,55 +324,14 @@ export function Navbar() {
             <div className="lg:hidden pb-6 animate-fade-in">
               <div className="flex flex-col gap-3 pt-4">
                 {navItems.map((item) => (
-                  <div key={item.title}>
-                    {item.submenu ? (
-                      <details className="group">
-                        <summary className="list-none">
-                          <LiquidButton className="w-full justify-between">
-                            <span>{t[item.title] || item.title}</span>
-                            <ChevronDown className="w-4 h-4 transition-transform group-open:rotate-180" />
-                          </LiquidButton>
-                        </summary>
-                        <div className="pl-4 mt-2 space-y-2">
-                          {item.submenu.map((subItem) => (
-                            subItem.href.includes("#") ? (
-                              <button
-                                key={subItem.title}
-                                onClick={() => {
-                                  handleNavClick(subItem.href);
-                                  setIsOpen(false);
-                                }}
-                                className="block w-full text-left p-3 text-sm rounded-xl transition-all duration-200 bg-white/60 hover:bg-primary/10 hover:text-primary text-foreground shadow-sm"
-                              >
-                                {t[subItem.title] || subItem.title}
-                              </button>
-                            ) : (
-                              <Link
-                                key={subItem.title}
-                                to={subItem.href}
-                                className={cn(
-                                  "block p-3 text-sm rounded-xl transition-all duration-200 bg-white/60 hover:bg-primary/10 hover:text-primary text-foreground shadow-sm",
-                                  isActive(subItem.href) && "bg-primary/10 text-primary"
-                                )}
-                                onClick={() => setIsOpen(false)}
-                              >
-                                {t[subItem.title] || subItem.title}
-                              </Link>
-                            )
-                          ))}
-                        </div>
-                      </details>
-                    ) : (
-                      <Link
-                        to={item.href}
-                        onClick={() => setIsOpen(false)}
-                      >
-                        <LiquidButton isActive={isActive(item.href)} className="w-full">
-                          {t[item.title] || item.title}
-                        </LiquidButton>
-                      </Link>
-                    )}
-                  </div>
+                  <MobileNavItem
+                    key={item.title}
+                    item={item}
+                    t={t}
+                    isActive={isActive}
+                    handleNavClick={handleNavClick}
+                    setIsOpen={setIsOpen}
+                  />
                 ))}
                 <div className="pt-4 border-t border-primary/20 mt-2 flex gap-3">
                   <Link to="/notices" onClick={() => setIsOpen(false)} className="flex-1">
