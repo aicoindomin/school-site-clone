@@ -84,6 +84,22 @@ export function ImageUpload({ value, onChange, folder = "general", className }: 
     <div className={className}>
       <Label className="mb-2 block">Image</Label>
       
+      {/* URL Input - Primary method for Hostinger hosting */}
+      <div className="mb-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+        <p className="text-xs text-blue-700 mb-2 font-medium">
+          📁 Paste image URL from Hostinger (public_html/assets/):
+        </p>
+        <Input
+          placeholder="https://yourdomain.com/assets/image.jpg"
+          value={value}
+          onChange={(e) => {
+            setPreview(e.target.value);
+            onChange(e.target.value);
+          }}
+          className="text-sm bg-white"
+        />
+      </div>
+
       {preview ? (
         <div className="relative inline-block">
           <img
@@ -111,7 +127,7 @@ export function ImageUpload({ value, onChange, folder = "general", className }: 
           ) : (
             <>
               <ImageIcon className="h-8 w-8 text-muted-foreground mb-2" />
-              <span className="text-xs text-muted-foreground">Click to upload</span>
+              <span className="text-xs text-muted-foreground text-center px-2">Or upload to cloud storage</span>
             </>
           )}
         </div>
@@ -125,18 +141,6 @@ export function ImageUpload({ value, onChange, folder = "general", className }: 
         onChange={handleUpload}
         disabled={uploading}
       />
-
-      <div className="mt-2">
-        <Input
-          placeholder="Or paste image URL"
-          value={value}
-          onChange={(e) => {
-            setPreview(e.target.value);
-            onChange(e.target.value);
-          }}
-          className="text-xs"
-        />
-      </div>
     </div>
   );
 }
