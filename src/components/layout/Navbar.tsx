@@ -232,7 +232,7 @@ export function Navbar() {
           scrolled && "shadow-lg shadow-primary/10"
         )}
       >
-        <div className="container py-2">
+        <div className="max-w-7xl mx-auto px-4 py-2">
           <nav className="flex items-center justify-between">
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center w-full">
