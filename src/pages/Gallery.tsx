@@ -2,21 +2,23 @@ import { useState, useEffect, useMemo } from "react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
-import { useTranslatedTexts, useDynamicTranslation } from "@/components/TranslatedText";
+import { useTranslatedTexts } from "@/components/TranslatedText";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { EffectCoverflow, Pagination, Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/effect-coverflow";
+import "swiper/css/pagination";
 
 interface GalleryItem {
   id: string;
   title: string;
-  description: string | null;
   image_url: string;
-  category: string;
 }
 
 const Gallery = () => {
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Static text translations
   const textsToTranslate = useMemo(() => [
     "Photo Gallery",
     "Memories and moments from our school",
@@ -33,14 +35,11 @@ const Gallery = () => {
     return map;
   }, [textsToTranslate, translatedTexts]);
 
-  // Translate dynamic content
-  const translatedGallery = useDynamicTranslation(gallery, ["title", "description", "category"]);
-
   useEffect(() => {
     const fetchGallery = async () => {
       const { data, error } = await supabase
         .from("gallery")
-        .select("*")
+        .select("id, title, image_url")
         .order("created_at", { ascending: false });
 
       if (!error && data) {
@@ -54,7 +53,7 @@ const Gallery = () => {
 
   return (
     <MainLayout>
-      <section className="py-16 bg-background">
+      <section className="py-16 bg-gradient-to-b from-background to-muted/30 min-h-screen">
         <div className="container">
           <div className="text-center mb-12">
             <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">
@@ -63,50 +62,90 @@ const Gallery = () => {
             <p className="text-muted-foreground max-w-2xl mx-auto">
               {t["Memories and moments from our school"]}
             </p>
+            <div className="accent-bar w-24 mx-auto mt-6" />
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {[...Array(12)].map((_, i) => (
-                <Skeleton key={i} className="aspect-square rounded-lg" />
-              ))}
+            <div className="h-[500px] flex items-center justify-center">
+              <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin" />
             </div>
-          ) : translatedGallery.length === 0 ? (
+          ) : gallery.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
               {t["No gallery images available"]}
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {translatedGallery.map((image, index) => (
-                <div
-                  key={image.id}
-                  className="group relative overflow-hidden rounded-lg aspect-square [perspective:1000px]"
-                >
-                  <div className="relative w-full h-full transition-transform duration-500 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
-                    {/* Front - Image */}
-                    <div className="absolute inset-0 [backface-visibility:hidden]">
-                      <img
-                        src={gallery[index].image_url}
-                        alt={image.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    {/* Back - Details */}
-                    <div className="absolute inset-0 bg-primary text-primary-foreground flex flex-col items-center justify-center p-4 [backface-visibility:hidden] [transform:rotateY(180deg)]">
-                      <h3 className="font-semibold text-lg text-center mb-2">{image.title}</h3>
-                      <p className="text-xs text-primary-foreground/70 mb-2">{image.category}</p>
-                      {image.description && (
-                        <p className="text-sm text-center text-primary-foreground/80 line-clamp-4">
-                          {image.description}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
+            <div className="gallery-page-swiper-container max-w-[1440px] mx-auto px-4 overflow-hidden">
+              <Swiper
+                effect="coverflow"
+                grabCursor={true}
+                centeredSlides={true}
+                slidesPerView="auto"
+                loop={gallery.length > 3}
+                autoplay={{
+                  delay: 4000,
+                  disableOnInteraction: false,
+                }}
+                coverflowEffect={{
+                  rotate: 0,
+                  stretch: 0,
+                  depth: 100,
+                  modifier: 2.5,
+                  slideShadows: true,
+                }}
+                pagination={{
+                  clickable: true,
+                }}
+                modules={[EffectCoverflow, Pagination, Autoplay]}
+                className="gallery-page-swiper h-[450px] md:h-[600px] pt-6"
+              >
+                {gallery.map((image) => (
+                  <SwiperSlide
+                    key={image.id}
+                    className="!w-[280px] !h-[380px] md:!w-[400px] md:!h-[540px] rounded-2xl overflow-hidden cursor-pointer"
+                  >
+                    <img
+                      src={image.image_url}
+                      alt={image.title}
+                      loading="lazy"
+                      className="w-full h-full object-cover rounded-2xl border-2 border-transparent transition-all duration-300"
+                    />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
             </div>
           )}
         </div>
+
+        {/* Custom styles for Swiper */}
+        <style>{`
+          .gallery-page-swiper .swiper-slide {
+            transition: all 0.3s ease;
+          }
+          .gallery-page-swiper .swiper-slide-active img {
+            border-color: hsl(var(--primary)) !important;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+          }
+          .gallery-page-swiper .swiper-pagination {
+            bottom: 0 !important;
+          }
+          .gallery-page-swiper .swiper-pagination-bullet {
+            background: hsl(var(--muted-foreground));
+            opacity: 0.5;
+            width: 10px;
+            height: 10px;
+            transition: all 0.3s ease;
+          }
+          .gallery-page-swiper .swiper-pagination-bullet-active {
+            background: hsl(var(--primary));
+            opacity: 1;
+            width: 24px;
+            border-radius: 5px;
+          }
+          .gallery-page-swiper .swiper-slide-shadow-left,
+          .gallery-page-swiper .swiper-slide-shadow-right {
+            border-radius: 16px;
+          }
+        `}</style>
       </section>
     </MainLayout>
   );
