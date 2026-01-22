@@ -118,36 +118,83 @@ export const TopAchieversSection = () => {
           height: 260px;
           background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
           border-radius: 20px;
-          overflow: hidden;
+          overflow: visible;
           cursor: pointer;
           transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-          border: 2px solid rgba(0, 242, 255, 0.2);
+        }
+        
+        /* Fixed glowing frame - always visible */
+        .achiever-card::before {
+          content: '';
+          position: absolute;
+          inset: -3px;
+          border-radius: 22px;
+          background: linear-gradient(135deg, #00f2ff 0%, #0ea5e9 25%, #00f2ff 50%, #84fab0 75%, #00f2ff 100%);
+          background-size: 300% 300%;
+          z-index: -1;
+          animation: glowingBorder 4s ease-in-out infinite;
           box-shadow: 
-            0 10px 40px rgba(0, 0, 0, 0.5),
-            0 0 20px rgba(0, 242, 255, 0.1);
+            0 0 15px rgba(0, 242, 255, 0.5),
+            0 0 30px rgba(0, 242, 255, 0.3),
+            0 0 45px rgba(0, 242, 255, 0.15);
+        }
+        
+        /* Inner card background to cover the gradient */
+        .achiever-card::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: 20px;
+          background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+          z-index: 0;
+        }
+        
+        .achiever-card > * {
+          position: relative;
+          z-index: 1;
+        }
+        
+        @keyframes glowingBorder {
+          0%, 100% {
+            background-position: 0% 50%;
+            box-shadow: 
+              0 0 15px rgba(0, 242, 255, 0.5),
+              0 0 30px rgba(0, 242, 255, 0.3),
+              0 0 45px rgba(0, 242, 255, 0.15);
+          }
+          50% {
+            background-position: 100% 50%;
+            box-shadow: 
+              0 0 20px rgba(0, 242, 255, 0.7),
+              0 0 40px rgba(0, 242, 255, 0.5),
+              0 0 60px rgba(0, 242, 255, 0.25);
+          }
         }
         
         .achiever-card:hover {
           transform: rotateX(10deg) rotateY(-5deg) translateY(-15px) scale(1.05);
-          border-color: #00f2ff;
+        }
+        
+        .achiever-card:hover::before {
           box-shadow: 
-            0 20px 60px rgba(0, 0, 0, 0.6),
-            0 0 40px rgba(0, 242, 255, 0.4),
-            0 0 80px rgba(0, 242, 255, 0.2),
-            inset 0 0 20px rgba(0, 242, 255, 0.1);
+            0 0 25px rgba(0, 242, 255, 0.8),
+            0 0 50px rgba(0, 242, 255, 0.6),
+            0 0 80px rgba(0, 242, 255, 0.4);
         }
         
         .student-img {
           width: 100%;
           height: 100%;
           object-fit: cover;
+          object-position: center top;
           transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
-          filter: grayscale(20%) brightness(0.9);
+          filter: brightness(0.95);
+          border-radius: 20px;
         }
         
         .achiever-card:hover .student-img {
-          transform: scale(1.15) translateY(-10px);
-          filter: grayscale(0%) brightness(1);
+          transform: scale(1.1) translateY(-5px);
+          filter: brightness(1);
         }
         
         .info-layer {
