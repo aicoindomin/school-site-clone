@@ -1,17 +1,19 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Camera, Eye } from "lucide-react";
+import { ArrowRight, Camera } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { TranslatedText } from "@/components/TranslatedText";
-import yogaImg from "@/assets/gallery/yoga.jpg";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { EffectCoverflow, Pagination, Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/effect-coverflow";
+import "swiper/css/pagination";
 
 interface GalleryItem {
   id: string;
   title: string;
-  description: string | null;
   image_url: string;
-  category: string;
 }
 
 export function GallerySection() {
@@ -20,7 +22,11 @@ export function GallerySection() {
 
   useEffect(() => {
     const fetchGallery = async () => {
-      const { data, error } = await supabase.from("gallery").select("*").order("created_at", { ascending: false }).limit(6);
+      const { data, error } = await supabase
+        .from("gallery")
+        .select("id, title, image_url")
+        .order("created_at", { ascending: false })
+        .limit(8);
       if (!error && data) setGalleryImages(data);
       setLoading(false);
     };
@@ -29,10 +35,9 @@ export function GallerySection() {
 
   if (loading) {
     return (
-      <section id="gallery" className="py-20 md:py-28 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-mesh opacity-50" />
-        <div className="container relative">
-          <div className="text-center mb-16">
+      <section id="gallery" className="py-20 md:py-28 relative overflow-hidden bg-gradient-to-b from-background to-muted/30">
+        <div className="container">
+          <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card mb-4">
               <Camera className="w-4 h-4 text-primary" />
               <span className="text-sm font-medium text-primary">
@@ -43,10 +48,8 @@ export function GallerySection() {
               <TranslatedText>Photo Gallery</TranslatedText>
             </h2>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-5 md:gap-6">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="aspect-square bg-muted animate-pulse rounded-2xl" />
-            ))}
+          <div className="h-[500px] flex items-center justify-center">
+            <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin" />
           </div>
         </div>
       </section>
@@ -56,15 +59,14 @@ export function GallerySection() {
   if (galleryImages.length === 0) return null;
 
   return (
-    <section id="gallery" className="py-20 md:py-28 relative overflow-hidden">
+    <section id="gallery" className="py-20 md:py-28 relative overflow-hidden bg-gradient-to-b from-background to-muted/30">
       {/* Background decoration */}
-      <div className="absolute inset-0 bg-gradient-mesh opacity-50" />
-      <div className="absolute top-20 -right-20 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl float-bubble" />
-      <div className="absolute bottom-20 -left-20 w-[400px] h-[400px] bg-secondary/5 rounded-full blur-3xl float-bubble-delayed" />
-      
+      <div className="absolute top-20 -right-20 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl" />
+      <div className="absolute bottom-20 -left-20 w-[400px] h-[400px] bg-secondary/5 rounded-full blur-3xl" />
+
       <div className="container relative">
         {/* Header */}
-        <div className="text-center mb-16 animate-fade-in-up">
+        <div className="text-center mb-12 animate-fade-in-up">
           <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full glass-card mb-6">
             <Camera className="w-4 h-4 text-secondary" />
             <span className="text-sm font-semibold text-primary">
@@ -77,49 +79,58 @@ export function GallerySection() {
           <div className="accent-bar w-24 mx-auto" />
         </div>
 
-        {/* Gallery Grid with 3D flip effect */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-5 md:gap-6 mb-12">
-          {galleryImages.map((image, idx) => (
-            <div 
-              key={image.id} 
-              className={`group relative overflow-hidden rounded-2xl aspect-square cursor-pointer animate-fade-in-up stagger-${(idx % 6) + 1}`}
-              style={{ 
-                animationFillMode: 'both',
-                perspective: '1000px'
-              }}
-            >
-              <div className="relative w-full h-full transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
-                {/* Front - Image */}
-                <div className="absolute inset-0 [backface-visibility:hidden]">
-                  <img 
-                    src={image.image_url || yogaImg} 
-                    alt={image.title} 
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
-                  />
-                  {/* Overlay on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
-                    <div className="flex items-center gap-2 text-white">
-                      <Eye className="w-5 h-5" />
-                      <span className="font-medium">View Details</span>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Back - Info */}
-                <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-accent text-white flex flex-col items-center justify-center p-6 [backface-visibility:hidden] [transform:rotateY(180deg)]">
-                  <h3 className="font-display font-bold text-xl text-center mb-3 line-clamp-2">{image.title}</h3>
-                  <span className="px-4 py-1.5 text-xs bg-white/20 rounded-full backdrop-blur-sm mb-4 font-medium">{image.category}</span>
-                  {image.description && (
-                    <p className="text-sm text-center text-white/90 line-clamp-3 leading-relaxed">{image.description}</p>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
+        {/* 3D Coverflow Swiper */}
+        <div className="gallery-swiper-container max-w-[1440px] mx-auto px-4 overflow-hidden">
+          <Swiper
+            effect="coverflow"
+            grabCursor={true}
+            centeredSlides={true}
+            slidesPerView="auto"
+            loop={galleryImages.length > 3}
+            autoplay={{
+              delay: 3000,
+              disableOnInteraction: false,
+            }}
+            coverflowEffect={{
+              rotate: 0,
+              stretch: 0,
+              depth: 100,
+              modifier: 2.5,
+              slideShadows: true,
+            }}
+            pagination={{
+              clickable: true,
+            }}
+            modules={[EffectCoverflow, Pagination, Autoplay]}
+            className="gallery-swiper h-[450px] md:h-[550px] pt-6"
+            onSlideChange={(swiper) => {
+              // Click to center functionality
+              const slides = swiper.slides;
+              slides.forEach((slide, index) => {
+                slide.onclick = () => {
+                  swiper.slideToLoop(index);
+                };
+              });
+            }}
+          >
+            {galleryImages.map((image) => (
+              <SwiperSlide
+                key={image.id}
+                className="!w-[280px] !h-[380px] md:!w-[370px] md:!h-[500px] rounded-2xl overflow-hidden"
+              >
+                <img
+                  src={image.image_url}
+                  alt={image.title}
+                  loading="lazy"
+                  className="w-full h-full object-cover rounded-2xl border-2 border-transparent transition-all duration-300 swiper-slide-image"
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
         </div>
 
         {/* CTA Button */}
-        <div className="text-center">
+        <div className="text-center mt-12">
           <Button asChild size="lg" className="btn-primary text-base group">
             <Link to="/gallery">
               <TranslatedText>View Full Gallery</TranslatedText>
@@ -128,6 +139,37 @@ export function GallerySection() {
           </Button>
         </div>
       </div>
+
+      {/* Custom styles for Swiper */}
+      <style>{`
+        .gallery-swiper .swiper-slide {
+          transition: all 0.3s ease;
+        }
+        .gallery-swiper .swiper-slide-active img {
+          border-color: hsl(var(--primary)) !important;
+          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+        .gallery-swiper .swiper-pagination {
+          bottom: 0 !important;
+        }
+        .gallery-swiper .swiper-pagination-bullet {
+          background: hsl(var(--muted-foreground));
+          opacity: 0.5;
+          width: 10px;
+          height: 10px;
+          transition: all 0.3s ease;
+        }
+        .gallery-swiper .swiper-pagination-bullet-active {
+          background: hsl(var(--primary));
+          opacity: 1;
+          width: 24px;
+          border-radius: 5px;
+        }
+        .gallery-swiper .swiper-slide-shadow-left,
+        .gallery-swiper .swiper-slide-shadow-right {
+          border-radius: 16px;
+        }
+      `}</style>
     </section>
   );
 }
