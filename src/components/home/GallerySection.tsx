@@ -85,44 +85,61 @@ export function GallerySection() {
             effect="coverflow"
             grabCursor={true}
             centeredSlides={true}
-            slidesPerView="auto"
-            loop={galleryImages.length > 3}
+            slidesPerView={5}
+            loop={true}
+            loopAdditionalSlides={3}
+            speed={600}
             autoplay={{
-              delay: 3000,
+              delay: 3500,
               disableOnInteraction: false,
+              pauseOnMouseEnter: true,
             }}
             coverflowEffect={{
               rotate: 0,
-              stretch: 0,
-              depth: 100,
-              modifier: 2.5,
+              stretch: 80,
+              depth: 200,
+              modifier: 1,
               slideShadows: true,
             }}
             pagination={{
               clickable: true,
             }}
-            modules={[EffectCoverflow, Pagination, Autoplay]}
-            className="gallery-swiper h-[450px] md:h-[550px] pt-6"
-            onSlideChange={(swiper) => {
-              // Click to center functionality
-              const slides = swiper.slides;
-              slides.forEach((slide, index) => {
-                slide.onclick = () => {
-                  swiper.slideToLoop(index);
-                };
-              });
+            breakpoints={{
+              320: {
+                slidesPerView: 1.5,
+                coverflowEffect: {
+                  stretch: 40,
+                  depth: 100,
+                },
+              },
+              640: {
+                slidesPerView: 3,
+                coverflowEffect: {
+                  stretch: 60,
+                  depth: 150,
+                },
+              },
+              1024: {
+                slidesPerView: 5,
+                coverflowEffect: {
+                  stretch: 80,
+                  depth: 200,
+                },
+              },
             }}
+            modules={[EffectCoverflow, Pagination, Autoplay]}
+            className="gallery-swiper h-[400px] md:h-[500px] lg:h-[550px] pt-6"
           >
             {galleryImages.map((image) => (
               <SwiperSlide
                 key={image.id}
-                className="!w-[280px] !h-[380px] md:!w-[370px] md:!h-[500px] rounded-2xl overflow-hidden"
+                className="gallery-slide"
               >
                 <img
                   src={image.image_url}
                   alt={image.title}
                   loading="lazy"
-                  className="w-full h-full object-cover rounded-2xl border-2 border-transparent transition-all duration-300 swiper-slide-image"
+                  className="w-full h-full object-cover rounded-2xl"
                 />
               </SwiperSlide>
             ))}
@@ -142,32 +159,68 @@ export function GallerySection() {
 
       {/* Custom styles for Swiper */}
       <style>{`
-        .gallery-swiper .swiper-slide {
-          transition: all 0.3s ease;
+        .gallery-swiper {
+          padding: 30px 0 50px;
+        }
+        .gallery-swiper .swiper-wrapper {
+          transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        .gallery-swiper .gallery-slide {
+          width: 280px;
+          height: 350px;
+          border-radius: 20px;
+          overflow: hidden;
+          transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+          border: 3px solid transparent;
+        }
+        @media (min-width: 768px) {
+          .gallery-swiper .gallery-slide {
+            width: 320px;
+            height: 420px;
+          }
+        }
+        @media (min-width: 1024px) {
+          .gallery-swiper .gallery-slide {
+            width: 350px;
+            height: 460px;
+          }
+        }
+        .gallery-swiper .swiper-slide-active .gallery-slide,
+        .gallery-swiper .swiper-slide-active {
+          border-color: hsl(var(--primary));
+          box-shadow: 
+            0 15px 50px rgba(0, 0, 0, 0.35),
+            0 0 30px hsla(var(--primary), 0.3);
+        }
+        .gallery-swiper .swiper-slide img {
+          transition: transform 0.5s ease;
         }
         .gallery-swiper .swiper-slide-active img {
-          border-color: hsl(var(--primary)) !important;
-          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+          transform: scale(1.02);
         }
         .gallery-swiper .swiper-pagination {
           bottom: 0 !important;
         }
         .gallery-swiper .swiper-pagination-bullet {
           background: hsl(var(--muted-foreground));
-          opacity: 0.5;
-          width: 10px;
-          height: 10px;
-          transition: all 0.3s ease;
+          opacity: 0.4;
+          width: 12px;
+          height: 12px;
+          transition: all 0.4s ease;
         }
         .gallery-swiper .swiper-pagination-bullet-active {
           background: hsl(var(--primary));
           opacity: 1;
-          width: 24px;
-          border-radius: 5px;
+          width: 32px;
+          border-radius: 6px;
         }
         .gallery-swiper .swiper-slide-shadow-left,
         .gallery-swiper .swiper-slide-shadow-right {
-          border-radius: 16px;
+          border-radius: 20px;
+          background: linear-gradient(to right, rgba(0,0,0,0.4), transparent);
+        }
+        .gallery-swiper .swiper-slide-shadow-right {
+          background: linear-gradient(to left, rgba(0,0,0,0.4), transparent);
         }
       `}</style>
     </section>
