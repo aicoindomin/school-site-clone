@@ -177,51 +177,69 @@ export function Navbar() {
 
   return (
     <>
-      {/* Header with Logo and School Info - Premium glassmorphism style */}
-      <div className="bg-gradient-primary relative overflow-hidden">
-        {/* Decorative elements */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-secondary/10 rounded-full blur-3xl" />
+      {/* Header with Logo and School Info - Premium Cosmic/Space Theme */}
+      <div className="header-cosmic relative overflow-hidden">
+        {/* Animated cosmic background layers */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0a0e27] via-[#0d1942] to-[#0a0e27]" />
         
-        <div className="container py-5 relative">
+        {/* Stars layer */}
+        <div className="absolute inset-0 stars-layer" />
+        
+        {/* Animated aurora/wave effect */}
+        <div className="absolute inset-0 aurora-wave" />
+        <div className="absolute inset-0 aurora-wave-2" />
+        
+        {/* Glowing particles */}
+        <div className="absolute top-1/2 left-1/4 w-2 h-2 bg-blue-400 rounded-full animate-pulse opacity-60" />
+        <div className="absolute top-1/3 right-1/3 w-1.5 h-1.5 bg-cyan-300 rounded-full animate-pulse opacity-50" style={{ animationDelay: '0.5s' }} />
+        <div className="absolute bottom-1/4 left-1/2 w-1 h-1 bg-blue-300 rounded-full animate-pulse opacity-40" style={{ animationDelay: '1s' }} />
+        
+        <div className="container py-6 relative z-10">
           <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-4 group">
+            <Link to="/" className="flex items-center gap-5 group">
+              {/* Logo with premium glow effect */}
               <div className="relative">
+                <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-blue-500 via-cyan-400 to-blue-500 opacity-60 blur-md group-hover:opacity-80 transition-opacity duration-500 animate-pulse" style={{ animationDuration: '3s' }} />
+                <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-blue-400 to-cyan-400 opacity-40" />
                 <img 
                   src={logo} 
                   alt="Balisai Public School" 
-                  className="w-18 h-18 md:w-20 md:h-20 rounded-full bg-white p-1.5 shadow-xl group-hover:scale-105 transition-transform duration-300" 
+                  className="relative w-20 h-20 md:w-24 md:h-24 rounded-full bg-white p-1 shadow-2xl group-hover:scale-105 transition-transform duration-500 ring-2 ring-white/30" 
                 />
-                <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-secondary to-accent opacity-0 group-hover:opacity-50 blur-md transition-opacity" />
               </div>
-              <div>
-                <h1 className="font-display text-2xl md:text-3xl font-bold text-white drop-shadow-lg">
+              <div className="space-y-1">
+                <h1 className="font-display text-2xl md:text-4xl font-bold text-white tracking-wide drop-shadow-[0_0_15px_rgba(100,200,255,0.5)]">
                   {t["Balisai Public School"]}
                 </h1>
-                <p className="text-white/80 text-sm mt-0.5">
+                <p className="text-cyan-200/90 text-sm md:text-base font-medium tracking-wide">
                   {t["Patnahat, Balisai, Ramnagar, Purba Medinipur"]}
                 </p>
-                <p className="text-white/60 text-xs mt-0.5">
+                <p className="text-blue-300/70 text-xs md:text-sm tracking-widest">
                   Estd. 2009 | Reg No: S/1L/69181
                 </p>
               </div>
             </Link>
-            <div className="hidden lg:flex flex-col items-end gap-2">
-              <a href="tel:9732743315" className="flex items-center gap-2 text-white/90 hover:text-secondary transition-colors text-sm group">
-                <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+            
+            {/* Contact info with premium styling */}
+            <div className="hidden lg:flex flex-col items-end gap-3">
+              <a href="tel:9732743315" className="flex items-center gap-3 text-white/90 hover:text-cyan-300 transition-all duration-300 group">
+                <span className="text-sm font-medium tracking-wide">9732743315 / 9083317144</span>
+                <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center group-hover:bg-cyan-500/30 group-hover:shadow-[0_0_20px_rgba(0,200,255,0.4)] transition-all duration-300 ring-1 ring-white/20">
                   <Phone className="w-4 h-4" />
                 </div>
-                9732743315 / 9083317144
               </a>
-              <a href="mailto:info@balisaipublicschool.in" className="flex items-center gap-2 text-white/90 hover:text-secondary transition-colors text-sm group">
-                <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+              <a href="mailto:info@balisaipublicschool.in" className="flex items-center gap-3 text-white/90 hover:text-cyan-300 transition-all duration-300 group">
+                <span className="text-sm font-medium tracking-wide">info@balisaipublicschool.in</span>
+                <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center group-hover:bg-cyan-500/30 group-hover:shadow-[0_0_20px_rgba(0,200,255,0.4)] transition-all duration-300 ring-1 ring-white/20">
                   <Mail className="w-4 h-4" />
                 </div>
-                info@balisaipublicschool.in
               </a>
             </div>
           </div>
         </div>
+        
+        {/* Bottom glowing line */}
+        <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-60" />
       </div>
 
       {/* Navigation Bar - Liquid Button Style */}
