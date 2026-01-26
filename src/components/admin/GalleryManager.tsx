@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Loader2, Image as ImageIcon } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, Image as ImageIcon, Video } from "lucide-react";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { BilingualToggle } from "./BilingualToggle";
 import {
@@ -41,6 +41,7 @@ interface GalleryItem {
   category_bn: string | null;
   event_date: string | null;
   is_featured: boolean | null;
+  media_type: string | null;
   created_at: string;
 }
 
@@ -73,6 +74,7 @@ export function GalleryManager() {
   const [category, setCategory] = useState("events");
   const [eventDate, setEventDate] = useState("");
   const [isFeatured, setIsFeatured] = useState(false);
+  const [mediaType, setMediaType] = useState<"image" | "video">("image");
 
   const fetchItems = async () => {
     setLoading(true);
@@ -106,6 +108,7 @@ export function GalleryManager() {
     setCategory("events");
     setEventDate("");
     setIsFeatured(false);
+    setMediaType("image");
     setEditingItem(null);
     setEditLanguage("en");
   };
@@ -120,6 +123,7 @@ export function GalleryManager() {
     setCategory(item.category);
     setEventDate(item.event_date || "");
     setIsFeatured(item.is_featured || false);
+    setMediaType((item.media_type as "image" | "video") || "image");
     setEditLanguage("en");
     setDialogOpen(true);
   };
@@ -137,6 +141,7 @@ export function GalleryManager() {
       category,
       event_date: eventDate || null,
       is_featured: isFeatured,
+      media_type: mediaType,
     };
 
     let error;
@@ -293,6 +298,42 @@ export function GalleryManager() {
 
               <ImageUpload value={imageUrl} onChange={setImageUrl} folder="gallery" />
 
+              {/* Media Type Selector */}
+              <div className="space-y-2">
+                <Label>Media Type</Label>
+                <div className="flex gap-4">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="mediaType"
+                      value="image"
+                      checked={mediaType === "image"}
+                      onChange={() => setMediaType("image")}
+                      className="w-4 h-4 text-primary"
+                    />
+                    <ImageIcon className="w-4 h-4" />
+                    <span className="text-sm">Image</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="mediaType"
+                      value="video"
+                      checked={mediaType === "video"}
+                      onChange={() => setMediaType("video")}
+                      className="w-4 h-4 text-primary"
+                    />
+                    <Video className="w-4 h-4" />
+                    <span className="text-sm">Video</span>
+                  </label>
+                </div>
+                {mediaType === "video" && (
+                  <p className="text-xs text-muted-foreground">
+                    Paste a video URL (MP4 recommended). Videos will autoplay muted with volume control.
+                  </p>
+                )}
+              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="category">Category</Label>
@@ -356,14 +397,24 @@ export function GalleryManager() {
             <Card key={item.id} className="overflow-hidden">
               <div className="aspect-video relative bg-muted">
                 {item.image_url ? (
-                  <img
-                    src={item.image_url}
-                    alt={item.title}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.currentTarget.src = "/placeholder.svg";
-                    }}
-                  />
+                  item.media_type === "video" ? (
+                    <video
+                      src={item.image_url}
+                      className="w-full h-full object-cover"
+                      muted
+                      loop
+                      playsInline
+                    />
+                  ) : (
+                    <img
+                      src={item.image_url}
+                      alt={item.title}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = "/placeholder.svg";
+                      }}
+                    />
+                  )
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
                     <ImageIcon className="w-12 h-12 text-muted-foreground" />
@@ -372,6 +423,12 @@ export function GalleryManager() {
                 {item.is_featured && (
                   <span className="absolute top-2 left-2 text-xs px-2 py-1 rounded bg-primary text-primary-foreground">
                     Featured
+                  </span>
+                )}
+                {item.media_type === "video" && (
+                  <span className="absolute top-2 right-2 text-xs px-2 py-1 rounded bg-red-500 text-white flex items-center gap-1">
+                    <Video className="w-3 h-3" />
+                    Video
                   </span>
                 )}
               </div>

@@ -3,6 +3,7 @@ import { MainLayout } from "@/components/layout/MainLayout";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslatedTexts } from "@/components/TranslatedText";
+import { GalleryVideoPlayer } from "@/components/ui/GalleryVideoPlayer";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectCoverflow, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
@@ -13,6 +14,7 @@ interface GalleryItem {
   id: string;
   title: string;
   image_url: string;
+  media_type: string | null;
 }
 
 const Gallery = () => {
@@ -39,7 +41,7 @@ const Gallery = () => {
     const fetchGallery = async () => {
       const { data, error } = await supabase
         .from("gallery")
-        .select("id, title, image_url")
+        .select("id, title, image_url, media_type")
         .order("created_at", { ascending: false });
 
       if (!error && data) {
@@ -98,17 +100,25 @@ const Gallery = () => {
                 modules={[EffectCoverflow, Pagination, Autoplay]}
                 className="gallery-page-swiper h-[450px] md:h-[600px] pt-6"
               >
-                {gallery.map((image) => (
+                {gallery.map((item) => (
                   <SwiperSlide
-                    key={image.id}
+                    key={item.id}
                     className="!w-[280px] !h-[380px] md:!w-[400px] md:!h-[540px] rounded-2xl overflow-hidden cursor-pointer"
                   >
-                    <img
-                      src={image.image_url}
-                      alt={image.title}
-                      loading="lazy"
-                      className="w-full h-full object-cover rounded-2xl border-2 border-transparent transition-all duration-300"
-                    />
+                    {item.media_type === "video" ? (
+                      <GalleryVideoPlayer
+                        src={item.image_url}
+                        title={item.title}
+                        className="w-full h-full"
+                      />
+                    ) : (
+                      <img
+                        src={item.image_url}
+                        alt={item.title}
+                        loading="lazy"
+                        className="w-full h-full object-cover rounded-2xl border-2 border-transparent transition-all duration-300"
+                      />
+                    )}
                   </SwiperSlide>
                 ))}
               </Swiper>

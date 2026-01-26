@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Camera } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { TranslatedText } from "@/components/TranslatedText";
+import { GalleryVideoPlayer } from "@/components/ui/GalleryVideoPlayer";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectCoverflow, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
@@ -14,6 +15,7 @@ interface GalleryItem {
   id: string;
   title: string;
   image_url: string;
+  media_type: string | null;
 }
 
 export function GallerySection() {
@@ -24,7 +26,7 @@ export function GallerySection() {
     const fetchGallery = async () => {
       const { data, error } = await supabase
         .from("gallery")
-        .select("id, title, image_url")
+        .select("id, title, image_url, media_type")
         .order("created_at", { ascending: false })
         .limit(8);
       if (!error && data) setGalleryImages(data);
@@ -113,17 +115,25 @@ export function GallerySection() {
               });
             }}
           >
-            {galleryImages.map((image) => (
+            {galleryImages.map((item) => (
               <SwiperSlide
-                key={image.id}
+                key={item.id}
                 className="!w-[280px] !h-[380px] md:!w-[370px] md:!h-[500px] rounded-2xl overflow-hidden"
               >
-                <img
-                  src={image.image_url}
-                  alt={image.title}
-                  loading="lazy"
-                  className="w-full h-full object-cover rounded-2xl border-2 border-transparent transition-all duration-300 swiper-slide-image"
-                />
+                {item.media_type === "video" ? (
+                  <GalleryVideoPlayer
+                    src={item.image_url}
+                    title={item.title}
+                    className="w-full h-full"
+                  />
+                ) : (
+                  <img
+                    src={item.image_url}
+                    alt={item.title}
+                    loading="lazy"
+                    className="w-full h-full object-cover rounded-2xl border-2 border-transparent transition-all duration-300 swiper-slide-image"
+                  />
+                )}
               </SwiperSlide>
             ))}
           </Swiper>

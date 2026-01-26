@@ -119,7 +119,7 @@ export function Navbar() {
 
   // Collect all translatable texts
   const textsToTranslate = useMemo(() => {
-    const texts = ["Home", "About", "Faculty", "Students", "Holidays", "Contact", "Others", "Notice", "Login", "Overview", "Mission & Vision", "Secretary's Message", "Headmaster's Message", "Gallery", "Admission", "Careers", "Class Routine", "Exam Results", "Balisai Public School", "Patnahat, Balisai, Ramnagar, Purba Medinipur"];
+    const texts = ["Home", "About", "Faculty", "Students", "Holidays", "Contact", "Others", "Notice", "Login", "Overview", "Mission & Vision", "Secretary's Message", "Headmaster's Message", "Gallery", "Admission", "Careers", "Class Routine", "Exam Results", "Balisai Public School", "Patnahat, Balisai, Ramnagar, Purba Medinipur", "Contact Us"];
     return texts;
   }, []);
   

@@ -247,6 +247,7 @@ export type Database = {
           id: string
           image_url: string
           is_featured: boolean | null
+          media_type: string | null
           title: string
           title_bn: string | null
         }
@@ -260,6 +261,7 @@ export type Database = {
           id?: string
           image_url: string
           is_featured?: boolean | null
+          media_type?: string | null
           title: string
           title_bn?: string | null
         }
@@ -273,6 +275,7 @@ export type Database = {
           id?: string
           image_url?: string
           is_featured?: boolean | null
+          media_type?: string | null
           title?: string
           title_bn?: string | null
         }
