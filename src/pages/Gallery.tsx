@@ -1,11 +1,12 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { MainLayout } from "@/components/layout/MainLayout";
-import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslatedTexts } from "@/components/TranslatedText";
 import { GalleryVideoPlayer } from "@/components/ui/GalleryVideoPlayer";
+import { GalleryLightbox } from "@/components/ui/GalleryLightbox";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectCoverflow, Pagination, Autoplay } from "swiper/modules";
+import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
@@ -20,6 +21,9 @@ interface GalleryItem {
 const Gallery = () => {
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+  const swiperRef = useRef<SwiperType | null>(null);
 
   const textsToTranslate = useMemo(() => [
     "Photo Gallery",
@@ -52,6 +56,21 @@ const Gallery = () => {
 
     fetchGallery();
   }, []);
+
+  const openLightbox = (index: number) => {
+    if (swiperRef.current?.autoplay) {
+      swiperRef.current.autoplay.stop();
+    }
+    setLightboxIndex(index);
+    setLightboxOpen(true);
+  };
+
+  const closeLightbox = () => {
+    setLightboxOpen(false);
+    if (swiperRef.current?.autoplay) {
+      swiperRef.current.autoplay.start();
+    }
+  };
 
   return (
     <MainLayout>
@@ -86,6 +105,7 @@ const Gallery = () => {
                 autoplay={{
                   delay: 4000,
                   disableOnInteraction: false,
+                  pauseOnMouseEnter: true,
                 }}
                 coverflowEffect={{
                   rotate: 0,
@@ -99,11 +119,15 @@ const Gallery = () => {
                 }}
                 modules={[EffectCoverflow, Pagination, Autoplay]}
                 className="gallery-page-swiper h-[450px] md:h-[600px] pt-6"
+                onSwiper={(swiper) => {
+                  swiperRef.current = swiper;
+                }}
               >
-                {gallery.map((item) => (
+                {gallery.map((item, index) => (
                   <SwiperSlide
                     key={item.id}
                     className="!w-[280px] !h-[380px] md:!w-[400px] md:!h-[540px] rounded-2xl overflow-hidden cursor-pointer"
+                    onClick={() => openLightbox(index)}
                   >
                     {item.media_type === "video" ? (
                       <GalleryVideoPlayer
@@ -122,6 +146,15 @@ const Gallery = () => {
                   </SwiperSlide>
                 ))}
               </Swiper>
+
+              {/* Lightbox */}
+              <GalleryLightbox
+                items={gallery}
+                currentIndex={lightboxIndex}
+                isOpen={lightboxOpen}
+                onClose={closeLightbox}
+                onNavigate={setLightboxIndex}
+              />
             </div>
           )}
         </div>

@@ -1,12 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Camera } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { TranslatedText } from "@/components/TranslatedText";
 import { GalleryVideoPlayer } from "@/components/ui/GalleryVideoPlayer";
+import { GalleryLightbox } from "@/components/ui/GalleryLightbox";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectCoverflow, Pagination, Autoplay } from "swiper/modules";
+import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
@@ -21,6 +23,9 @@ interface GalleryItem {
 export function GallerySection() {
   const [galleryImages, setGalleryImages] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+  const swiperRef = useRef<SwiperType | null>(null);
 
   useEffect(() => {
     const fetchGallery = async () => {
@@ -34,6 +39,23 @@ export function GallerySection() {
     };
     fetchGallery();
   }, []);
+
+  const openLightbox = (index: number) => {
+    // Pause autoplay when opening lightbox
+    if (swiperRef.current?.autoplay) {
+      swiperRef.current.autoplay.stop();
+    }
+    setLightboxIndex(index);
+    setLightboxOpen(true);
+  };
+
+  const closeLightbox = () => {
+    setLightboxOpen(false);
+    // Resume autoplay when closing lightbox
+    if (swiperRef.current?.autoplay) {
+      swiperRef.current.autoplay.start();
+    }
+  };
 
   if (loading) {
     return (
@@ -92,6 +114,7 @@ export function GallerySection() {
             autoplay={{
               delay: 3000,
               disableOnInteraction: false,
+              pauseOnMouseEnter: true,
             }}
             coverflowEffect={{
               rotate: 0,
@@ -105,20 +128,15 @@ export function GallerySection() {
             }}
             modules={[EffectCoverflow, Pagination, Autoplay]}
             className="gallery-swiper h-[450px] md:h-[550px] pt-6"
-            onSlideChange={(swiper) => {
-              // Click to center functionality
-              const slides = swiper.slides;
-              slides.forEach((slide, index) => {
-                slide.onclick = () => {
-                  swiper.slideToLoop(index);
-                };
-              });
+            onSwiper={(swiper) => {
+              swiperRef.current = swiper;
             }}
           >
-            {galleryImages.map((item) => (
+            {galleryImages.map((item, index) => (
               <SwiperSlide
                 key={item.id}
-                className="!w-[280px] !h-[380px] md:!w-[370px] md:!h-[500px] rounded-2xl overflow-hidden"
+                className="!w-[280px] !h-[380px] md:!w-[370px] md:!h-[500px] rounded-2xl overflow-hidden cursor-pointer"
+                onClick={() => openLightbox(index)}
               >
                 {item.media_type === "video" ? (
                   <GalleryVideoPlayer
@@ -139,6 +157,15 @@ export function GallerySection() {
           </Swiper>
         </div>
 
+        {/* Lightbox */}
+        <GalleryLightbox
+          items={galleryImages}
+          currentIndex={lightboxIndex}
+          isOpen={lightboxOpen}
+          onClose={closeLightbox}
+          onNavigate={setLightboxIndex}
+        />
+
         {/* CTA Button */}
         <div className="text-center mt-12">
           <Button asChild size="lg" className="btn-primary text-base group">
@@ -149,7 +176,6 @@ export function GallerySection() {
           </Button>
         </div>
       </div>
-
       {/* Custom styles for Swiper */}
       <style>{`
         .gallery-swiper .swiper-slide {
