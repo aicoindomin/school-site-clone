@@ -11,27 +11,40 @@ interface ImageUploadProps {
   onChange: (url: string) => void;
   folder?: string;
   className?: string;
+  acceptVideo?: boolean;
 }
 
-export function ImageUpload({ value, onChange, folder = "general", className }: ImageUploadProps) {
+export function ImageUpload({ value, onChange, folder = "general", className, acceptVideo = false }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState(value);
   const inputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+
+  const acceptTypes = acceptVideo ? "video/*" : "image/*";
+  const fileTypeLabel = acceptVideo ? "video" : "image";
 
   const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     // Validate file type
-    if (!file.type.startsWith("image/")) {
+    const isImage = file.type.startsWith("image/");
+    const isVideo = file.type.startsWith("video/");
+    
+    if (acceptVideo && !isVideo) {
+      toast({ title: "Please select a video file", variant: "destructive" });
+      return;
+    }
+    
+    if (!acceptVideo && !isImage) {
       toast({ title: "Please select an image file", variant: "destructive" });
       return;
     }
 
-    // Validate file size (5MB max)
-    if (file.size > 5 * 1024 * 1024) {
-      toast({ title: "Image must be less than 5MB", variant: "destructive" });
+    // Validate file size (5MB for images, 50MB for videos)
+    const maxSize = acceptVideo ? 50 * 1024 * 1024 : 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      toast({ title: `File must be less than ${acceptVideo ? '50MB' : '5MB'}`, variant: "destructive" });
       return;
     }
 
@@ -136,7 +149,7 @@ export function ImageUpload({ value, onChange, folder = "general", className }: 
       <Input
         ref={inputRef}
         type="file"
-        accept="image/*"
+        accept={acceptTypes}
         className="hidden"
         onChange={handleUpload}
         disabled={uploading}
