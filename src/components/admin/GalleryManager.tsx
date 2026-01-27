@@ -296,7 +296,7 @@ export function GalleryManager() {
                 </>
               )}
 
-              <ImageUpload value={imageUrl} onChange={setImageUrl} folder="gallery" />
+              <ImageUpload value={imageUrl} onChange={setImageUrl} folder="gallery" acceptVideo={mediaType === "video"} />
 
               {/* Media Type Selector */}
               <div className="space-y-2">
