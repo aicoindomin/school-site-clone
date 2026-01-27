@@ -47,16 +47,14 @@ export function Footer() {
             <Link to="/" className="flex items-center gap-4 mb-6 group">
               <div className="relative">
                 {/* Metallic ring effect */}
-                <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-cyan-400 via-blue-500 to-cyan-400 opacity-60 blur-sm group-hover:opacity-80 transition-opacity" />
-                <div className="relative">
-                  <img 
-                    src={logo} 
-                    alt="Balisai Public School" 
-                    className="w-20 h-20 rounded-2xl bg-white p-2 shadow-xl group-hover:scale-105 transition-transform relative z-10" 
-                  />
-                  {/* Pulsing glow */}
-                  <div className="absolute inset-0 rounded-2xl bg-cyan-400/30 animate-pulse blur-md" />
-                </div>
+                <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-cyan-400 via-blue-500 to-cyan-400 opacity-60 blur-sm group-hover:opacity-80 transition-opacity" />
+                <img 
+                  src={logo} 
+                  alt="Balisai Public School" 
+                  className="relative w-16 h-16 rounded-full shadow-xl group-hover:scale-105 transition-transform z-10 ring-2 ring-cyan-400/40" 
+                />
+                {/* Pulsing glow */}
+                <div className="absolute inset-0 rounded-full bg-cyan-400/20 animate-pulse blur-md" />
               </div>
               <div>
                 <h3 className="font-display text-2xl font-bold text-white">Balisai Public School</h3>

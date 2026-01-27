@@ -204,7 +204,7 @@ export function Navbar() {
                 <img 
                   src={logo} 
                   alt="Balisai Public School" 
-                  className="relative w-20 h-20 md:w-24 md:h-24 rounded-full bg-white p-1 shadow-2xl group-hover:scale-105 transition-transform duration-500 ring-2 ring-white/30" 
+                  className="relative w-20 h-20 md:w-24 md:h-24 rounded-full shadow-2xl group-hover:scale-105 transition-transform duration-500 ring-2 ring-cyan-400/40" 
                 />
               </div>
               <div className="space-y-1">
