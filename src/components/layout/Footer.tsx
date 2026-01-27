@@ -51,7 +51,7 @@ export function Footer() {
                 <img 
                   src={logo} 
                   alt="Balisai Public School" 
-                  className="relative w-16 h-16 rounded-full shadow-xl group-hover:scale-105 transition-transform z-10 ring-2 ring-cyan-400/40" 
+                  className="relative w-16 h-16 rounded-full bg-white p-1 shadow-xl group-hover:scale-105 transition-transform z-10 ring-2 ring-cyan-400/40" 
                 />
                 {/* Pulsing glow */}
                 <div className="absolute inset-0 rounded-full bg-cyan-400/20 animate-pulse blur-md" />
